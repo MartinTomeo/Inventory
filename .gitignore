@@ -45,5 +45,6 @@ frontend/Thumbs.db
 #Backend conf files
 backend/Firebase
 backend/config_jwt.php
-
+backend/data.db
+backend/generate_hashed_dump.php
 

@@ -12,12 +12,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 spl_autoload_register(
     function ($class_name) {
-        include __DIR__.'/'.str_replace('\\', '/', $class_name) . '.php';
+        $path = __DIR__.'/'.str_replace('\\', '/', $class_name) . '.php';
+        if (file_exists($path)) {
+            include $path;
+        }
     }
 );
 
 use \Firebase\JWT\JWT;
-
 require_once 'config_jwt.php';
 
 
@@ -27,8 +29,9 @@ require_once 'config_jwt.php';
 
 $method = strtolower($_SERVER['REQUEST_METHOD']);
 $actionStr = $_GET['action'] ?? '';
-$action = explode('/', strtolower($_GET['action']));
+$action = explode('/', strtolower($actionStr));
 $nameFoo = $method . ucfirst($action[0]);
+
 $params = array_slice($action, 1);
 if (count($params) >0 && $method == 'get') {
     $nameFoo = $nameFoo.'ById';
@@ -71,13 +74,14 @@ function outputError($code = 500)
 
 // ----------------- Establecer Base de datos ------------------
 
-function inicializeBBDD() {
-	return $bd = new SQLite3('data.db');
+function initDB() {
+    return new SQLite3('data.db');
 }
 
 function postReset() {
-    $bd = inicializeBBDD();
 
+    $db = initDB();
+    
     $sqlFile = __DIR__ . '/dump.sql';
     if (!file_exists($sqlFile)) {
         outputError(500);
@@ -88,49 +92,49 @@ function postReset() {
         outputError(500);
     }
 
-    if (!$bd->exec($sql)) {
-        error_log($bd->lastErrorMsg());
+    if (!$db->exec($sql)) {
+        error_log($db->lastErrorMsg());
         outputError(500);
     }
 
-    outputJson(['status' => 'BD Reset']);
+    
+    outputJson(['status' => 'DB Reset']);
+
 }
+
+
 
 // ----------------- Authenticacion y Autorizacion------------------
 
 function authenticate($email, $password)
 {
-
-    $bd = inicializeBBDD(); 
-
-    $sql = "SELECT id, username FROM users WHERE email = :email AND password = :password";
-    $stmt = $bd->prepare($sql);
-
-    if (!$stmt) {
-        outputError(500, "Error preparando la consulta: " . $bd->lastErrorMsg());
-    }
-
-    //bindValue() se encarga del escapado de texto en slite3
-    $stmt->bindValue(':email', $email, SQLITE3_TEXT);
-    $stmt->bindValue(':password', $password, SQLITE3_TEXT);
-
     
+    $db=initDB();
+    $sql = "SELECT id, username, password FROM users WHERE email = :email";
+    $stmt = $db->prepare($sql);
+    
+    if (!$stmt) {
+        outputError(500, "Error preparando la consulta: " . $db->lastErrorMsg());
+    }
+    
+    $stmt->bindValue(':email', $email, SQLITE3_TEXT);
     $result = $stmt->execute();
-
+    
     if (!$result) {
-        outputError(500, "Falló la consulta: " . $bd->lastErrorMsg());
+        outputError(500, "Falló la consulta: " . $db->lastErrorMsg());
     }
-
+    
     $ret = false;
-
+    
     if ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-        $ret = [
-            'id'     => $row['id'],
-            'username' => $row['username'],
-        ];
+        if (password_verify($password, $row['password'])) {
+            $ret = [
+                'id'       => $row['id'],
+                'username' => $row['username'],
+            ];
+        }
     }
-    $bd->close();
-
+    
     return $ret;
 
 }
@@ -180,11 +184,25 @@ function patchLogin()
 
 
 
-// ----------------- Auditar ------------------
+// ----------------- Auditar (solo Admin)------------------
+
+function getLogs() {
+
+    requireLogin();
+
+    $db = initDB();
+    $result = $db->query('SELECT * FROM logs');
+    $ret = [];
+    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
+        settype($fila['id'], 'integer');
+        $ret[] = $fila;
+    }
+    outputJson($ret);
+}
 
 function postLog($username, $action) {
-    $bd = inicializeBBDD();
-    $stmt = $bd->prepare("INSERT INTO logs (username, action, method, ip) VALUES (:username, :action, :method, :ip)");
+    
+    $stmt->prepare("INSERT INTO logs (username, action, method, ip) VALUES (:username, :action, :method, :ip)");
     $stmt->bindValue(':username', $username, SQLITE3_TEXT);
     $stmt->bindValue(':action', $action, SQLITE3_TEXT);
     $stmt->bindValue(':method', $_SERVER['REQUEST_METHOD'], SQLITE3_TEXT);
@@ -200,7 +218,7 @@ function getUsers() {
 
     requireLogin();
 
-	$bd = inicializeBBDD();
+	$bd = initDB();
 	$result = $bd->query('SELECT * FROM users');
 	$ret = [];
 	while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
@@ -211,12 +229,10 @@ function getUsers() {
 }
 
 
-function getUserById($id)
+function getUsersById($id)
 {
     requireLogin(); 
-
-    $bd = inicializeBBDD(); 
-
+    $bd=initDB();
     $sql = "SELECT * FROM users WHERE id =:id";
     $stmt = $bd->prepare($sql);
 
@@ -238,12 +254,9 @@ function getUserById($id)
         outputError(404);
     }
 
-    $bd->close();
+
     outputJson($user);
 }
-
-
-
 
 
 

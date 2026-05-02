@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS "inventory" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "user_id" TEXT NOT NULL,
     "phone_number" INTEGER NOT NULL,
-    "imei" INTEGER NOT NULL,
+    "imei" INTEGER NOT NULL
 
 );
 
@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS "lines";
 CREATE TABLE IF NOT EXISTS "lines"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "line" INTEGER NOT NULL,
-    "provider" TEXT NOT NULL,
+    "provider" TEXT NOT NULL
 );
 
 
@@ -63,20 +63,20 @@ CREATE TABLE IF NOT EXISTS "logs" (
 
 -- Insert sample users (passwords are stored as plain text as per your authenticate function)
 -- Password: admin123
-INSERT INTO users (username, email, password) VALUES 
-('admin', 'admin@example.com', 'admin123');
+INSERT INTO users (username, email, password, permission) VALUES 
+('admin', 'admin@example.com', '$2y$10$Gf9SXYpcTOsZEPlrIscPyugax5/CFmYXohRek9ZA2Txo5kufFvM6S', 1);
 
 -- Password: user123
-INSERT INTO users (username, email, password) VALUES 
-('john_doe', 'john@example.com', 'user123');
+INSERT INTO users (username, email, password, permission) VALUES 
+('john_doe', 'john@example.com', '$2y$10$GaVcjDQiMS9HWd6CS9XvceQrA6JSq2mzm/P23miScRCvieEfVoYoW', 2);
 
 -- Password: demo123
-INSERT INTO users (username, email, password) VALUES 
-('jane_smith', 'jane@example.com', 'demo123');
+INSERT INTO users (username, email, password, permission) VALUES 
+('jane_smith', 'jane@example.com', '$2y$10$uwArcm2Xe96LOOQNPllgNOg71MnmoGNxhsk6dRJz7FFbHYyYZOEdC', 3);
 
 -- Password: test123
-INSERT INTO users (username, email, password) VALUES 
-('test_user', 'test@example.com', 'test123');
+INSERT INTO users (username, email, password, permission) VALUES 
+('test_user', 'test@example.com', '$2y$10$bVNePQ7d7EZObLsi2VkIgeOSJfh94llUgnSMY6X/rM7SuE6oJTI1O', 4);
 
 -- Optional: Insert some sample logs (for testing purposes)
 INSERT INTO logs (username, action, method, ip) VALUES 
