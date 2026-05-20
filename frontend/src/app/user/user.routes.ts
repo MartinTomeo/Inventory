@@ -34,11 +34,6 @@ export const userRoutes: Routes = [
             (m) => m.ProfileInfoPage,
           ),
       },
-
-      {
-        path: 'latest/:number',
-      },
-
       {
         path: '**',
         redirectTo: 'latest',
