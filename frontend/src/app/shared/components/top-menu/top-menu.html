@@ -1,0 +1,23 @@
+<nav class="p-4 w-full">
+  <ul class="menu bg-base-200 sm:menu-horizontal rounded-box w-full flex justify-between">
+    <div class="flex">
+      <li><a routerLink="/user/latest" routerLinkActive="btn-primary" class="btn">Latest</a></li>
+      <li><a routerLink="/user/publish" routerLinkActive="btn-primary" class="btn">Publish</a></li>
+      <li><a routerLink="/user/logs" routerLinkActive="btn-primary" class="btn">Logs</a></li>
+    </div>
+
+    <li>
+      <details class="h-full">
+        <summary class="btn justify-start">
+          <span class="relative top-0.5">Profile</span>
+        </summary>
+
+        <ul class="right-0 p-2 shadow bg-base-100 rounded-box w-52 z-1">
+          <li><a routerLink="/user/profile/settings" class="btn">Settings</a></li>
+          <li><a routerLink="/user/profile/info" class="btn">Info</a></li>
+          <li><a routerLink="/" class="btn">Log Out</a></li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</nav>
