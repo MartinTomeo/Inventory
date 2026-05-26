@@ -32,10 +32,17 @@ $actionStr = $_GET['action'] ?? '';
 $action = explode('/', strtolower($actionStr));
 $nameFoo = $method . ucfirst($action[0]);
 
+
 $params = array_slice($action, 1);
-if (count($params) >0 && $method == 'get') {
-    $nameFoo = $nameFoo.'ById';
+if (count($params) > 0 && $method == 'get') {
+    // If the parameter is strictly numbers, use ById. Otherwise, use ByName.
+    if (is_numeric($params[0])) {
+        $nameFoo = $nameFoo . 'ById';
+    } else {
+        $nameFoo = $nameFoo . 'ByName';
+    }
 }
+
 if (function_exists($nameFoo)) {
     call_user_func_array ($nameFoo, $params);
 } else {
@@ -216,7 +223,7 @@ function postLog($username, $action) {
 
 function getUsers() {
 
-    requireLogin();
+    //requireLogin();
 
 	$bd = initDB();
 	$result = $bd->query('SELECT * FROM users');
@@ -231,7 +238,7 @@ function getUsers() {
 
 function getUsersById($id)
 {
-    requireLogin(); 
+    //requireLogin(); 
     $bd=initDB();
     $sql = "SELECT * FROM users WHERE id =:id";
     $stmt = $bd->prepare($sql);
@@ -256,6 +263,42 @@ function getUsersById($id)
 
 
     outputJson($user);
+}
+
+
+function getUsersByName($name)
+{
+    //requireLogin(); 
+    $bd=initDB();
+    $sql = "SELECT * FROM users WHERE username LIKE :name";
+    $stmt = $bd->prepare($sql);
+
+    if (!$stmt) {
+        outputError(500, "Error preparando la consulta: " . $bd->lastErrorMsg());
+    }
+
+    $stmt->bindValue(':name', "%$name%", SQLITE3_TEXT);
+    
+    $result = $stmt->execute();
+
+    if (!$result) {
+        outputError(500, "Falló la consulta: " . $bd->lastErrorMsg());
+    }
+
+    $users = [];
+
+    // 2. Loop through all rows returned by the query
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        settype($row['id'], 'integer'); // Optional: ensures ID is an integer in JSON
+        $users[] = $row;
+    }
+
+    if (!$users) {
+        outputError(404);
+    }
+
+
+    outputJson($users);
 }
 
 
