@@ -1,16 +1,17 @@
-import { SearchInput } from '../../components/search-input/search-input';
-import { PostService } from '../../services/post.service';
-import { Component, inject, resource, signal } from '@angular/core';
-import { ByLatestList } from '../../components/by-latest-list/by-latest-list';
-import { User } from '../../../../shared/interfaces/users.interface';
+import { Component, inject, signal } from '@angular/core';
+import { AdminService } from '../../services/admin.service';
+import { User } from '../../../shared/interfaces/users.interface';
+import { AdminSearchInput } from '../../components/admin-search-input/admin-search-input';
+import { AdminUsersList } from '../../components/admin-users-list/admin-users-list';
+
 
 @Component({
-  selector: 'by-latest-page',
-  imports: [ByLatestList, SearchInput, ByLatestList],
-  templateUrl: './by-latest-page.html',
+  selector: 'admin-users-page',
+  imports: [AdminUsersList, AdminSearchInput],
+  templateUrl: './admin-users-page.html',
 })
-export class ByLatestPage {
-  postsService = inject(PostService);
+export class AdminUsersPage {
+  adminService = inject(AdminService);
   query = signal('');
   users = signal<User[]>([]);
 /*
@@ -19,14 +20,14 @@ export class ByLatestPage {
     loader: async( { params } ) => {
       if(!params.query) return [];
 
-      return await firstValueFrom(this.postsService.getUsersByName(params.query));
+      return await firstValueFrom(this.adminService.getUsersByName(params.query));
     }
   });
 
-
+*/
 
   ngOnInit() {
-    this.postsService.getUsers().subscribe({
+    this.adminService.getUsers().subscribe({
       next: (data) => {
         console.log(data);
         this.users.set(data);
@@ -40,7 +41,7 @@ export class ByLatestPage {
     });
   }
 
-
+/*
   searchById(query: string) {
     this.postsService.getUsersById(query).subscribe({
       next: (data) => {
@@ -72,3 +73,4 @@ export class ByLatestPage {
 */
 
 }
+

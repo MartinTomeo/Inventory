@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment.development';
-import { User } from '../../../shared/interfaces/users.interface';
+import { User } from '../../shared/interfaces/users.interface';
 @Injectable({
   providedIn: 'root',
 })
-export class PostService {
+export class AdminService {
   private http = inject(HttpClient);
 
 

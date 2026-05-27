@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminLayout } from './layouts/AdminLayout/AdminLayout';
-import { AdminSettingsPage } from './page/admin-settings-page/admin-settings-page';
+
 
 export const adminRoutes: Routes = [
   {
@@ -8,12 +8,18 @@ export const adminRoutes: Routes = [
     component: AdminLayout,
     children: [
       {
-        path: 'settings',
-        component: AdminSettingsPage,
+        path: 'users',
+        loadComponent: () =>
+          import('./page/admin-users-page/admin-users-page').then((m) => m.AdminUsersPage),
+      },
+    {
+        path: 'inventory',
+        loadComponent: () =>
+          import('./page/admin-posts-page/admin-inventory-page').then((m) => m.AdminInventoryPage),
       },
       {
         path: '**',
-        redirectTo: 'settings',
+        redirectTo: 'users',
       },
     ],
   },
