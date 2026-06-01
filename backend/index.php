@@ -195,7 +195,7 @@ function patchLogin()
 
 function getLogs() {
 
-    requireLogin();
+    //requireLogin();
 
     $db = initDB();
     $result = $db->query('SELECT * FROM logs');

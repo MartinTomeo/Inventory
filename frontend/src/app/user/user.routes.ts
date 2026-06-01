@@ -9,16 +9,37 @@ export const userRoutes: Routes = [
       {
         path: 'latest',
         loadComponent: () =>
-          import('./posts/pages/by-latest-page/by-latest-page').then((m) => m.ByLatestPage),
+          import('./posts/pages/by-latest-page/by-latest-page').then(
+            (m) => m.ByLatestPage
+          ),
       },
       {
         path: 'publish',
         loadComponent: () =>
-          import('./posts/pages/publish-page/publish-page').then((m) => m.PublishPage),
+          import('./posts/pages/publish-page/publish-page').then(
+            (m) => m.PublishPage
+          ),
       },
       {
         path: 'logs',
-        loadComponent: () => import('./posts/pages/logs-page/logs-page').then((m) => m.LogsPage),
+        loadComponent: () =>
+          import('./posts/pages/logs-page/logs-page').then(
+            (m) => m.LogsPage
+          ),
+      },
+      {
+        path: 'users',
+        loadComponent: () =>
+          import('./admin/page/admin-users-page/admin-users-page').then(
+            (m) => m.AdminUsersPage
+          ),
+      },
+      {
+        path: 'catalogue',
+        loadComponent: () =>
+          import('./admin/page/admin-catalogue-page/admin-catalogue-page').then(
+            (m) => m.AdminCataloguePage
+          ),
       },
       {
         path: 'profile/settings',

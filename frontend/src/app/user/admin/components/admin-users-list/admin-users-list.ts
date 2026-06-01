@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { User } from '../../../shared/interfaces/users.interface';
+import { User } from '../../../interfaces/users.interface';
 @Component({
   selector: 'admin-users-list',
   imports: [],

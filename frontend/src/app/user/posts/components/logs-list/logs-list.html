@@ -1,0 +1,23 @@
+<table class="table">
+  <!-- head -->
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Action</th>
+      <th>Method</th>
+      <th>IP</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (log of logs(); track $index) {
+      <tr>
+        <td>{{ log.username }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.method }}</td>
+        <td>{{ log.ip }}</td>
+        <td>{{ log.created_at }}</td>
+      </tr>
+      }
+  </tbody>
+</table>

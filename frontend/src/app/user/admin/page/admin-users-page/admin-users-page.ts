@@ -1,9 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, resource } from '@angular/core';
 import { AdminService } from '../../services/admin.service';
-import { User } from '../../../shared/interfaces/users.interface';
 import { AdminSearchInput } from '../../components/admin-search-input/admin-search-input';
 import { AdminUsersList } from '../../components/admin-users-list/admin-users-list';
-
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'admin-users-page',
@@ -13,9 +12,9 @@ import { AdminUsersList } from '../../components/admin-users-list/admin-users-li
 export class AdminUsersPage {
   adminService = inject(AdminService);
   query = signal('');
-  users = signal<User[]>([]);
-/*
-  postsResource = resource({
+
+
+  usersResource = resource({
     params: () => ({ query: this.query() }),
     loader: async( { params } ) => {
       if(!params.query) return [];
@@ -24,8 +23,10 @@ export class AdminUsersPage {
     }
   });
 
-*/
 
+
+
+/*
   ngOnInit() {
     this.adminService.getUsers().subscribe({
       next: (data) => {
@@ -41,7 +42,7 @@ export class AdminUsersPage {
     });
   }
 
-/*
+
   searchById(query: string) {
     this.postsService.getUsersById(query).subscribe({
       next: (data) => {
