@@ -1,5 +1,4 @@
 <table class="table">
-  <!-- head -->
   <thead>
     <tr>
       <th>username</th>
@@ -9,13 +8,41 @@
     </tr>
   </thead>
   <tbody>
-    @for (user of users(); track $index) {
+
+
+
+
+    @if(usersResource().error()) {
       <tr>
-        <td>{{ user.username }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.password }}</td>
-        <td>{{ user.permission }}</td>
+        <td colspan="4" class="text-center text-error">{{ usersResource().error() }}</td>
       </tr>
+    }
+    @else if(usersResource().isLoading()) {
+       <tr>
+        <td colspan="4" class="text-center">
+          <span class="loading loading-spinner loading-md"></span>
+          Cargando usuarios...</td>
+      </tr>
+    }
+    @else {
+      @if(!usersResource().hasValue()) {
+        <tr>
+          <td colspan="4" class="text-center">No se encontraron usuarios.</td>
+        </tr>
       }
+      @else {
+          @for (user of usersResource().value(); track user.username) {
+          <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.password }}</td>
+            <td>{{ user.permission }}</td>
+          </tr>
+          }
+        }
+  }
+
+
+
   </tbody>
 </table>

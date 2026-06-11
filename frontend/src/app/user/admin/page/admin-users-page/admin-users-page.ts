@@ -1,8 +1,12 @@
-import { Component, inject, signal, resource } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { AdminService } from '../../services/admin.service';
 import { AdminSearchInput } from '../../components/admin-search-input/admin-search-input';
+import { User } from './../../../interfaces/users.interface';
 import { AdminUsersList } from '../../components/admin-users-list/admin-users-list';
-import { firstValueFrom } from 'rxjs';
+import { catchError, debounceTime, delay, switchMap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
 
 @Component({
   selector: 'admin-users-page',
@@ -11,22 +15,48 @@ import { firstValueFrom } from 'rxjs';
 })
 export class AdminUsersPage {
   adminService = inject(AdminService);
-  query = signal('');
+  query = signal<string>('');
 
+
+
+  usersResource = rxResource({
+    params: () => ({ query: this.query() }),
+    defaultValue: [],
+    stream: ({ params }) => {
+
+      if (!params.query || params.query.trim() === '') return this.adminService.getUsers().pipe(
+        catchError(() => {
+
+          return throwError(() => new Error('No hay usuarios disponibles.'));
+        })
+      );
+
+      return this.adminService.getUsersByName(params.query).pipe(
+        catchError(() => {
+
+          return throwError(() => new Error('No hay usuarios que coincidan con la búsqueda.'));
+        })
+      );
+
+    }
+  });
+
+}
+
+
+
+/*
+  /// funcion con promise
 
   usersResource = resource({
     params: () => ({ query: this.query() }),
     loader: async( { params } ) => {
-      if(!params.query) return [];
-
+      if(!params.query) return await firstValueFrom(this.adminService.getUsers());
       return await firstValueFrom(this.adminService.getUsersByName(params.query));
     }
   });
 
 
-
-
-/*
   ngOnInit() {
     this.adminService.getUsers().subscribe({
       next: (data) => {
@@ -73,5 +103,4 @@ export class AdminUsersPage {
   }
 */
 
-}
 

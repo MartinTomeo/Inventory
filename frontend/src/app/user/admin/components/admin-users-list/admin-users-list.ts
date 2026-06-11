@@ -1,5 +1,10 @@
-import { Component, input } from '@angular/core';
+import { Component, input, Resource, ResourceRef} from '@angular/core';
 import { User } from '../../../interfaces/users.interface';
+
+
+
+
+
 @Component({
   selector: 'admin-users-list',
   imports: [],
@@ -7,6 +12,11 @@ import { User } from '../../../interfaces/users.interface';
 })
 export class AdminUsersList {
 
-  users =input.required<User[]>();
+  usersResource = input.required<ResourceRef<User[]>>();
+
+
+
+
 
 }
+

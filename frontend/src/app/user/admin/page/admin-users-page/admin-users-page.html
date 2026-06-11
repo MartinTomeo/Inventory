@@ -3,11 +3,8 @@
   <admin-search-input placeholder="Buscar por nombre de usuario" (value)="query.set($event)"/><!--$event es para lo que emita el search input-->
 </section>
 <section class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 max-w-250">
-  @if (usersResource.error()) {
-    <p class="p-4 text-center">{{usersResource.error()}}</p>
-  }
-  @if (usersResource.hasValue()) {
-    <admin-users-list [users]="usersResource.value()!"/>
-  }
+
+    <admin-users-list [usersResource]="usersResource" />
+
 
 </section>

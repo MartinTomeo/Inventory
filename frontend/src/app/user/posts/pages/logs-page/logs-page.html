@@ -2,12 +2,11 @@
   <search-input placeholder="Buscar por nombre de usuario" (value)="query.set($event)"/><!--$event es para lo que emita el search input-->
 </section>
 <section class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-<!--  @if(postsResource.isLoading()) {
-    <p class="p-4 text-center">Cargando...</p>}
-  @if (postsResource.error()) {
-    <p class="p-4 text-center">Error al cargar los datos</p>
-  }@else {-->
-    <logs-list [logs]="logs()"/>
-  <!--}-->
+  @if (logsResource.error()) {
+    <p class="p-4 text-center">{{logsResource.error()}}</p>
+  }
+  @if (logsResource.hasValue()) {
+    <logs-list [logs]="logsResource.value()!"/>
+  }
 
 </section>
