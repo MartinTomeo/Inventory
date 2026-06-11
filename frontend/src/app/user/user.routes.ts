@@ -7,17 +7,10 @@ export const userRoutes: Routes = [
     component: UserLayout,
     children: [
       {
-        path: 'latest',
+        path: 'subs',
         loadComponent: () =>
-          import('./posts/pages/by-latest-page/by-latest-page').then(
-            (m) => m.ByLatestPage
-          ),
-      },
-      {
-        path: 'publish',
-        loadComponent: () =>
-          import('./posts/pages/publish-page/publish-page').then(
-            (m) => m.PublishPage
+          import('./posts/pages/subscriptions-page/subscriptions-page').then(
+            (m) => m.SubscriptionsPage
           ),
       },
       {
@@ -57,7 +50,7 @@ export const userRoutes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'latest',
+        redirectTo: 'subs',
       },
     ],
   },
