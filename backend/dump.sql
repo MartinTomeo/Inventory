@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS "users" (
 DROP TABLE IF EXISTS "inventory";
 CREATE TABLE IF NOT EXISTS "inventory" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "user_id" TEXT NOT NULL,
+    "user_id" INTEGER NOT NULL,
     "phone_number" INTEGER NOT NULL,
-    "imei" INTEGER NOT NULL
+    "imei" TEXT
 
 );
 
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS "inventory" (
 DROP TABLE IF EXISTS "stock";
 CREATE TABLE IF NOT EXISTS "stock"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "imei", INTEGER NOT NULL,
+    "imei", TEXT,
     "model" TEXT NOT NULL,
     "brand" TEXT NOT NULL,
     "provider" TEXT NOT NULL
@@ -84,3 +84,23 @@ INSERT INTO logs (username, action, method, ip) VALUES
 ('john_doe', 'login', 'POST', '192.168.1.100'),
 ('admin', 'get_users', 'GET', '127.0.0.1'),
 ('jane_smith', 'login', 'POST', '10.0.0.1');
+
+
+
+-- Sample stock data
+INSERT INTO stock (imei, model, brand, provider) VALUES
+('356789012345671', 'iPhone 14', 'Apple', 'Movistar'),
+('356789012345672', 'Galaxy S23', 'Samsung', 'Personal'),
+('356789012345673', 'Moto G84', 'Motorola', 'Claro');
+
+-- Sample phone lines
+INSERT INTO lines (line, provider) VALUES
+(1150010001, 'Movistar'),
+(1150010002, 'Personal'),
+(1150010003, 'Claro');
+
+-- Sample inventory assignments
+INSERT INTO inventory (user_id, phone_number, imei) VALUES
+(1, 1150010001, '356789012345671'),
+(2, 1150010002, '356789012345672'),
+(3, 1150010003, '356789012345673');

@@ -28,10 +28,10 @@ export const userRoutes: Routes = [
           ),
       },
       {
-        path: 'catalogue',
+        path: 'stock',
         loadComponent: () =>
-          import('./admin/page/admin-catalogue-page/admin-catalogue-page').then(
-            (m) => m.AdminCataloguePage
+          import('./admin/page/admin-stock-page/admin-stock-page').then(
+            (m) => m.AdminStockPage
           ),
       },
       {

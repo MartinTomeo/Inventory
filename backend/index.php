@@ -302,5 +302,20 @@ function getUsersByName($name)
 }
 
 
+function postPeliculas() {
+    $bd = inicializarBBDD();
+    $datos = json_decode(file_get_contents('php://input'), true);
+    
+    $titulo = $bd->escapeString($datos['titulo']);
+    $anio = $datos['anio']+0;
+
+    $result = @$bd->exec("INSERT INTO peliculas (titulo, anio) VALUES ('$titulo', $anio)");
+    $id = $bd->lastInsertRowID();
+    foreach ($datos['generos'] as $genid) {
+        $result = @$bd->exec("INSERT INTO peliculas_generos (id_pelicula, id_genero) VALUES ($id, $genid)");
+    }
+    outputJson(['id' => $id]);
+}
+
 
 ?>
