@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"email" TEXT NOT NULL,
 	"password"	TEXT NOT NULL,
 	"permission" INTEGER NOT NULL,
+    "user_image" TEXT,
 	"created_at" DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -16,28 +17,29 @@ CREATE TABLE IF NOT EXISTS "users" (
 -- 4 read only
 
 
---Inventory table
-DROP TABLE IF EXISTS "inventory";
-CREATE TABLE IF NOT EXISTS "inventory" (
+-- users_stock_phone pivot table
+DROP TABLE IF EXISTS "subscriptions";
+CREATE TABLE IF NOT EXISTS "subscriptions" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "user_id" INTEGER NOT NULL,
-    "phone_number" INTEGER NOT NULL,
+    "line" INTEGER NOT NULL,
     "imei" TEXT
 
 );
 
---Phone Stock table
+-- stock table
 DROP TABLE IF EXISTS "stock";
 CREATE TABLE IF NOT EXISTS "stock"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "imei", TEXT,
+    "imei" TEXT,
     "model" TEXT NOT NULL,
     "brand" TEXT NOT NULL,
-    "provider" TEXT NOT NULL
+    "provider" TEXT NOT NULL,
+    "phone_image" TEXT
 
 );
 
---Phone Lines table
+-- lines table
 DROP TABLE IF EXISTS "lines";
 CREATE TABLE IF NOT EXISTS "lines"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,8 +55,8 @@ DROP TABLE IF EXISTS "logs";
 CREATE TABLE IF NOT EXISTS "logs" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "username" TEXT NOT NULL,
-    "action" TEXT NOT NULL, --function called from front
-    "method" TEXT NOT NULL, --server method called from back
+    "action" TEXT NOT NULL, -- function called from front
+    "method" TEXT NOT NULL, -- server method called from back
     "ip" TEXT NOT NULL,
     "created_at" DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -63,20 +65,17 @@ CREATE TABLE IF NOT EXISTS "logs" (
 
 -- Insert sample users (passwords are stored as plain text as per your authenticate function)
 -- Password: admin123
-INSERT INTO users (username, email, password, permission) VALUES 
-('admin', 'admin@example.com', '$2y$10$Gf9SXYpcTOsZEPlrIscPyugax5/CFmYXohRek9ZA2Txo5kufFvM6S', 1);
+INSERT INTO users
+(username, email, password, permission, user_image)
+VALUES
+('admin', 'admin@example.com', '$2y$10$Gf9SXYpcTOsZEPlrIscPyugax5/CFmYXohRek9ZA2Txo5kufFvM6S', 1, 'test_image_1.jpg'),
 
--- Password: user123
-INSERT INTO users (username, email, password, permission) VALUES 
-('john_doe', 'john@example.com', '$2y$10$GaVcjDQiMS9HWd6CS9XvceQrA6JSq2mzm/P23miScRCvieEfVoYoW', 2);
+('john_doe', 'john@example.com', '$2y$10$GaVcjDQiMS9HWd6CS9XvceQrA6JSq2mzm/P23miScRCvieEfVoYoW', 2, 'test_image_2.jpg'),
 
--- Password: demo123
-INSERT INTO users (username, email, password, permission) VALUES 
-('jane_smith', 'jane@example.com', '$2y$10$uwArcm2Xe96LOOQNPllgNOg71MnmoGNxhsk6dRJz7FFbHYyYZOEdC', 3);
+('jane_smith', 'jane@example.com', '$2y$10$uwArcm2Xe96LOOQNPllgNOg71MnmoGNxhsk6dRJz7FFbHYyYZOEdC', 3, 'test_image_3.jpg'),
 
--- Password: test123
-INSERT INTO users (username, email, password, permission) VALUES 
-('test_user', 'test@example.com', '$2y$10$bVNePQ7d7EZObLsi2VkIgeOSJfh94llUgnSMY6X/rM7SuE6oJTI1O', 4);
+('test_user', 'test@example.com', '$2y$10$bVNePQ7d7EZObLsi2VkIgeOSJfh94llUgnSMY6X/rM7SuE6oJTI1O', 4, 'test_image_4.jpg');
+
 
 -- Optional: Insert some sample logs (for testing purposes)
 INSERT INTO logs (username, action, method, ip) VALUES 
@@ -88,10 +87,15 @@ INSERT INTO logs (username, action, method, ip) VALUES
 
 
 -- Sample stock data
-INSERT INTO stock (imei, model, brand, provider) VALUES
-('356789012345671', 'iPhone 14', 'Apple', 'Movistar'),
-('356789012345672', 'Galaxy S23', 'Samsung', 'Personal'),
-('356789012345673', 'Moto G84', 'Motorola', 'Claro');
+INSERT INTO stock
+(imei, model, brand, provider, phone_image)
+VALUES
+('356789012345671', 'iPhone 14', 'Apple', 'Movistar', 'test_image_1.jpg'),
+
+('356789012345672', 'Galaxy S23', 'Samsung', 'Personal', 'test_image_2.jpg'),
+
+('356789012345673', 'Moto G84', 'Motorola', 'Claro', 'test_image_3.jpg');
+
 
 -- Sample phone lines
 INSERT INTO lines (line, provider) VALUES
@@ -99,8 +103,8 @@ INSERT INTO lines (line, provider) VALUES
 (1150010002, 'Personal'),
 (1150010003, 'Claro');
 
--- Sample inventory assignments
-INSERT INTO inventory (user_id, phone_number, imei) VALUES
+-- Sample users_stock_phone assignments
+INSERT INTO subscriptions (user_id, line, imei) VALUES
 (1, 1150010001, '356789012345671'),
 (2, 1150010002, '356789012345672'),
 (3, 1150010003, '356789012345673');

@@ -235,6 +235,51 @@ function getUsers() {
 	outputJson($ret);
 }
 
+function getLines() {
+
+    //requireLogin();
+
+    $bd = initDB();
+    $result = $bd->query('SELECT * FROM lines');
+    $ret = [];
+    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
+        settype($fila['id'], 'integer');
+        $ret[] = $fila;
+    }
+    outputJson($ret);
+}
+
+function getStock() {
+
+    //requireLogin();
+
+    $bd = initDB();
+    $result = $bd->query('SELECT * FROM stock');
+    $ret = [];
+    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
+        settype($fila['id'], 'integer');
+        $ret[] = $fila;
+    }
+    outputJson($ret);
+}
+
+function getSubscriptions() {
+
+    //requireLogin();
+
+    $bd = initDB();
+    $result = $bd->query('SELECT s.id, u.username, u.email, u.user_image, st.model, st.brand, st.imei, st.provider, st.phone_image, l.line, l.provider
+        FROM subscriptions s 
+        INNER JOIN users u ON s.user_id=u.id
+        INNER JOIN stock st ON s.imei=st.imei 
+        INNER JOIN lines l ON s.line=l.line');
+    $ret = [];
+    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
+        settype($fila['id'], 'integer');
+        $ret[] = $fila;
+    }
+    outputJson($ret);
+}
 
 function getUsersById($id)
 {
@@ -302,20 +347,6 @@ function getUsersByName($name)
 }
 
 
-function postPeliculas() {
-    $bd = inicializarBBDD();
-    $datos = json_decode(file_get_contents('php://input'), true);
-    
-    $titulo = $bd->escapeString($datos['titulo']);
-    $anio = $datos['anio']+0;
-
-    $result = @$bd->exec("INSERT INTO peliculas (titulo, anio) VALUES ('$titulo', $anio)");
-    $id = $bd->lastInsertRowID();
-    foreach ($datos['generos'] as $genid) {
-        $result = @$bd->exec("INSERT INTO peliculas_generos (id_pelicula, id_genero) VALUES ($id, $genid)");
-    }
-    outputJson(['id' => $id]);
-}
 
 
 ?>
