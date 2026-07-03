@@ -207,6 +207,42 @@ function getLogs() {
     outputJson($ret);
 }
 
+function getLogsByName($name){
+
+    //requireLogin(); 
+    $bd=initDB();
+    $sql = "SELECT * FROM logs WHERE username LIKE :name";
+    $stmt = $bd->prepare($sql);
+
+    if (!$stmt) {
+        outputError(500, "Error preparando la consulta: " . $bd->lastErrorMsg());
+    }
+
+    $stmt->bindValue(':name', "%$name%", SQLITE3_TEXT);
+    
+    $result = $stmt->execute();
+
+    if (!$result) {
+        outputError(500, "Falló la consulta: " . $bd->lastErrorMsg());
+    }
+
+    $users = [];
+
+    // 2. Loop through all rows returned by the query
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        settype($row['id'], 'integer');
+        $users[] = $row;
+    }
+
+    if (!$users) {
+        outputError(404);
+    }
+
+
+    outputJson($users);
+
+}
+
 function postLog($username, $action) {
     
     $stmt->prepare("INSERT INTO logs (username, action, method, ip) VALUES (:username, :action, :method, :ip)");
@@ -332,9 +368,9 @@ function getUsersByName($name)
 
     $users = [];
 
-    // 2. Loop through all rows returned by the query
+    
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($row['id'], 'integer'); // Optional: ensures ID is an integer in JSON
+        settype($row['id'], 'integer');
         $users[] = $row;
     }
 

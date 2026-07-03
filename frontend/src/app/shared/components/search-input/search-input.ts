@@ -6,6 +6,6 @@ import { Component, input, output } from '@angular/core';
   templateUrl: './search-input.html',
 })
 export class SearchInput {
-  placeholder = input<string>('error');
-  value = output<string>();
+  placeholder = input<string>('');
+  value = output<string|number>();
 }

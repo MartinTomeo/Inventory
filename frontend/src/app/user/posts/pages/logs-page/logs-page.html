@@ -1,12 +1,9 @@
 <section class="mb-4">
-  <search-input placeholder="Buscar por nombre de usuario" (value)="query.set($event)"/><!--$event es para lo que emita el search input-->
+  <search-input placeholder="Buscar por nombre de usuario" (value)="query.set($event.toString())"/><!--$event es para lo que emita el search input-->
 </section>
 <section class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-  @if (logsResource.error()) {
-    <p class="p-4 text-center">{{logsResource.error()}}</p>
-  }
-  @if (logsResource.hasValue()) {
-    <logs-list [logs]="logsResource.value()!"/>
-  }
+
+    <logs-list [logsResource]="logsResource"/>
+
 
 </section>

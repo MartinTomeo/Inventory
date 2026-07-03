@@ -1,4 +1,4 @@
-import { Component, input, Resource, ResourceRef} from '@angular/core';
+import { Component, input, ResourceRef} from '@angular/core';
 import { User } from '../../../interfaces/users.interface';
 
 

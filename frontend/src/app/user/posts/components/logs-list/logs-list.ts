@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ResourceRef } from '@angular/core';
 import { Logs } from '../../../interfaces/logs.interface';
 @Component({
   selector: 'logs-list',
@@ -7,6 +7,6 @@ import { Logs } from '../../../interfaces/logs.interface';
 })
 export class LogsList {
 
-  logs =input.required<Logs[]>();
+  logsResource =input.required<ResourceRef<Logs[]>>();
 
 }
