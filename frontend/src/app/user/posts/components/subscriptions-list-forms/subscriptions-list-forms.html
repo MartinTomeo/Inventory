@@ -11,7 +11,7 @@
   </thead>
 
   <tbody>
-    <tr
+<tr
       class="hover cursor-pointer"
       onclick="
         document.getElementById('row1-details').open = !document.getElementById('row1-details').open
@@ -45,7 +45,7 @@
                     <div
                       class="w-32 rounded-xl ring ring-primary ring-offset-base-100 ring-offset-2"
                     >
-                      <img src="assets/user-placeholder.jpg" alt="User Image" />
+                      <img alt="User Image" />
                     </div>
                   </div>
 
@@ -68,7 +68,7 @@
                     <div
                       class="w-32 rounded-xl ring ring-secondary ring-offset-base-100 ring-offset-2"
                     >
-                      <img src="assets/phone-placeholder.jpg" alt="Phone Image" />
+                      <img alt="Phone Image" />
                     </div>
                   </div>
 
@@ -114,29 +114,38 @@
                   <label class="label">Model</label>
                   <input class="input w-full editable-field" value="Galaxy S24" readonly />
                 </div>
-
                 <div>
                   <label class="label">Brand</label>
                   <input class="input w-full editable-field" value="Samsung" readonly />
                 </div>
-
                 <div>
-                  <label class="label">Mobile Provider</label>
-                  <input class="input w-full editable-field" value="Personal" readonly />
+                  <label class="label">
+                    <span class="label-text">Mobile Provider</span>
+                  </label>
+                  <select class="select select-bordered w-full editable-field">
+                    <option disabled>Select provider</option>
+                    <option selected>Personal</option>
+                    <option>Movistar</option>
+                    <option>Claro</option>
+                  </select>
                 </div>
-
                 <div>
-                  <label class="label">Line Provider</label>
-                  <input class="input w-full editable-field" value="Personal" readonly />
+                  <label class="label">
+                    <span class="label-text">Line Provider</span>
+                  </label>
+                  <select class="select select-bordered w-full editable-field">
+                    <option disabled>Select provider</option>
+                    <option selected>Personal</option>
+                    <option>Telecom</option>
+                    <option>iPlan</option>
+                  </select>
                 </div>
-
                 <!-- Action Buttons -->
                 <div class="col-span-3 flex justify-between items-center border-t pt-4 mt-2">
                   <div>
                     <span class="font-semibold">Last Update:</span>
                     <span class="badge badge-neutral ml-2"> 19/09/2025 14:35:22 </span>
                   </div>
-
                   <div class="flex gap-2">
                     <button
                       class="btn btn-primary"
@@ -144,7 +153,6 @@
                     >
                       Edit
                     </button>
-
                     <button class="btn btn-success" onclick="event.stopPropagation()">Save</button>
                   </div>
                 </div>

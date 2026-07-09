@@ -5,4 +5,7 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './new-delete-buttons.html',
 })
-export class NewDeleteButtons {}
+export class NewDeleteButtons {
+
+
+}

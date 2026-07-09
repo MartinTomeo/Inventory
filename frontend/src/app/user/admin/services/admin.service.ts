@@ -18,7 +18,6 @@ export class AdminService {
     return this.http.get<User>(`${environment.apiUrl}/users/${query}`);
   }
 
-
   getUsersByName(query: string) {
     return this.http.get<User[]>(`${environment.apiUrl}/users/${query}`);
   }

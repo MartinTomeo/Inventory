@@ -13,7 +13,6 @@ import { rxResource } from '@angular/core/rxjs-interop';
 export class PostService {
   private http = inject(HttpClient);
   query = signal<string>('');
-  //queryCacheSubscriptions = new Map<string, Subscriptions[]>();
   queryCacheSubscriptions = new Map<string, Observable<Subscriptions[]>>();
 
   getLogs() {
@@ -36,69 +35,39 @@ export class PostService {
     return this.http.get<Subscriptions[]>(`${environment.apiUrl}/subscriptions/${line}`);
   }
 
-
-
   subsResource = rxResource<Subscriptions[], { query: string }>({
     params: () => ({ query: this.query() }),
     defaultValue: [],
     stream: ({ params }) => {
 
+      const query = params.query.trim().toLowerCase();
+      const cached = this.queryCacheSubscriptions.get(query);
 
-  const query = params.query.trim().toLowerCase();
-
-  const cached = this.queryCacheSubscriptions.get(query);
-  if (cached) {
-    return cached;
-  }
-
-  const request$ = (
-    !query
-      ? this.getSubscriptions()
-      : this.getSubscriptionsByUsername(query)
-  ).pipe(
-    shareReplay(1),
-    catchError(() => {
-      this.queryCacheSubscriptions.delete(query); // don't cache failures
-      return throwError(() =>
-        new Error(
-          query
-            ? 'No hay usuarios que coincidan con la búsqueda.'
-            : 'No hay registros disponibles.'
-        )
-      );
-    })
-  );
-
-  this.queryCacheSubscriptions.set(query, request$);
-
-  return request$;
-
-
-      /*
-      params.query = params.query.toLowerCase();
-
-      if(this.queryCacheSubscriptions.has(params.query)) {
-        return of(this.queryCacheSubscriptions.get(params.query) as Subscriptions[]);
+      if (cached) {
+        return cached;
       }
 
-      if (!params.query || params.query.trim() === '') return this.getSubscriptions().pipe(
+      const request$ = (
+        !query
+          ? this.getSubscriptions()
+          : this.getSubscriptionsByUsername(query)
+      ).pipe(
+        shareReplay(1),
         catchError(() => {
-
-          return throwError(() => new Error('No hay registros disponibles.'));
+          this.queryCacheSubscriptions.delete(query);
+          return throwError(() =>
+            new Error(
+              query
+                ? 'No hay usuarios que coincidan con la búsqueda.'
+                : 'No hay registros disponibles.'
+            )
+          );
         })
       );
 
-      return this.getSubscriptionsByUsername(params.query).pipe(
-        catchError(() => {
 
-          return  throwError(() => new Error('No hay usuarios que coincidan con la búsqueda.'));
-        })
-      );
-*/
-
-
-
-
+      this.queryCacheSubscriptions.set(query, request$);
+      return request$;
 
     }
   });

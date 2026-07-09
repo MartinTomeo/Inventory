@@ -3,11 +3,11 @@ import { Subscriptions } from '../../../interfaces/subscriptions.interface';
 
 
 @Component({
-  selector: 'subscriptions-list',
+  selector: 'subscriptions-list-forms',
   imports: [],
-  templateUrl: './subscriptions-list.html',
+  templateUrl: './subscriptions-list-forms.html',
 })
-export class SubscriptionsList {
+export class SubscriptionsListForms {
 
   subscriptionsResource =input.required<ResourceRef<Subscriptions[]>>();
 
