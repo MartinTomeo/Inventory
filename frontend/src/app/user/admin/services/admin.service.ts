@@ -13,9 +13,9 @@ export class AdminService {
     return this.http.get<User[]>(`${environment.apiUrl}/users`)
   }
 
-  getUsersById(query: string) {
+  getUsersById(id: number) {
 
-    return this.http.get<User>(`${environment.apiUrl}/users/${query}`);
+    return this.http.get<User>(`${environment.apiUrl}/users/${id}`);
   }
 
   getUsersByName(query: string) {

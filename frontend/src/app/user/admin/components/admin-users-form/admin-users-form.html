@@ -1,0 +1,113 @@
+<div class="card bg-base-100 shadow-xl border border-base-200">
+  <div class="card-body p-6">
+
+    <form class="space-y-4" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+      <!-- Profile Image -->
+      <div class="flex flex-col items-center gap-3 mb-6">
+
+        <div class="avatar">
+          <div class="w-24 rounded-lg overflow-hidden ring ring-primary ring-offset-base-100 ring-offset-2">
+            <img
+              [src]="imageUrl()"
+              alt="User photo"
+              class="w-full h-full object-cover" />
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-outline btn-sm">
+          Upload Image
+        </button>
+
+      </div>
+
+      <!-- Username -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Username</span>
+        </label>
+        <input
+          type="text"
+          class="input input-bordered w-full"
+          formControlName="username"
+
+         >
+      </div>
+
+      <!-- Email -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Email</span>
+        </label>
+        <input
+          type="email"
+          class="input input-bordered w-full"
+          formControlName="email"
+         />
+      </div>
+
+      <!-- Password -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Password</span>
+        </label>
+        <input
+          type="password"
+          class="input input-bordered w-full"
+          formControlName="password"
+          placeholder="Leave blank to keep the current password"
+         />
+         @if (userResource().hasValue()) {
+          <label class="label">
+            <span class="label-text-alt text-warning">
+              ⚠️ The user's password will be changed when you save.
+            </span>
+          </label>}
+      </div>
+
+
+
+      <!-- Role -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Role</span>
+        </label>
+        <select class="select select-brordered w-full" formControlName="role">
+
+          <option selected disabled>Select a role</option>
+          <option [ngValue]="1">Admin</option>
+          <option [ngValue]="2">Audit</option>
+          <option [ngValue]="3">Editor</option>
+        </select>
+      </div>
+
+
+      <div>
+        <span class="font-semibold">Created:</span>
+        @if(userResource().hasValue() && userResource().value().created_at) {
+          <span class="badge badge-neutral ml-2"> {{userResource().value().created_at}}</span>
+        }@else {
+          <span class="badge badge-neutral ml-2">N/A</span>
+        }
+      </div>
+
+      <!-- Actions -->
+      <div class="form-control mt-6 flex flex-row gap-2 ">
+        <button
+          type="submit"
+          class="btn btn-primary w-auto">
+          Save User
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline w-auto">
+          Clear
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>

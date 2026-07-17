@@ -1,16 +1,14 @@
-<table class="table">
+<div class="overflow-y-auto h-full">
+<table class="table table-pin-rows">
   <thead>
-    <tr>
+    <tr class="bg-base-200">
+      <th>ID</th>
       <th>Username</th>
       <th>Email</th>
-      <th>Password</th>
       <th>Permission</th>
     </tr>
   </thead>
   <tbody>
-
-
-
 
     @if(usersResource().error()) {
       <tr>
@@ -31,18 +29,18 @@
         </tr>
       }
       @else {
-          @for (user of usersResource().value(); track user.username) {
-          <tr>
+          @for (user of usersResource().value(); track user.id) {
+          <tr class="cursor-pointer hover:bg-base-200"
+          (click)="value.emit(user.id)">
+            <td>{{user.id}}</td>
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ user.password }}</td>
-            <td>{{ user.permission }}</td>
+            <td>{{ user.role }}</td>
+            <!-- delete user btn -->
           </tr>
           }
         }
   }
-
-
-
   </tbody>
 </table>
+</div>

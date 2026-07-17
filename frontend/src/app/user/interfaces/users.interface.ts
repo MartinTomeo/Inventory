@@ -3,5 +3,7 @@ export interface User {
   username: string;
   email: string;
   password: string;
-  permission: number;
+  role: number;
+  user_image: string;
+  created_at: string;
 }

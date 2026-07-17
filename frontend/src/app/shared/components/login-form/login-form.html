@@ -1,15 +1,15 @@
-<form [formGroup]="myForm" class="login-form">
+<form [formGroup]="myForm" autocomplete="on" class="login-form">
   <fieldset class="fieldset">
     <label class="label">Email</label>
     <input type="email" class="input" placeholder="Email" formControlName="email" />
     <label class="label">Password</label>
     <input type="password" class="input" placeholder="Password" formControlName="password" />
     <div><a class="link link-hover">Forgot password?</a></div>
-    @if(myForm.controls['email'].invalid && myForm.controls['email'].touched && !myForm.controls['email'].pristine){
-        <span class="text-error">Please enter a valid email address.</span>
+    @if(formUtils.isValidField(myForm, 'email')){
+        <span class="text-error">{{ formUtils.getFieldError(myForm, 'email') }}</span>
       }
-    @if(myForm.controls['password'].invalid && myForm.controls['password'].touched){
-        <span class="text-error">Password must be between 8 and 20 characters long.</span>
+    @if(formUtils.isValidField(myForm, 'password')){
+        <span class="text-error">{{ formUtils.getFieldError(myForm, 'password') }}</span>
       }
     <button class="btn btn-neutral mt-4" (click)="onConsoleLog()">Login</button>
   </fieldset>

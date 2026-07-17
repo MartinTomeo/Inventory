@@ -1,6 +1,5 @@
-import { Component, input, ResourceRef} from '@angular/core';
+import { Component, input, output, ResourceRef} from '@angular/core';
 import { User } from '../../../interfaces/users.interface';
-
 
 
 
@@ -13,10 +12,6 @@ import { User } from '../../../interfaces/users.interface';
 export class AdminUsersList {
 
   usersResource = input.required<ResourceRef<User[]>>();
-
-
-
-
-
+  value = output<number>();
 }
 

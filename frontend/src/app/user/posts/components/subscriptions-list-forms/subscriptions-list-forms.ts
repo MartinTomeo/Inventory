@@ -1,5 +1,6 @@
-import { Component, input, ResourceRef } from '@angular/core';
+import { Component, inject, input, ResourceRef } from '@angular/core';
 import { Subscriptions } from '../../../interfaces/subscriptions.interface';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -10,6 +11,22 @@ import { Subscriptions } from '../../../interfaces/subscriptions.interface';
 export class SubscriptionsListForms {
 
   subscriptionsResource =input.required<ResourceRef<Subscriptions[]>>();
+  private formBuilder = inject(FormBuilder);
+
+  myForm: FormGroup = this.formBuilder.group({
+    username: [''],
+    email: [''],
+    user_image: [''],
+    model: [''],
+    brand: [''],
+    imei: [''],
+    stock_provider: [''],
+    phone_image: [''],
+    line: [0],
+    line_provider: ['']
+  });
+
+
 
 
 }

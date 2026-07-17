@@ -1,6 +1,7 @@
 
 import { Component, inject } from '@angular/core';
 import {ReactiveFormsModule, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormUtils } from '../../utils/form-utils';
 
 @Component({
   selector: 'login-form',
@@ -10,10 +11,12 @@ import {ReactiveFormsModule, FormControl, FormGroup, FormBuilder, Validators } f
 export class LoginForm {
 
   private formBuilder = inject(FormBuilder);
+  formUtils = FormUtils;
 
-  myForm = this.formBuilder.group({
+
+  myForm: FormGroup = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email, Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9.@_%+-]+$/)]],
-    password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]],
+    password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z0-9.@_%+-]+$/)]],
   });
 
   onConsoleLog() {
