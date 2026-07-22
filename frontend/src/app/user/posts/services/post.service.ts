@@ -12,7 +12,8 @@ import { rxResource } from '@angular/core/rxjs-interop';
 })
 export class PostService {
   private http = inject(HttpClient);
-  query = signal<string>('');
+  subsQuery = signal<string>('');
+  logsQuery = signal<string>('');
   queryCacheSubscriptions = new Map<string, Observable<Subscriptions[]>>();
 
   getLogs() {
@@ -36,7 +37,7 @@ export class PostService {
   }
 
   subsResource = rxResource<Subscriptions[], { query: string }>({
-    params: () => ({ query: this.query() }),
+    params: () => ({ query: this.subsQuery() }),
     defaultValue: [],
     stream: ({ params }) => {
 
@@ -68,6 +69,29 @@ export class PostService {
 
       this.queryCacheSubscriptions.set(query, request$);
       return request$;
+
+    }
+  });
+
+
+    logsResource = rxResource({
+    params: () => ({ query: this.logsQuery() }),
+    defaultValue: [],
+    stream: ({ params }) => {
+
+      if (!params.query || params.query.trim() === '') return this.getLogs().pipe(
+        catchError(() => {
+
+          return throwError(() => new Error('No hay registros disponibles.'));
+        })
+      );
+
+      return this.getLogsByUsername(params.query).pipe(
+        catchError(() => {
+
+          return throwError(() => new Error('No hay Logs que coincidan con la búsqueda.'));
+        })
+      );
 
     }
   });

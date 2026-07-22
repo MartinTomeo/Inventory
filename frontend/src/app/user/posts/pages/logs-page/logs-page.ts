@@ -15,29 +15,5 @@ import { throwError } from 'rxjs/internal/observable/throwError';
 export class LogsPage {
 
   postsService = inject(PostService);
-  query = signal<string>('');
-
-  logsResource = rxResource({
-    params: () => ({ query: this.query() }),
-    defaultValue: [],
-    stream: ({ params }) => {
-
-      if (!params.query || params.query.trim() === '') return this.postsService.getLogs().pipe(
-        catchError(() => {
-
-          return throwError(() => new Error('No hay registros disponibles.'));
-        })
-      );
-
-      return this.postsService.getLogsByUsername(params.query).pipe(
-        catchError(() => {
-
-          return throwError(() => new Error('No hay Logs que coincidan con la búsqueda.'));
-        })
-      );
-
-    }
-  });
-
 
  }

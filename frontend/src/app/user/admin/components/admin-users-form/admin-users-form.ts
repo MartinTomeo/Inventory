@@ -68,10 +68,7 @@ export class AdminUsersForm {
 
 
   onSubmit() {
-    if (this.userForm.valid) {
-      console.log('Form Submitted!', this.userForm.value);
-      // Add your save logic here
-    }
+   console.log('Form submitted:', this.userForm.value);
   }
 
 }
