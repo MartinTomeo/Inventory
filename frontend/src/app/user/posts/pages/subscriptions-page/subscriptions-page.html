@@ -1,7 +1,7 @@
 <section class="mb-4 flex items-center justify-between gap-4 sticky top-0 z-10 bg-base-100 px-4 py-2">
-  <search-input placeholder="Search subscriptions" (value)="postsService.query.set($event.toString())" />
+  <search-input placeholder="Search subscriptions" (value)="postsService.subsQuery.set($event.toString())" />
   <new-delete-buttons />
 </section>
 <section class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-  <subscriptions-list-forms [subscriptionsResource]="postsService.subsResource" />
+  <subscriptions-list-forms />
 </section>

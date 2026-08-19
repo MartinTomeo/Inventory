@@ -53,31 +53,16 @@ if (function_exists($nameFoo)) {
 // ----------------- FUNCIONES DE SOPORTE ------------------
 
 
-function outputJson($data, $code = 200)
+function outputJson($data = null, int $code = 200): never
 {
-    header('', true, $code);
-    header('Content-type: application/json');
-    print json_encode($data);
+
+    http_response_code($code);
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    exit;
 }
 
-function outputError($code = 500)
-{
-    switch ($code) {
-        case 400:
-            header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad request", true, 400);
-            die;
-        case 401:
-            header($_SERVER["SERVER_PROTOCOL"] . " 401 Unauthorized", true, 401);
-            die;
-        case 404:
-            header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found", true, 404);
-            die;
-        default:
-            header($_SERVER["SERVER_PROTOCOL"] . " 500 Internal Server Error", true, 500);
-            die;
-            break;
-    }
-}
+
 
 // ----------------- Establecer Base de datos ------------------
 
@@ -88,20 +73,21 @@ function initDB() {
 function postReset() {
 
     $db = initDB();
-    
     $sqlFile = __DIR__ . '/dump.sql';
+    
     if (!file_exists($sqlFile)) {
-        outputError(500);
+        outputJson(['error' => "dump.sql not found!"], 500);
     }
 
     $sql = file_get_contents($sqlFile);
+
     if ($sql === false) {
-        outputError(500);
+        outputJson(['error' => "failed to read file!"], 500);
     }
 
     if (!$db->exec($sql)) {
         error_log($db->lastErrorMsg());
-        outputError(500);
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR','message' => 'Internal server error']], 500);
     }
 
     
@@ -121,14 +107,16 @@ function authenticate($email, $password)
     $stmt = $db->prepare($sql);
     
     if (!$stmt) {
-        outputError(500, "Error preparando la consulta: " . $db->lastErrorMsg());
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
     
     $stmt->bindValue(':email', $email, SQLITE3_TEXT);
     $result = $stmt->execute();
     
     if (!$result) {
-        outputError(500, "Falló la consulta: " . $db->lastErrorMsg());
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
     
     $ret = false;
@@ -149,14 +137,18 @@ function authenticate($email, $password)
 function requireLogin()
 {
     try {
+
         $headers = getallheaders();
         if (!isset($headers['Authorization'])) {
             throw new Exception("Token requerido", 1);
         }
         list($jwt) = sscanf($headers['Authorization'], 'Bearer %s');
         $decoded = JWT::decode($jwt, JWT_KEY, [JWT_ALG]);
+
     } catch(Exception $e) {
-        outputError(401);
+
+        outputJson(['success' => false, 'error' => ['code' => 'UNAUTHORIZED', 'message' => 'Authentication required']], 401);
+
     }
     return $decoded;
 }
@@ -168,7 +160,7 @@ function postLogin()
     $logged = authenticate($loginData['email'], $loginData['password']);
 
     if ($logged===false) {
-        outputError(401);
+        outputJson(['success' => false, 'error' => ['code' => 'UNAUTHORIZED', 'message' => 'Authentication required']], 401);
     }
     $payload = [
         'uid'       => $logged['id'],
@@ -176,7 +168,8 @@ function postLogin()
         'exp'       => time() + JWT_EXP,
     ];
     $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
-    outputJson(['jwt'=>$jwt]);
+    outputJson(['success' => true,'data' => ['jwt' => $jwt]], 201);
+
 }
 
 
@@ -186,7 +179,7 @@ function patchLogin()
     $payload = requireLogin();
     $payload->exp = time() + JWT_EXP;
     $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
-    outputJson(['jwt'=>$jwt]);
+    outputJson(['success' => true,'data' => ['jwt' => $jwt]], 200);
 }
 
 
@@ -195,27 +188,34 @@ function patchLogin()
 
 function getLogs() {
 
-    //requireLogin();
+    requireLogin();
 
     $db = initDB();
     $result = $db->query('SELECT * FROM logs');
+
+    if(!result){
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
     $ret = [];
     while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
         settype($fila['id'], 'integer');
         $ret[] = $fila;
     }
-    outputJson($ret);
+    outputJson(['success' => true,'data' => $ret]);
 }
 
 function getLogsByName($name){
 
-    //requireLogin(); 
+    requireLogin(); 
     $bd=initDB();
     $sql = "SELECT * FROM logs WHERE username LIKE :name";
     $stmt = $bd->prepare($sql);
 
     if (!$stmt) {
-        outputError(500, "Error preparando la consulta: " . $bd->lastErrorMsg());
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
 
     $stmt->bindValue(':name', "%$name%", SQLITE3_TEXT);
@@ -223,7 +223,8 @@ function getLogsByName($name){
     $result = $stmt->execute();
 
     if (!$result) {
-        outputError(500, "Falló la consulta: " . $bd->lastErrorMsg());
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
 
     $users = [];
@@ -235,24 +236,13 @@ function getLogsByName($name){
     }
 
     if (!$users) {
-        outputError(404);
+        outputJson(['success' => false, 'error' => ['code' => 'NOT_FOUND', 'message' => 'User not found']], 404);
     }
 
 
-    outputJson($users);
+    outputJson(['success' => true,'data' => $users]);
 
 }
-
-function postLog($username, $action) {
-    
-    $stmt->prepare("INSERT INTO logs (username, action, method, ip) VALUES (:username, :action, :method, :ip)");
-    $stmt->bindValue(':username', $username, SQLITE3_TEXT);
-    $stmt->bindValue(':action', $action, SQLITE3_TEXT);
-    $stmt->bindValue(':method', $_SERVER['REQUEST_METHOD'], SQLITE3_TEXT);
-    $stmt->bindValue(':ip', $_SERVER['REMOTE_ADDR'], SQLITE3_TEXT);
-    $stmt->execute();
-}
-
 
 
 // ----------------- Api ------------------
@@ -263,13 +253,255 @@ function getUsers() {
 
 	$bd = initDB();
 	$result = $bd->query('SELECT * FROM users');
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
+
 	$ret = [];
 	while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
 		settype($fila['id'], 'integer');
 		$ret[] = $fila;
 	}
-	outputJson($ret);
+	outputJson(['success' => true,'data' => $ret]);
 }
+
+
+function getUsersById($id)
+{
+    //requireLogin(); 
+    $bd=initDB();
+    $sql = "SELECT * FROM users WHERE id =:id";
+    $stmt = $bd->prepare($sql);
+
+    if (!$stmt) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    
+    $result = $stmt->execute();
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
+    $user = $result->fetchArray(SQLITE3_ASSOC);
+
+    if (!$user) {
+        outputJson(['success' => false, 'error' => ['code' => 'NOT_FOUND', 'message' => 'User not found']], 404);
+    }
+
+
+    outputJson(['success' => true,'data' => $user]);
+}
+
+
+function getUsersByName($name)
+{
+    //requireLogin(); 
+    $bd=initDB();
+    $stmt = $bd->prepare("SELECT * FROM users WHERE username LIKE :name");
+
+    if (!$stmt) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
+    $stmt->bindValue(':name', "%$name%", SQLITE3_TEXT);
+    
+    $result = $stmt->execute();
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
+    $ret = [];
+
+    
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        settype($row['id'], 'integer');
+        $ret[] = $row;
+    }
+
+    if (!$ret) {
+        outputError(404);
+    }
+
+
+    outputJson(['success' => true,'data' => $ret]);
+}
+
+function postUsers() {
+    //requireLogin();
+
+    $bd = initDB();
+
+    $username = $_POST['username'] ?? null;
+    $email = $_POST['email'] ?? null;
+    $password = $_POST['password'] ?? null;
+    $role = isset($_POST['role']) ? (int) $_POST['role'] : null;
+
+    if (!$username || !$email || !$password || !$role) {
+        outputJson(['success' => false, 'error' => ['code' => 'UNPROCESSABLE_ENTITY', 'message' => 'Missing required values']], 400);
+    }
+
+    /** Validación de la imagen*/
+
+    $userImage = null;
+
+    if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE){
+        if ($_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
+            outputJson(['success' => false,'error' => ['code' => 'FILE_UPLOAD_ERROR','message' => 'The photo could not be uploaded']], 400);
+        }
+
+        $tmpName = $_FILES['photo']['tmp_name'];
+
+        $mimeType = mime_content_type($tmpName);
+
+        $allowedTypes = [
+            'image/jpeg',
+            'image/png',
+            'image/webp'
+        ];
+
+        if (!in_array($mimeType, $allowedTypes, true)){
+
+            outputJson(['success' => false,'error' => ['code' => 'INVALID_IMAGE_TYPE', 'message' => 'The uploaded file is not a supported image type']], 400);
+            
+        }
+
+        /** Generamos nosotros el nombre. */
+
+        $extension = match ($mimeType) {
+            'image/jpeg' => 'jpg',
+            'image/png'  => 'png',
+            'image/webp' => 'webp'
+        };
+
+        $fileName = uniqid('user_', true) . '.' . $extension;
+
+        $uploadDir = __DIR__ . '/uploads/users/';
+
+        if (!is_dir($uploadDir)){
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $destination = $uploadDir . $fileName;
+
+        if (!move_uploaded_file($tmpName, $destination)){
+            outputJson(['success' => false,'error' => ['code' => 'FILE_STORAGE_ERROR', 'message' => 'The photo could not be saved']], 500);
+        }
+
+        $userImage = $fileName;
+    }
+
+
+
+    $stmt = $bd->prepare("INSERT INTO users (username, email, password, role, user_image) VALUES (:username, :email, :password, :role, :user_image)");
+
+    $stmt->bindValue(':username', $username, SQLITE3_TEXT);
+    $stmt->bindValue(':email', $email, SQLITE3_TEXT);
+    $stmt->bindValue(':password', password_hash($password, PASSWORD_DEFAULT), SQLITE3_TEXT); //Pass con hash
+    $stmt->bindValue(':role', $role, SQLITE3_INTEGER);
+    $stmt->bindValue(':user_image', $userImage, SQLITE3_TEXT);
+
+    $result = $stmt->execute();
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not create user']], 500);
+    }
+
+    $id = $bd->lastInsertRowID();
+
+    outputJson(['success' => true,'data' => ['id' => $id]], 201);
+}
+
+function deleteUsers() {
+    
+    //requireLogin();
+
+    $bd = initDB();
+    $data = json_decode(file_get_contents('php://input'),true);
+    $idArray = $data['idArray'] ?? [];
+
+    if (!is_array($idArray) || empty($idArray)) {
+        outputJson(['success' => false,'error' => ['code' => 'INVALID_REQUEST','message' => 'Missing required values']], 400);
+    }
+
+    $idArray = array_map('intval', $idArray);
+ 
+    $ids = implode(',',array_fill(0, count($idArray), '?'));
+
+    try{
+        
+        $bd->exec('BEGIN TRANSACTION;');
+
+    //Busca nombre de archivo para eliminar imagen en sistema de archivos
+
+        $stmtSelect = $bd->prepare("SELECT id, user_image FROM users WHERE id IN ($ids)");
+        foreach ($idArray as $index => $id) {
+            $stmtSelect->bindValue($index + 1,$id,SQLITE3_INTEGER);
+        }
+        $resultSelect = $stmtSelect->execute();
+        
+        $retIds = [];
+        $retImgs = [];
+
+        while ($fila = $resultSelect->fetchArray(SQLITE3_ASSOC)) {
+            settype($fila['id'], 'integer');
+            $retIds[] = $fila['id'];
+            if (!empty($fila['user_image'])) {
+                $retImgs[] = $fila['user_image'];
+            }
+        }
+
+        if (count($retIds) !== count($idArray)) {
+            $idsFaltantes = array_diff($idArray, $retIds);
+            throw new Exception('Transaction aborted. The following user IDs do not exist: ' . implode(', ', $idsFaltantes));
+        }
+
+
+    //Delete filas
+        $stmtDelete = $bd->prepare("DELETE FROM users WHERE id IN ($ids)");
+        foreach ($retIds as $index => $id) {
+            $stmtDelete->bindValue($index + 1,$id,SQLITE3_INTEGER);
+        }
+        $resultDelete = $stmtDelete->execute();
+
+        if (!$resultDelete) {
+            throw new Exception('Could not delete users');
+        }
+
+        $bd->exec('COMMIT;');
+
+        // 5. Safely delete physical images from the filesystem AFTER a successful commit
+        foreach ($retImgs as $image) {
+            $filePath = __DIR__ . '/uploads/users/' . $image; // Update with your actual path
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        outputJson(['success' => true, 'deleted_count' => count($idArray)]);
+
+
+    }catch(exception $e){
+
+        $bd->exec('ROLLBACK;');
+        outputJson(['success' => false, 'error' => ['code' => 'UNPROCESSABLE_ENTITY', 'message' => e->getMessage()]], 422);
+
+    }
+
+
+}
+
 
 function getLines() {
 
@@ -277,12 +509,17 @@ function getLines() {
 
     $bd = initDB();
     $result = $bd->query('SELECT * FROM lines');
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
     $ret = [];
     while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
         settype($fila['id'], 'integer');
         $ret[] = $fila;
     }
-    outputJson($ret);
+    outputJson(['success' => true,'data' => $ret]);
 }
 
 function getStock() {
@@ -291,12 +528,16 @@ function getStock() {
 
     $bd = initDB();
     $result = $bd->query('SELECT * FROM stock');
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
     $ret = [];
     while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
         settype($fila['id'], 'integer');
         $ret[] = $fila;
     }
-    outputJson($ret);
+    outputJson(['success' => true,'data' => $ret]);
 }
 
 function getSubscriptions() {
@@ -307,82 +548,62 @@ function getSubscriptions() {
     $result = $bd->query('SELECT s.id, u.username, u.email, u.user_image, st.model, st.brand, st.imei, st.provider, st.phone_image, l.line, l.provider
         FROM subscriptions s 
         INNER JOIN users u ON s.user_id=u.id
-        INNER JOIN stock st ON s.imei=st.imei 
-        INNER JOIN lines l ON s.line=l.line');
+        INNER JOIN stock st ON s.stock_id=st.id');
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
     $ret = [];
     while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
         settype($fila['id'], 'integer');
         $ret[] = $fila;
     }
-    outputJson($ret);
+
+    outputJson(['success' => true,'data' => $ret]);
+
 }
 
-function getUsersById($id)
+function getSubscriptionsById($id)
 {
-    //requireLogin(); 
-    $bd=initDB();
-    $sql = "SELECT * FROM users WHERE id =:id";
-    $stmt = $bd->prepare($sql);
+    //requireLogin();
+
+    $db = initDB();
+
+    $sql = "
+        SELECT s.id, u.username, u.email, u.user_image, st.model, st.brand, st.imei, st.provider, st.phone_image
+        FROM subscriptions s
+        INNER JOIN users u ON s.user_id = u.id
+        INNER JOIN stock st ON s.stock_id = st.id
+        WHERE s.id = :id";
+
+    $stmt = $db->prepare($sql);
 
     if (!$stmt) {
-        outputError(500, "Error preparando la consulta: " . $bd->lastErrorMsg());
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
 
     $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
-    
+
     $result = $stmt->execute();
 
     if (!$result) {
-        outputError(500, "Falló la consulta: " . $bd->lastErrorMsg());
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
 
-    $user = $result->fetchArray(SQLITE3_ASSOC);
+    $ret = [];
 
-    if (!$user) {
-        outputError(404);
+    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
+        settype($fila['id'], 'integer');
+        $ret[] = $fila;
     }
 
-
-    outputJson($user);
-}
-
-
-function getUsersByName($name)
-{
-    //requireLogin(); 
-    $bd=initDB();
-    $sql = "SELECT * FROM users WHERE username LIKE :name";
-    $stmt = $bd->prepare($sql);
-
-    if (!$stmt) {
-        outputError(500, "Error preparando la consulta: " . $bd->lastErrorMsg());
-    }
-
-    $stmt->bindValue(':name', "%$name%", SQLITE3_TEXT);
+    outputJson(['success' => true,'data' => $ret]);
     
-    $result = $stmt->execute();
-
-    if (!$result) {
-        outputError(500, "Falló la consulta: " . $bd->lastErrorMsg());
-    }
-
-    $users = [];
-
-    
-    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($row['id'], 'integer');
-        $users[] = $row;
-    }
-
-    if (!$users) {
-        outputError(404);
-    }
-
-
-    outputJson($users);
 }
-
-
 
 
 ?>

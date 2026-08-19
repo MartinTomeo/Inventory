@@ -28,12 +28,12 @@ export class PostService {
     return this.http.get<Subscriptions[]>(`${environment.apiUrl}/subscriptions`);
   }
 
-  getSubscriptionsByUsername(username: string): Observable<Subscriptions[]> {
-    return this.http.get<Subscriptions[]>(`${environment.apiUrl}/subscriptions/${username}`);
+  getSubscriptionsById(id: number): Observable<Subscriptions[]> {
+    return this.http.get<Subscriptions[]>(`${environment.apiUrl}/subscriptions/${id}`);
   }
 
-  getSubscriptionsByLine(line: string): Observable<Subscriptions[]> {
-    return this.http.get<Subscriptions[]>(`${environment.apiUrl}/subscriptions/${line}`);
+  getSubscriptionsByUsername(username: string): Observable<Subscriptions[]> {
+    return this.http.get<Subscriptions[]>(`${environment.apiUrl}/subscriptions/${username}`);
   }
 
   subsResource = rxResource<Subscriptions[], { query: string }>({

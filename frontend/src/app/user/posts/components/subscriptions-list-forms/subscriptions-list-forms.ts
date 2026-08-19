@@ -1,7 +1,7 @@
-import { Component, inject, input, ResourceRef } from '@angular/core';
-import { Subscriptions } from '../../../interfaces/subscriptions.interface';
+import { Component, inject, computed, output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-
+import { PostService } from '../../services/post.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'subscriptions-list-forms',
@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class SubscriptionsListForms {
 
-  subscriptionsResource =input.required<ResourceRef<Subscriptions[]>>();
+  subscriptions =inject(PostService);
   private formBuilder = inject(FormBuilder);
 
   myForm: FormGroup = this.formBuilder.group({
@@ -26,6 +26,14 @@ export class SubscriptionsListForms {
     line_provider: ['']
   });
 
+
+  openSubscriptionDetails(subscriptionId: string) {
+    this.subscriptions.getSubscriptionsById(parseInt(subscriptionId)).subscribe((subscriptionDetails) => {
+      if (subscriptionDetails.length > 0) {
+        const subscription = subscriptionDetails[0];
+      }
+    });
+  }
 
 
 

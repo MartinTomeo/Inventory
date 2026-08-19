@@ -11,23 +11,44 @@
   </thead>
 
   <tbody>
+    @if(subscriptions.subsResource.error()) {
+      <tr>
+        <td colspan="6" class="text-center text-error">{{ subscriptions.subsResource.error() }}</td>
+      </tr>
+    }
+    @else if(subscriptions.subsResource.isLoading()) {
+      <tr>
+        <td colspan="6" class="text-center">
+          <span class="loading loading-spinner loading-md"></span>
+          Loading subscriptions...
+        </td>
+      </tr>
+    }
+    @else if (!subscriptions.subsResource.hasValue()){
+
+        <tr>
+          <td colspan="6" class="text-center">No subscriptions found.</td>
+        </tr>
+
+    }
+    @else{
+
+      @for (subscription of subscriptions.subsResource.value(); track subscription.id) {
     <tr
       class="hover cursor-pointer"
-      onclick="
-        document.getElementById('row1-details').open = !document.getElementById('row1-details').open
-      "
+      (click)="openSubscriptionDetails(subscription.id.toString())"
     >
-      <td>
-        <input type="checkbox" class="checkbox" onclick="event.stopPropagation()" />
-      </td>
-      <td>Cy Ganderton</td>
-      <td>cy.ganderton@example.com</td>
-      <td>+54 11 1234-5678</td>
-      <td>356789123456789</td>
-      <td>19/09/2025</td>
+      <td><input type="checkbox" class="checkbox" onclick="event.stopPropagation()" /></td>
+      <td>{{ subscription.username }}</td>
+      <td>{{ subscription.email }}</td>
+      <td>{{ subscription.line }}</td>
+      <td>{{ subscription.imei }}</td>
+      <td>{{ subscription.created_at }}</td>
     </tr>
+  }
+}
 
-    <!-- Details Row -->
+    @if(subscriptions.id()) {
     <tr>
       <td colspan="6" class="p-0">
         <details id="row1-details" class="collapse bg-base-100">
@@ -88,35 +109,35 @@
               <fieldset class="grid grid-cols-3 gap-4">
                 <div>
                   <label class="label">Username</label>
-                  <input class="input w-full editable-field" value="Cy Ganderton" readonly />
+                  <input class="input w-full editable-field" value="{{ subscription.username }}" readonly />
                 </div>
 
                 <div>
                   <label class="label">Email</label>
                   <input
                     class="input w-full editable-field"
-                    value="cy.ganderton@example.com"
+                    value="{{ subscription.email }}"
                     readonly
                   />
                 </div>
 
                 <div>
                   <label class="label">Line</label>
-                  <input class="input w-full editable-field" value="+54 11 1234-5678" readonly />
+                  <input class="input w-full editable-field" value="{{ subscription.line }}" readonly />
                 </div>
 
                 <div>
                   <label class="label">IMEI</label>
-                  <input class="input w-full editable-field" value="356789123456789" readonly />
+                  <input class="input w-full editable-field" value="{{ subscription.imei }}" readonly />
                 </div>
 
                 <div>
                   <label class="label">Model</label>
-                  <input class="input w-full editable-field" value="Galaxy S24" readonly />
+                  <input class="input w-full editable-field" value="{{ subscription.model }}" readonly />
                 </div>
                 <div>
                   <label class="label">Brand</label>
-                  <input class="input w-full editable-field" value="Samsung" readonly />
+                  <input class="input w-full editable-field" value="{{ subscription.brand }}" readonly />
                 </div>
                 <div>
                   <label class="label">
@@ -144,7 +165,7 @@
                 <div class="col-span-3 flex justify-between items-center border-t pt-4 mt-2">
                   <div>
                     <span class="font-semibold">Last Update:</span>
-                    <span class="badge badge-neutral ml-2"> 19/09/2025 14:35:22 </span>
+                    <span class="badge badge-neutral ml-2"> {{ subscription.created_at }} </span>
                   </div>
                   <div class="flex gap-2">
                     <button
@@ -162,5 +183,6 @@
         </details>
       </td>
     </tr>
+  }
   </tbody>
 </table>
