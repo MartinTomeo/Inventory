@@ -23,33 +23,47 @@ use \Firebase\JWT\JWT;
 require_once 'config_jwt.php';
 
 
-
 // ----------------- ROUTER ------------------
-
-
 $method = strtolower($_SERVER['REQUEST_METHOD']);
 $actionStr = $_GET['action'] ?? '';
-$action = explode('/', strtolower($actionStr));
+$action = explode('/', strtolower(trim($actionStr, '/')));
+
 $nameFoo = $method . ucfirst($action[0]);
 
-
 $params = array_slice($action, 1);
-if (count($params) > 0 && $method == 'get') {
-    // If the parameter is strictly numbers, use ById. Otherwise, use ByName.
+
+if ($method === 'post' && count($params) === 1 && $params[0] === 'photo') {
+
+    $nameFoo = $method . ucfirst($action[0]) . 'Photo';
+    $params = [];
+
+} elseif ($method === 'delete' && count($params) === 2 && is_numeric($params[0]) && $params[1] === 'photo') {
+    
+    $nameFoo = $method . ucfirst($action[0]) . 'Photo';
+    $params = [(int) $params[0]];
+
+} elseif (count($params) > 0 && ($method === 'get' || $method === 'patch')) {
+    
     if (is_numeric($params[0])) {
-        $nameFoo = $nameFoo . 'ById';
+
+        $nameFoo .= 'ById';
+
     } else {
-        $nameFoo = $nameFoo . 'ByName';
+
+        $nameFoo .= 'ByName';
+
     }
+
 }
 
 if (function_exists($nameFoo)) {
-    call_user_func_array ($nameFoo, $params);
+
+    call_user_func_array($nameFoo, $params);
+
 } else {
-    header(' ', true, 400);
+
+    outputJson(['success' => false, 'error' => ['code' => 'ENDPOINT_NOT_FOUND', 'message' => 'Endpoint not found']], 404);
 }
-
-
 // ----------------- FUNCIONES DE SOPORTE ------------------
 
 
@@ -60,6 +74,105 @@ function outputJson($data = null, int $code = 200): never
     header('Content-Type: application/json');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     exit;
+}
+
+
+function saveUploadedImage($file, $uploadDir)
+{
+
+    if (!isset($file) || $file['error'] === UPLOAD_ERR_NO_FILE) {
+        return ['success' => false, 'code' => 'PHOTO_REQUIRED', 'message' => 'A photo is required'];
+    }
+
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+
+        error_log('Image upload error: ' . $file['error']);
+        return ['success' => false, 'code' => 'FILE_UPLOAD_ERROR', 'message' => 'The photo could not be uploaded'];
+
+    }
+
+    $tmpName = $file['tmp_name'];
+
+    if (!is_uploaded_file($tmpName)) {
+
+        return ['success' => false, 'code' => 'INVALID_UPLOAD', 'message' => 'Invalid uploaded file'];
+
+    }
+
+
+    $maxFileSize = 5 * 1024 * 1024; // 5 MB
+
+    if ($file['size'] > $maxFileSize) {
+
+        return ['success' => false, 'code' => 'FILE_TOO_LARGE', 'message' => 'The photo exceeds the maximum allowed size'];
+
+    }
+
+
+    $mimeType = mime_content_type($tmpName);
+
+    $allowedTypes = [
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+        'image/webp' => 'webp'
+    ];
+
+    if (!isset($allowedTypes[$mimeType])) {
+
+        return ['success' => false, 'code' => 'INVALID_IMAGE_TYPE', 'message' => 'The uploaded file is not a supported image type'];
+
+    }
+
+
+    if (!is_dir($uploadDir)) {
+        if (!mkdir($uploadDir, 0755, true)) {
+
+            error_log('Could not create upload directory: ' . $uploadDir);
+            return ['success' => false, 'code' => 'FILE_STORAGE_ERROR', 'message' => 'Could not prepare image storage'];
+
+        }
+    }
+
+
+    $extension = $allowedTypes[$mimeType];
+    $fileName = bin2hex(random_bytes(16)) . '.' . $extension;
+    $destination = $uploadDir . $fileName;
+
+
+    if (!move_uploaded_file($tmpName, $destination)) {
+
+        error_log('Could not move uploaded image to: ' . $destination);
+        return ['success' => false, 'code' => 'FILE_STORAGE_ERROR', 'message' => 'The photo could not be saved'];
+    }
+
+    return ['success' => true, 'fileName' => $fileName, 'path' => $destination];
+}
+
+
+function deleteImageFile(?string $fileName, string $uploadDir): void
+{
+    if (!$fileName) {
+        return;
+    }
+
+    $filePath = $uploadDir . basename($fileName);
+
+    if (is_file($filePath)) {
+        if (!unlink($filePath)) {
+            error_log("Could not delete image: {$filePath}");
+        }
+    }
+}
+
+
+function getUsersUploadDir()
+{
+    return __DIR__ . '/uploads/users/';
+}
+
+function getStockUploadDir()
+{
+    return __DIR__ . '/uploads/stock/';
 }
 
 
@@ -249,10 +362,10 @@ function getLogsByName($name){
 
 function getUsers() {
 
-    //requireLogin();
+    requireLogin();
 
 	$bd = initDB();
-	$result = $bd->query('SELECT * FROM users');
+	$result = $bd->query('SELECT id, username, email, role, user_image, created_at FROM users');
 
     if (!$result) {
         error_log($db->lastErrorMsg());
@@ -271,9 +384,9 @@ function getUsers() {
 
 function getUsersById($id)
 {
-    //requireLogin(); 
+    requireLogin(); 
     $bd=initDB();
-    $sql = "SELECT * FROM users WHERE id =:id";
+    $sql = "SELECT id, username, email, role, user_image, created_at FROM users WHERE id =:id";
     $stmt = $bd->prepare($sql);
 
     if (!$stmt) {
@@ -303,9 +416,9 @@ function getUsersById($id)
 
 function getUsersByName($name)
 {
-    //requireLogin(); 
+    requireLogin(); 
     $bd=initDB();
-    $stmt = $bd->prepare("SELECT * FROM users WHERE username LIKE :name");
+    $stmt = $bd->prepare("SELECT id, username, email, role, user_image, created_at FROM users WHERE username LIKE :name");
 
     if (!$stmt) {
         error_log($db->lastErrorMsg());
@@ -337,212 +450,1351 @@ function getUsersByName($name)
     outputJson(['success' => true,'data' => $ret]);
 }
 
-function postUsers() {
-    //requireLogin();
+function postUsers()
+{
+    requireLogin();
 
-    $bd = initDB();
+    $db = initDB();
 
-    $username = $_POST['username'] ?? null;
-    $email = $_POST['email'] ?? null;
-    $password = $_POST['password'] ?? null;
-    $role = isset($_POST['role']) ? (int) $_POST['role'] : null;
+    // -----------------------------
+    // Request
+    // -----------------------------
 
-    if (!$username || !$email || !$password || !$role) {
-        outputJson(['success' => false, 'error' => ['code' => 'UNPROCESSABLE_ENTITY', 'message' => 'Missing required values']], 400);
+    $data = $_POST;
+
+    if (!is_array($data)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid request']], 400);
+
     }
 
-    /** Validación de la imagen*/
+    // -----------------------------
+    // Required fields
+    // -----------------------------
 
-    $userImage = null;
+    $requiredFields = ['username','email','password','role'];
 
-    if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE){
-        if ($_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
-            outputJson(['success' => false,'error' => ['code' => 'FILE_UPLOAD_ERROR','message' => 'The photo could not be uploaded']], 400);
+    foreach ($requiredFields as $field) {
+
+        if (!array_key_exists($field, $data) || $data[$field] === null || $data[$field] === '') {
+
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'MISSING_REQUIRED_FIELD', 'message' => "Missing required field: $field"]], 400);
+
+        }
+    }
+
+    // -----------------------------
+    // String validation
+    // -----------------------------
+
+    $stringFields = ['username', 'email', 'password'];
+
+    foreach ($stringFields as $field) {
+        if (!is_string($data[$field])) {
+
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_FIELD', 'message' => "Invalid value for field: $field"]], 400);
+
         }
 
-        $tmpName = $_FILES['photo']['tmp_name'];
+        $data[$field] = trim($data[$field]);
+        if ($data[$field] === '') {
 
-        $mimeType = mime_content_type($tmpName);
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_FIELD', 'message' => "Invalid value for field: $field"]], 400);
 
-        $allowedTypes = [
-            'image/jpeg',
-            'image/png',
-            'image/webp'
-        ];
+        }
+    }
 
-        if (!in_array($mimeType, $allowedTypes, true)){
 
-            outputJson(['success' => false,'error' => ['code' => 'INVALID_IMAGE_TYPE', 'message' => 'The uploaded file is not a supported image type']], 400);
+    if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email']], 400);
+
+    }
+
+    if (filter_var($data['role'], FILTER_VALIDATE_INT) === false) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_ROLE', 'message' => 'Invalid role']], 400);
+
+    }
+
+    $role = (int) $data['role'];
+    
+    $upload = null;
+
+    if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE) {
+        $upload = saveUploadedImage($_FILES['photo'], getUsersUploadDir());
+
+        if (!$upload['success']) {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => $upload['code'], 'message' => $upload['message']]], 400);
+        }
+    }
+
+    $userImage = $upload['fileName'] ?? null;
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+        if ($userImage !== null) {
+
+            deleteImageFile($userImage, getUsersUploadDir());
+        }
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    try {
+
+        $stmt = $db->prepare('INSERT INTO users (username, email, password, role, user_image) VALUES (:username, :email, :password, :role, :user_image)');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare user insert');
+        }
+
+        $stmt->bindValue(':username', $data['username'], SQLITE3_TEXT);
+
+        $stmt->bindValue(':email', $data['email'], SQLITE3_TEXT);
+        $stmt->bindValue(':password', password_hash($data['password'], PASSWORD_DEFAULT), SQLITE3_TEXT);
+        $stmt->bindValue(':role', $role, SQLITE3_INTEGER);
+        $stmt->bindValue(':user_image', $userImage, $userImage === null ? SQLITE3_NULL : SQLITE3_TEXT);
+
+        $result = $stmt->execute(); //@$stmt para que deje de tirar el error de php
+
+        if (!$result) {
+            throw new Exception('Could not create user: ' . $db->lastErrorMsg());
+        }
+
+        $id = $db->lastInsertRowID();
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit user creation');
+        }
+
+    } catch (Exception $e) {
+
+        $db->exec('ROLLBACK');
+
+        if ($userImage !== null) {
+
+            deleteImageFile($userImage, getUsersUploadDir());
+
+        }
+
+        error_log($e->getMessage());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not create user']], 500);
+
+    }
+
+    outputJson(['success' => true, 'data' => ['id' => (int) $id]], 201);
+
+}
+
+function deleteUsers()
+{
+    requireLogin();
+    $db = initDB();
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!is_array($data)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid JSON body']], 400);
+    }
+
+    $idArray = $data['idArray'] ?? [];
+
+    if (!is_array($idArray) || empty($idArray)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Missing required values']], 400);
+    }
+
+    foreach ($idArray as $id) {
+
+        if (!filter_var($id, FILTER_VALIDATE_INT) || (int) $id <= 0) {
+
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_USER_ID', 'message' => 'Invalid user ID']], 400);
+        }
+    }
+
+    $idArray = array_map('intval', $idArray);
+    $idArray = array_values(array_unique($idArray));
+    $ids = implode(',', array_fill(0, count($idArray), '?'));
+
+    
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    try {
+
+
+        $stmt = $db->prepare("SELECT id, user_image FROM users WHERE id IN ($ids)");
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare users verification query');
+        }
+
+        foreach ($idArray as $index => $id) {
+
+            $stmt->bindValue($index + 1, $id, SQLITE3_INTEGER);
+        }
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not retrieve users');
+        }
+
+        $retIds = [];
+        $retImgs = [];
+
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+
+            $retIds[] = (int) $row['id'];
+
+            if (!empty($row['user_image'])) {
+                $retImgs[] = $row['user_image'];
+            }
+        }
+
+        
+        if (count($retIds) !== count($idArray)) {
+
+            $missingIds = array_diff($idArray, $retIds);
+            throw new Exception('The following user IDs do not exist: ' . implode(', ', $missingIds));
+        }
+
+    
+        $stmt = $db->prepare("DELETE FROM users WHERE id IN ($ids)");
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare users deletion');
+        }
+
+        foreach ($idArray as $index => $id) {
+            $stmt->bindValue($index + 1, $id, SQLITE3_INTEGER);
+        }
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not delete users');
+        }
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit users deletion');
+        }
+
+    } catch (Exception $e) {
+
+        $db->exec('ROLLBACK');
+        error_log($e->getMessage());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not delete users']], 500);
+    }
+
+
+    if (!empty($retImgs)) {
+        foreach ($retImgs as $image) {
+            deleteImageFile($image, getUsersUploadDir());
+        }
+    }
+
+    outputJson(['success' => true, 'data' => ['deleted_count' => count($idArray), 'ids' => $idArray]], 200);
+}
+
+function deleteUsersPhoto($id)
+{
+    requireLogin();
+
+    $db = initDB();
+    if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_USER_ID', 'message' => 'Invalid user ID']], 400);
+    }
+    $stmt = $db->prepare('SELECT user_image FROM users WHERE id = :id');
+
+    if (!$stmt) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare user query']], 500);
+    }
+
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    $result = $stmt->execute();
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrieve user']], 500);
+    }
+
+    $user = $result->fetchArray(SQLITE3_ASSOC);
+
+    if (!$user) {
+        outputJson(['success' => false, 'error' => ['code' => 'USER_NOT_FOUND', 'message' => 'User not found']], 404);
+    }
+
+    $oldImage = $user['user_image'];
+
+    if (empty($oldImage)) {
+        outputJson(['success' => false, 'error' => ['code' => 'PHOTO_NOT_FOUND', 'message' => 'User does not have a photo']], 404);
+    }
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    try {
+
+        $stmt = $db->prepare('UPDATE users SET user_image = NULL WHERE id = :id');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare user image update');
+        }
+
+        $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not remove user image');
+        }
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit user image deletion');
+        }
+
+    } catch (Exception $e) {
+
+        $db->exec('ROLLBACK');
+        error_log($e->getMessage());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not delete user photo']], 500);
+    }
+
+    
+    deleteImageFile($oldImage, getUsersUploadDir());
+    outputJson(['success' => true, 'data' => ['id' => (int) $id, 'deleted' => ['user_image']]], 200);
+}
+
+
+function patchUsersById($id)
+{
+    requireLogin();
+    $db = initDB();
+
+    //Input checks
+    if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_USER_ID', 'message' => 'Invalid user ID']], 400);
+
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!is_array($data)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid JSON body']], 400);
+
+    }
+
+    if (empty($data)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'NO_FIELDS_TO_UPDATE', 'message' => 'No fields were provided for update']], 400);
+
+    }
+
+    //Columns checks
+
+    $allowedFields = ['username', 'email', 'password', 'role'];
+
+    foreach ($data as $field => $value) {
+
+        if (!in_array($field, $allowedFields, true)) {
+
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_FIELD', 'message' => "Field '$field' cannot be modified"]], 400);
+
+        }
+    }
+
+    //Values checks
+
+    if (array_key_exists('username', $data)) {
+
+        if (!is_string($data['username']) || trim($data['username']) === '')
+        {
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_USERNAME', 'message' => 'Invalid username']], 400);
+        }
+
+        $data['username'] = trim($data['username']);
+    }
+
+
+    if (array_key_exists('email', $data)) {
+
+        if (!is_string($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL))
+        {
+
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email address']], 400);
+
+        }
+
+        $data['email'] = trim($data['email']);
+
+    }
+
+    if (array_key_exists('password', $data))
+    {
+
+        if (!is_string($data['password']) ||strlen($data['password']) < 8)
+        {
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_PASSWORD', 'message' => 'Password must contain at least 8 characters']], 400);
+        }
+    }
+
+    if (array_key_exists('role', $data)) {
+        if (!is_int($data['role']) || !in_array($data['role'], [1, 2, 3], true)) {
+
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_ROLE', 'message' => 'Invalid user role']], 400);
+
+        }
+    }
+
+    //DB check. If true transacction beigins
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+
+    }
+
+    //Query Begins
+
+    try {
+
+        $stmt = $db->prepare('SELECT username, email, password, role FROM users WHERE id = :id');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare verification query');
+        }
+
+        $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not retrieve user');
+        }
+
+        $currentUser = $result->fetchArray(SQLITE3_ASSOC);
+
+        if (!$currentUser) {
+
+            $db->exec('ROLLBACK');
+            outputJson(['success' => false, 'error' => ['code' => 'USER_NOT_FOUND', 'message' => 'User not found']], 404);
+
+        }
+
+
+        $updates = [];
+        $params = [];
+        $updatedFields = [];
+
+        //Columns and values to update verification
+
+        foreach ($allowedFields as $field) {
+
+            if (!array_key_exists($field, $data)) {
+                continue;
+            }
+
+            $newValue = $data[$field]; //The value recibed from petition at the corresponding key->value pair
+            $currentValue = $currentUser[$field]; //The value recibed from query from correponding column
+
+            if ($field === 'password') {
+                if (!password_verify($newValue, $currentValue)) {
+
+                    $updates[] = 'password = :password';
+                    $params['password'] = password_hash($newValue, PASSWORD_DEFAULT);
+                    $updatedFields[] = 'password';
+
+                }
+
+                continue;
+            }
+
+            if ($field === 'role') {
+
+                $newValue = (int) $newValue;
+                $currentValue = (int) $currentValue;
+
+            }
+
             
+            if ($newValue !== $currentValue) {
+
+                $updates[] = "$field = :$field";
+                $params[$field] = $newValue;
+                $updatedFields[] = $field;
+
+            }
         }
 
-        /** Generamos nosotros el nombre. */
 
-        $extension = match ($mimeType) {
-            'image/jpeg' => 'jpg',
-            'image/png'  => 'png',
-            'image/webp' => 'webp'
-        };
+        if (empty($updatedFields)) {
 
-        $fileName = uniqid('user_', true) . '.' . $extension;
+            $db->exec('COMMIT');
+            outputJson(['success' => true, 'data' => ['id' => (int) $id,'updated' => []]], 200);
 
-        $uploadDir = __DIR__ . '/uploads/users/';
-
-        if (!is_dir($uploadDir)){
-            mkdir($uploadDir, 0755, true);
         }
 
-        $destination = $uploadDir . $fileName;
+        
+        $sql = 'UPDATE users SET '. implode(', ', $updates). ' WHERE id = :id';
 
-        if (!move_uploaded_file($tmpName, $destination)){
-            outputJson(['success' => false,'error' => ['code' => 'FILE_STORAGE_ERROR', 'message' => 'The photo could not be saved']], 500);
+        $stmt = $db->prepare($sql);
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare user update');
         }
 
-        $userImage = $fileName;
+        foreach ($params as $field => $value) {
+
+            if ($field === 'role') {
+
+                $stmt->bindValue(":$field", $value, SQLITE3_INTEGER);
+
+            } else {
+
+                $stmt->bindValue(":$field", $value, SQLITE3_TEXT);
+            }
+
+        }
+
+        $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not update user');
+        }
+
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit transaction');
+        }
+
+        
+        outputJson(['success' => true, 'data' => ['id' => (int) $id, 'updated' => $updatedFields]], 200);
+
+    } catch (Exception $e) {
+
+        $db->exec('ROLLBACK');
+        error_log($e->getMessage());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not update user']], 500);
+    }
+}
+
+
+function postUsersPhoto()
+{   
+
+
+    requireLogin();
+
+    $db = initDB();
+    $id = $_POST['id'] ?? null;
+
+    if ($id===null || filter_var($id, FILTER_VALIDATE_INT)===false || (int) $id <= 0) {
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_USER_ID', 'message' => 'Invalid user ID']], 400);
     }
 
+    $stmt = $db->prepare('SELECT user_image FROM users WHERE id = :id');
 
+    if (!$stmt) {
+        error_log($db->lastErrorMsg());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare user image query']], 500);
+    }
 
-    $stmt = $bd->prepare("INSERT INTO users (username, email, password, role, user_image) VALUES (:username, :email, :password, :role, :user_image)");
-
-    $stmt->bindValue(':username', $username, SQLITE3_TEXT);
-    $stmt->bindValue(':email', $email, SQLITE3_TEXT);
-    $stmt->bindValue(':password', password_hash($password, PASSWORD_DEFAULT), SQLITE3_TEXT); //Pass con hash
-    $stmt->bindValue(':role', $role, SQLITE3_INTEGER);
-    $stmt->bindValue(':user_image', $userImage, SQLITE3_TEXT);
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
 
     $result = $stmt->execute();
 
     if (!$result) {
         error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not create user']], 500);
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrieve user']], 500);
     }
 
-    $id = $bd->lastInsertRowID();
+    $user = $result->fetchArray(SQLITE3_ASSOC);
 
-    outputJson(['success' => true,'data' => ['id' => $id]], 201);
-}
+    if (!$user) {
+        outputJson(['success' => false,'error' => ['code' => 'USER_NOT_FOUND', 'message' => 'User not found']], 404);
+    }
 
-function deleteUsers() {
+    $oldImage = $user['user_image'];
+
     
-    //requireLogin();
+    $upload = saveUploadedImage($_FILES['photo'] ?? null, getUsersUploadDir());
+    
+    
 
-    $bd = initDB();
-    $data = json_decode(file_get_contents('php://input'),true);
-    $idArray = $data['idArray'] ?? [];
-
-    if (!is_array($idArray) || empty($idArray)) {
-        outputJson(['success' => false,'error' => ['code' => 'INVALID_REQUEST','message' => 'Missing required values']], 400);
+    if (!$upload['success']) {
+        outputJson(['success' => false, 'error' => ['code' => $upload['code'], 'message' => $upload['message']]], 400);
     }
 
-    $idArray = array_map('intval', $idArray);
- 
-    $ids = implode(',',array_fill(0, count($idArray), '?'));
+    $newFileName = $upload['fileName'];
 
-    try{
-        
-        $bd->exec('BEGIN TRANSACTION;');
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
 
-    //Busca nombre de archivo para eliminar imagen en sistema de archivos
-
-        $stmtSelect = $bd->prepare("SELECT id, user_image FROM users WHERE id IN ($ids)");
-        foreach ($idArray as $index => $id) {
-            $stmtSelect->bindValue($index + 1,$id,SQLITE3_INTEGER);
-        }
-        $resultSelect = $stmtSelect->execute();
-        
-        $retIds = [];
-        $retImgs = [];
-
-        while ($fila = $resultSelect->fetchArray(SQLITE3_ASSOC)) {
-            settype($fila['id'], 'integer');
-            $retIds[] = $fila['id'];
-            if (!empty($fila['user_image'])) {
-                $retImgs[] = $fila['user_image'];
-            }
-        }
-
-        if (count($retIds) !== count($idArray)) {
-            $idsFaltantes = array_diff($idArray, $retIds);
-            throw new Exception('Transaction aborted. The following user IDs do not exist: ' . implode(', ', $idsFaltantes));
-        }
-
-
-    //Delete filas
-        $stmtDelete = $bd->prepare("DELETE FROM users WHERE id IN ($ids)");
-        foreach ($retIds as $index => $id) {
-            $stmtDelete->bindValue($index + 1,$id,SQLITE3_INTEGER);
-        }
-        $resultDelete = $stmtDelete->execute();
-
-        if (!$resultDelete) {
-            throw new Exception('Could not delete users');
-        }
-
-        $bd->exec('COMMIT;');
-
-        // 5. Safely delete physical images from the filesystem AFTER a successful commit
-        foreach ($retImgs as $image) {
-            $filePath = __DIR__ . '/uploads/users/' . $image; // Update with your actual path
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
-        }
-
-        outputJson(['success' => true, 'deleted_count' => count($idArray)]);
-
-
-    }catch(exception $e){
-
-        $bd->exec('ROLLBACK;');
-        outputJson(['success' => false, 'error' => ['code' => 'UNPROCESSABLE_ENTITY', 'message' => e->getMessage()]], 422);
-
-    }
-
-
-}
-
-
-function getLines() {
-
-    //requireLogin();
-
-    $bd = initDB();
-    $result = $bd->query('SELECT * FROM lines');
-    if (!$result) {
+        deleteImageFile($newFileName, getUsersUploadDir());
         error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
     }
 
-    $ret = [];
-    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($fila['id'], 'integer');
-        $ret[] = $fila;
+    try {
+
+        $stmt = $db->prepare('UPDATE users SET user_image = :user_image WHERE id = :id');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare user image update');
+        }
+
+        $stmt->bindValue(':user_image', $newFileName, SQLITE3_TEXT);
+        $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not update user image');
+        }
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit user image update');
+        }
+
+    } catch (Exception $e) {
+
+        $db->exec('ROLLBACK');
+        deleteImageFile($newFileName, getUsersUploadDir());
+        error_log($e->getMessage());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not update user photo']], 500);
     }
-    outputJson(['success' => true,'data' => $ret]);
+
+    if (!empty($oldImage)) {
+        deleteImageFile($oldImage, getUsersUploadDir());
+    }
+
+    outputJson(['success' => true, 'data' => ['id' => (int) $id, 'updated' => ['user_image'], 'image' => $newFileName]], 200);
+
 }
 
 function getStock() {
 
-    //requireLogin();
+    requireLogin();
 
     $bd = initDB();
     $result = $bd->query('SELECT * FROM stock');
     if (!$result) {
         error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrive stock']], 500);
     }
     $ret = [];
-    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($fila['id'], 'integer');
-        $ret[] = $fila;
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        settype($row['id'], 'integer');
+        $ret[] = $row;
     }
     outputJson(['success' => true,'data' => $ret]);
 }
 
+
+function getStockById($id)
+{
+    $db = initDB();
+
+    if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_STOCK_ID', 'message' => 'Invalid stock ID']], 400);
+
+    }
+
+    $stmt = $db->prepare('SELECT id, imei, model, brand, ph_provider, phone_image, line, line_provider FROM stock WHERE id = :id');
+
+    if (!$stmt) {
+
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare stock query']], 500);
+
+    }
+
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+
+    $result = $stmt->execute();
+
+    if (!$result) {
+
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrieve stock']], 500);
+
+    }
+
+    $ret = $result->fetchArray(SQLITE3_ASSOC);
+
+    if (!$ret) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'STOCK_NOT_FOUND', 'message' => 'Stock item not found']], 404);
+
+    }
+
+    outputJson(['success' => true, 'data' => $ret], 200);
+}
+
+function postStock()
+{
+    requireLogin();
+
+    $db = initDB();
+
+    // -----------------------------
+    // Request
+    // -----------------------------
+
+    $data = $_POST;
+
+    if (!is_array($data)) {
+
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid request']], 400);
+
+    }
+
+    // -----------------------------
+    // Required fields
+    // -----------------------------
+
+    $requiredFields = ['imei', 'model', 'brand', 'ph_provider', 'line', 'line_provider'];
+
+    foreach ($requiredFields as $field) {
+
+        if (!array_key_exists($field, $data) || $data[$field] === null || $data[$field] === '') {
+
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'MISSING_REQUIRED_FIELD', 'message' => "Missing required field: $field"]], 400);
+
+        }
+    }
+
+    // -----------------------------
+    // String validation
+    // -----------------------------
+
+    $stringFields = ['imei', 'model', 'brand', 'ph_provider', 'line_provider'];
+
+    foreach ($stringFields as $field) {
+
+        if (!is_string($data[$field])) {
+
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_FIELD', 'message' => "Invalid value for field: $field"]], 400);
+
+        }
+
+        $data[$field] = trim($data[$field]);
+
+        if ($data[$field] === '') {
+
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_FIELD', 'message' => "Invalid value for field: $field"]], 400);
+
+        }
+    }
+
+    if (filter_var($data['line'], FILTER_VALIDATE_INT) === false) {
+
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_LINE', 'message' => 'Invalid line']], 400);
+
+    }
+
+    $line = (int) $data['line'];
+
+  
+    $upload = null;
+    
+
+    if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE)
+    {
+
+        $upload = saveUploadedImage($_FILES['photo'], getStockUploadDir());
+
+        if (!$upload['success']) {
+            outputJson(['success' => false, 'error' => ['code' => $upload['code'], 'message' => $upload['message']]], 400);
+        }
+    }
+
+    $phoneImage = $upload['fileName'] ?? null;
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+
+        if ($phoneImage !== null) {
+            deleteImageFile($phoneImage, getStockUploadDir());
+
+        }
+
+        error_log($db->lastErrorMsg());
+
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+
+    }
+
+    try {
+
+        $stmt = $db->prepare('INSERT INTO stock (imei, model, brand, ph_provider, phone_image, line, line_provider) VALUES (:imei, :model, :brand, :ph_provider, :phone_image, :line, :line_provider)');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare stock insert');
+        }
+
+        $stmt->bindValue(':imei', $data['imei'], SQLITE3_TEXT);
+        $stmt->bindValue(':model', $data['model'], SQLITE3_TEXT);
+        $stmt->bindValue(':brand', $data['brand'], SQLITE3_TEXT);
+        $stmt->bindValue(':ph_provider', $data['ph_provider'], SQLITE3_TEXT);
+        $stmt->bindValue(':phone_image', $phoneImage, $phoneImage === null ? SQLITE3_NULL : SQLITE3_TEXT);
+        $stmt->bindValue(':line', $line, SQLITE3_INTEGER);
+        $stmt->bindValue(':line_provider', $data['line_provider'], SQLITE3_TEXT);
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not create stock item: ' . $db->lastErrorMsg());
+        }
+
+        $id = $db->lastInsertRowID();
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit stock creation');
+        }
+
+    } catch (Exception $e) {
+
+        $db->exec('ROLLBACK');
+        if ($phoneImage !== null) {
+
+            deleteImageFile($phoneImage,getStockUploadDir());
+        }
+
+        error_log($e->getMessage());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not create stock item']], 500);
+
+    }
+
+    outputJson(['success' => true, 'data' => ['id' => (int) $id]], 201);
+}
+
+
+function patchStockById($id)
+{
+    $db = initDB();
+
+    // -----------------------------
+    // 1. Validar ID
+    // -----------------------------
+
+    if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_STOCK_ID', 'message' => 'Invalid stock ID']], 400);
+
+    }
+
+    // -----------------------------
+    // 2. JSON
+    // -----------------------------
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!is_array($data)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid JSON body']], 400);
+    }
+
+    $allowedFields = [
+        'imei',
+        'model',
+        'brand',
+        'ph_provider',
+        'line',
+        'line_provider'
+    ];
+
+
+    foreach ($data as $field => $value) {
+
+        if (!in_array($field, $allowedFields, true)) {
+
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_FIELD', 'message' => "Field '$field' cannot be modified"]], 400);
+        }
+    }
+
+    if (empty($data)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'NO_FIELDS_TO_UPDATE', 'message' => 'No fields were provided for update']], 400);
+
+    }
+
+
+    foreach (['imei','model', 'brand', 'ph_provider', 'line_provider'] as $field) {
+
+        if (array_key_exists($field, $data)) {
+
+            if (!is_string($data[$field])) {
+
+                outputJson(['success' => false, 'error' => ['code' => 'INVALID_FIELD', 'message' => "Invalid value for field: $field"]], 400);
+
+            }
+
+            $data[$field] = trim($data[$field]);
+
+            if ($data[$field] === '') {
+
+                outputJson(['success' => false, 'error' => ['code' => 'INVALID_FIELD', 'message' => "Invalid value for field: $field"]], 400);
+
+            }
+        }
+    }
+
+    if (array_key_exists('line', $data)) {
+        if (!is_int($data['line'])) {
+
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_LINE','message' => 'Invalid line']], 400);
+        }
+    }
+
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    try {
+
+        $stmt = $db->prepare('SELECT * FROM stock WHERE id = :id');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare stock verification query');
+        }
+
+        $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not retrieve stock item');
+        }
+
+        $currentStock = $result->fetchArray(SQLITE3_ASSOC);
+
+        if (!$currentStock) {
+
+            $db->exec('ROLLBACK');
+            outputJson(['success' => false, 'error' => ['code' => 'STOCK_NOT_FOUND', 'message' => 'Stock item not found']], 404);
+        }
+
+        $updates = [];
+        $params = [];
+        $updatedFields = [];
+
+        foreach ($allowedFields as $field) {
+
+            if (!array_key_exists($field, $data)) {
+                continue;
+            }
+
+            $newValue = $data[$field];
+            $currentValue = $currentStock[$field];
+
+            if ($field === 'line') {
+
+                $newValue = (int) $newValue;
+                $currentValue = (int) $currentValue;
+            }
+
+            if ($newValue !== $currentValue) {
+
+                $updates[] = "$field = :$field";
+                $params[$field] = $newValue;
+                $updatedFields[] = $field;
+
+            }
+        }
+
+        if (empty($updatedFields)) {
+
+            $db->exec('COMMIT');
+            outputJson(['success' => true, 'data' => ['id' => (int) $id, 'updated' => []]], 200);
+        }
+
+        $sql ='UPDATE stock SET ' . implode(', ', $updates) . ' WHERE id = :id';
+
+        $stmt = $db->prepare($sql);
+
+        if (!$stmt) {
+
+            throw new Exception('Could not prepare stock update');
+
+        }
+
+        foreach ($params as $field => $value) {
+
+            $type = $field === 'line'? SQLITE3_INTEGER : SQLITE3_TEXT;
+            $stmt->bindValue( ":$field", $value, $type);
+
+        }
+
+        $stmt->bindValue( ':id', $id, SQLITE3_INTEGER);
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+
+            throw new Exception('Could not update stock item');
+        }
+
+        if (!$db->exec('COMMIT')) {
+
+            throw new Exception('Could not commit stock update');
+
+        }
+
+    } catch (Exception $e) {
+
+        $db->exec('ROLLBACK');
+        error_log($e->getMessage());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not update stock item']], 500);
+
+    }
+
+    outputJson(['success' => true, 'data' => ['id' => (int) $id, 'updated' => $updatedFields]], 200);
+}
+
+
+function postStockPhoto()
+{
+    requireLogin();
+
+    $db = initDB();
+
+    $id = $_POST['id'] ?? null;
+
+    if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0 || $id ===null) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_STOCK_ID', 'message' => 'Invalid stock ID']], 400);
+    }
+
+    $stmt = $db->prepare('SELECT phone_image FROM stock WHERE id = :id');
+
+    if (!$stmt) {
+        error_log($db->lastErrorMsg());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare stock image query']], 500);
+    }
+
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+
+    $result = $stmt->execute();
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrieve stock item']], 500);
+    }
+
+    $stock = $result->fetchArray(SQLITE3_ASSOC);
+
+    if (!$stock) {
+        outputJson(['success' => false, 'error' => ['code' => 'STOCK_NOT_FOUND', 'message' => 'Stock item not found']], 404);
+    }
+
+    $oldImage = $stock['phone_image'];
+
+    $upload = saveUploadedImage($_FILES['photo'] ?? null, getStockUploadDir());
+
+    if (!$upload['success']) {
+        outputJson(['success' => false,'error' => ['code' => $upload['code'], 'message' => $upload['message']]], 400);
+    }
+
+    $newFileName = $upload['fileName'];
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+
+        deleteImageFile($newFileName, getStockUploadDir());
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    try {
+
+        $stmt = $db->prepare('UPDATE stock SET phone_image = :phone_image WHERE id = :id');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare stock image update');
+        }
+
+        $stmt->bindValue(':phone_image',$newFileName, SQLITE3_TEXT);
+        $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not update stock image');
+        }
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit stock image update');
+        }
+
+    } catch (Exception $e) {
+
+        $db->exec('ROLLBACK');
+        deleteImageFile($newFileName, getStockUploadDir());
+        error_log($e->getMessage());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not update stock photo']], 500);
+    }
+
+    
+    // Commit exitoso
+
+    if (!empty($oldImage)) {
+        deleteImageFile($oldImage, getStockUploadDir());
+    }
+
+    outputJson(['success' => true, 'data' => ['id' => (int) $id, 'updated' => ['phone_image'], 'image' => $newFileName]], 200);
+}
+
+
+function deleteStock()
+{
+    requireLogin();
+    $db = initDB();
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!is_array($data)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid JSON body']], 400);
+    }
+
+    $idArray = $data['idArray'] ?? [];
+
+    if (!is_array($idArray) || empty($idArray)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Missing required values']], 400);
+    }
+
+
+    foreach ($idArray as $id) {
+
+        if (!filter_var($id, FILTER_VALIDATE_INT) || (int) $id <= 0) {
+
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_STOCK_ID', 'message' => 'Invalid stock ID']], 400);
+        }
+
+    }
+
+    $idArray = array_map('intval', $idArray);
+
+    // Remove duplicated IDs
+    $idArray = array_values(array_unique($idArray));
+
+    $ids = implode(',', array_fill(0, count($idArray), '?'));
+
+    // -----------------------------
+    // Transaction
+    // -----------------------------
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+
+    }
+
+    try {
+
+        $stmt = $db->prepare("SELECT id, phone_image FROM stock WHERE id IN ($ids)");
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare stock verification query');
+        }
+
+        foreach ($idArray as $index => $id) {
+
+            $stmt->bindValue($index + 1, $id, SQLITE3_INTEGER);
+        }
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not retrieve stock items');
+        }
+
+        $retIds = [];
+        $retImgs = [];
+
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+
+            $retIds[] = (int) $row['id'];
+
+            if (!empty($row['phone_image'])) {
+                $retImgs[] = $row['phone_image'];
+            }
+        }
+
+
+        if (count($retIds) !== count($idArray)) {
+
+            $missingIds = array_diff($idArray, $retIds);
+            throw new Exception('The following stock IDs do not exist: ' . implode(', ', $missingIds));
+
+        }
+
+        
+        $stmt = $db->prepare("DELETE FROM stock WHERE id IN ($ids)");
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare stock deletion');
+        }
+
+        foreach ($idArray as $index => $id) {
+
+            $stmt->bindValue($index + 1, $id, SQLITE3_INTEGER);
+        }
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not delete stock items');
+        }
+
+        
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit stock deletion');
+        }
+
+    } catch (Exception $e) {
+
+        $db->exec('ROLLBACK');
+        error_log($e->getMessage());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not delete stock items']], 500);
+    }
+
+    
+    if (!empty($retImgs)) {
+        foreach ($retImgs as $image) {
+            deleteImageFile($image, getStockUploadDir());
+        }
+    }
+
+    outputJson(['success' => true, 'data' => ['deleted_count' => count($idArray), 'ids' => $idArray]], 200);
+
+}
+
+function deleteStockPhoto($id)
+{
+    $db = initDB();
+
+    if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_STOCK_ID', 'message' => 'Invalid stock ID']], 400);
+    }
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    try {
+
+        $stmt = $db->prepare('SELECT phone_image FROM stock WHERE id = :id');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare stock image query');
+
+        }
+
+        $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not retrieve stock image');
+        }
+
+        $stock = $result->fetchArray(SQLITE3_ASSOC);
+
+        if (!$stock) {
+
+            $db->exec('ROLLBACK');
+            outputJson(['success' => false, 'error' => ['code' => 'STOCK_NOT_FOUND', 'message' => 'Stock item not found']], 404);
+        }
+
+        if (empty($stock['phone_image'])) {
+
+            $db->exec('COMMIT');
+            outputJson(['success' => true, 'data' => ['id' => (int) $id, 'updated' => []]], 200);
+        }
+
+        $stmt = $db->prepare('UPDATE stock SET phone_image = NULL WHERE id = :id');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare stock image deletion');
+        }
+
+        $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+
+        if (!$stmt->execute()) {
+            throw new Exception('Could not remove stock image');
+        }
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit stock image deletion');
+        }
+
+    } catch (Exception $e) {
+
+        $db->exec('ROLLBACK');
+        error_log($e->getMessage());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not delete stock photo']], 500);
+    }
+
+
+    deleteImageFile(getStockUploadDir(), $stock['phone_image']);
+    outputJson(['success' => true, 'data' => ['id' => (int) $id, 'updated' => ['phone_image']]], 200);
+
+}
+
+
+
 function getSubscriptions() {
 
-    //requireLogin();
+    requireLogin();
 
     $bd = initDB();
     $result = $bd->query('SELECT s.id, u.username, u.email, u.user_image, st.model, st.brand, st.imei, st.provider, st.phone_image, l.line, l.provider
@@ -552,7 +1804,7 @@ function getSubscriptions() {
 
     if (!$result) {
         error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not get subscriptions']], 500);
     }
 
     $ret = [];
@@ -567,7 +1819,7 @@ function getSubscriptions() {
 
 function getSubscriptionsById($id)
 {
-    //requireLogin();
+    requireLogin();
 
     $db = initDB();
 
@@ -582,7 +1834,7 @@ function getSubscriptionsById($id)
 
     if (!$stmt) {
         error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare subscription get']], 500);
     }
 
     $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
@@ -591,7 +1843,7 @@ function getSubscriptionsById($id)
 
     if (!$result) {
         error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not get subscription']], 500);
     }
 
     $ret = [];
