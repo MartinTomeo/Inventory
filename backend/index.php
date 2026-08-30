@@ -270,6 +270,33 @@ function requireLogin()
 function postLogin()
 {
     $loginData = json_decode(file_get_contents("php://input"), true);
+
+    if (!is_array($loginData)) {
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid JSON body']], 400);
+    }
+
+
+    if (!isset($loginData['email']) || !isset($loginData['password'])) {
+        outputJson(['success' => false,'error' => ['code' => 'MISSING_CREDENTIALS', 'message' => 'Email and password are required']], 400);
+    }
+
+    if (!is_string($loginData['email']) || !is_string($loginData['password'])) {
+
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'Invalid credentials format']], 400);
+    }
+
+    $email = trim($loginData['email']);
+    $password = $loginData['password'];
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email']], 400);
+
+    }
+
+
     $logged = authenticate($loginData['email'], $loginData['password']);
 
     if ($logged===false) {
@@ -1785,7 +1812,7 @@ function deleteStockPhoto($id)
     }
 
 
-    deleteImageFile(getStockUploadDir(), $stock['phone_image']);
+    deleteImageFile($stock['phone_image'], getStockUploadDir());
     outputJson(['success' => true, 'data' => ['id' => (int) $id, 'updated' => ['phone_image']]], 200);
 
 }

@@ -10,6 +10,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class SubscriptionsListForms {
 
+  /*
   subscriptions =inject(PostService);
   private formBuilder = inject(FormBuilder);
 
@@ -36,5 +37,5 @@ export class SubscriptionsListForms {
   }
 
 
-
+*/
 }
