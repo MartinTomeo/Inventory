@@ -1,0 +1,145 @@
+<div class="card h-full overflow-hidden border border-base-200 bg-base-100 shadow-xl">
+  <div class="card-body p-4">
+    <form [formGroup]="stockForm" (ngSubmit)="onSubmit()" class="space-y-1">
+      <div class="form-control">
+        <div class="flex flex-col items-center gap-3">
+          <div class="avatar">
+            <div class="h-16 w-16 overflow-hidden rounded-lg ring ring-primary ring-offset-2 ring-offset-base-100">
+              @if (imageUrl(); as image) {
+                <img
+                  [src]="image"
+                  alt="Stock photo"
+                  class="h-full w-full object-cover"
+                />
+              } @else {
+                <div class="flex h-full w-full items-center justify-center bg-base-200 text-center text-xs">
+                  No image
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="flex flex-col items-center gap-2">
+            <input
+              #photoInput
+              type="file"
+              class="hidden"
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onPhotoSelected($event)"
+            />
+
+            <button
+              type="button"
+              class="btn btn-outline btn-xs"
+              (click)="photoInput.click()"
+            >
+              Upload Image
+            </button>
+
+            @if (selectedPhoto()) {
+              <span class="max-w-64 truncate text-sm text-base-content/70">
+                {{ selectedPhoto()!.name }}
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label py-0.5"><span class="label-text text-sm">IMEI</span></label>
+        <input
+          type="text"
+          inputmode="numeric"
+          class="input input-bordered input-sm w-full"
+          formControlName="imei"
+        />
+        @if (submittedControlErrors()['imei']; as error) {
+          <span class="text-error text-xs">{{ error }}</span>
+        }
+      </div>
+
+      <div class="form-control">
+        <label class="label py-0.5"><span class="label-text text-sm">Model</span></label>
+        <input
+          type="text"
+          class="input input-bordered input-sm w-full"
+          formControlName="model"
+        />
+        @if (submittedControlErrors()['model']; as error) {
+          <span class="text-error text-xs">{{ error }}</span>
+        }
+      </div>
+
+      <div class="form-control">
+        <label class="label py-0.5"><span class="label-text text-sm">Brand</span></label>
+        <input
+          type="text"
+          class="input input-bordered input-sm w-full"
+          formControlName="brand"
+        />
+        @if (submittedControlErrors()['brand']; as error) {
+          <span class="text-error text-xs">{{ error }}</span>
+        }
+      </div>
+
+      <div class="form-control">
+        <label class="label py-0.5"><span class="label-text text-sm">Phone Provider</span></label>
+        <input
+          type="text"
+          class="input input-bordered input-sm w-full"
+          formControlName="ph_provider"
+        />
+        @if (submittedControlErrors()['ph_provider']; as error) {
+          <span class="text-error text-xs">{{ error }}</span>
+        }
+      </div>
+
+      <div class="form-control">
+        <label class="label py-0.5"><span class="label-text text-sm">Line</span></label>
+        <input
+          type="text"
+          inputmode="numeric"
+          class="input input-bordered input-sm w-full"
+          formControlName="line"
+        />
+        @if (submittedControlErrors()['line']; as error) {
+          <span class="text-error text-xs">{{ error }}</span>
+        }
+      </div>
+
+      <div class="form-control">
+        <label class="label py-0.5"><span class="label-text text-sm">Line Provider</span></label>
+        <input
+          type="text"
+          class="input input-bordered input-sm w-full"
+          formControlName="line_provider"
+        />
+        @if (submittedControlErrors()['line_provider']; as error) {
+          <span class="text-error text-xs">{{ error }}</span>
+        }
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button type="submit" class="btn btn-primary">
+          @if (stockService.formMode() === 'new') {
+            Create Stock
+          } @else {
+            Save Changes
+          }
+        </button>
+
+        <button type="button" class="btn btn-outline" (click)="clearForm()">
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+@if (hasFormError()) {
+  <div class="toast toast-top toast-end z-50">
+    <div class="alert alert-error">
+      <span>{{ formError() }}</span>
+    </div>
+  </div>
+}

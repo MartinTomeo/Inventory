@@ -1,0 +1,83 @@
+<div class="h-full overflow-y-auto rounded-box border border-base-content/5 bg-base-100">
+<table class="table">
+  <thead>
+    <tr class="bg-base-200">
+      <th>ID</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Permission</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+    <tbody>
+    @if (usersService.usersResource.error()) {
+      <tr>
+        <td colspan="5" class="text-center text-error">
+          {{ usersService.usersResource.error() }}
+        </td>
+      </tr>
+    }
+    @else if (usersService.usersResource.isLoading()) {
+      <tr>
+        <td colspan="5" class="text-center">
+          <span class="loading loading-spinner loading-md"></span>
+          Cargando usuarios...
+        </td>
+      </tr>
+    }
+    @else if (usersService.usersResource.value().length === 0) {
+      <tr>
+        <td colspan="5" class="text-center">
+          No se encontraron usuarios.
+        </td>
+      </tr>
+    }
+    @else {
+      @for (user of usersService.usersResource.value(); track user.id) {
+        <tr
+          class="cursor-pointer hover:bg-base-200"
+          (click)="selectUser(user.id)"
+        >
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+            <button type="button" class="btn btn-error btn-sm" (click)="openDeleteModal($event, user)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>
+</div>
+
+@if (userToDelete(); as user) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Delete user?</h3>
+      <p class="py-4">
+        Are you sure you want to delete
+        <strong>{{ user.username }}</strong>?
+        This action cannot be undone.
+      </p>
+    @if (deleteError()) {
+        <p class="text-error">{{ deleteError() }}</p>
+      }
+      <div class="modal-action">
+        <button type="button" class="btn" [disabled]="isDeleting()" (click)="closeDeleteModal()">Cancel</button>
+        <button type="button" class="btn btn-error" [disabled]="isDeleting()" (click)="confirmDelete()">
+        @if (isDeleting()) {
+          <span class="loading loading-spinner loading-sm"></span>
+          Deleting...
+        } @else {
+          Delete
+        }
+        </button>
+      </div>
+    </div>
+    <button type="button" class="modal-backdrop" [disabled]="isDeleting()" (click)="closeDeleteModal()">Close</button>
+  </div>
+}

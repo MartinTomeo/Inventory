@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS "stock"(
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_stock_imei ON stock(imei);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_stock_line ON stock(line);
 
 -- Logs table for auditing
 

@@ -1,0 +1,18 @@
+<div class="flex flex-col gap-4">
+  <section class="flex justify-start">
+    <search-input
+      placeholder="Buscar por línea"
+      (value)="stockService.query.set($event.toString())"
+    />
+  </section>
+
+  <section class="flex min-h-0 flex-col gap-4 lg:h-[calc(100dvh-9rem)] lg:flex-row">
+    <div class="min-h-0 min-w-0 flex-1">
+      <stock-list />
+    </div>
+
+    <aside class="min-h-0 w-full lg:w-96">
+      <stock-form />
+    </aside>
+  </section>
+</div>

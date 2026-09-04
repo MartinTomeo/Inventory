@@ -16,8 +16,8 @@ export const userRoutes: Routes = [
       {
         path: 'stock',
         loadComponent: () =>
-          import('./admin/page/admin-stock-page/admin-stock-page').then(
-            (m) => m.AdminStockPage
+          import('./posts/pages/stock-page/stock-page').then(
+            (m) => m.StockPage
           ),
       },
       {
@@ -30,8 +30,8 @@ export const userRoutes: Routes = [
       {
         path: 'users',
         loadComponent: () =>
-          import('./admin/page/admin-users-page/admin-users-page').then(
-            (m) => m.AdminUsersPage
+          import('./posts/pages/users-page/users-page').then(
+            (m) => m.UsersPage
           ),
       },
       {
@@ -39,13 +39,6 @@ export const userRoutes: Routes = [
         loadComponent: () =>
           import('./profile/pages/profile-setting-page/profile-setting-page').then(
             (m) => m.ProfileSettingPage,
-          ),
-      },
-      {
-        path: 'profile/info',
-        loadComponent: () =>
-          import('./profile/pages/profile-info-page/profile-info-page').then(
-            (m) => m.ProfileInfoPage,
           ),
       },
       {

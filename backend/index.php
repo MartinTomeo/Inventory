@@ -1,8 +1,13 @@
 <?php
 header('Access-Control-Allow-Origin: *');
-header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+
+header(
+    'Access-Control-Allow-Headers: ' .
+    'Authorization, Content-Type, Accept, Origin, X-Requested-With, Access-Control-Request-Method'
+);
+
 header('Access-Control-Allow-Methods: POST, GET, PATCH, DELETE');
-header("Allow: GET, POST, PATCH, DELETE");
+header('Allow: GET, POST, PATCH, DELETE');
 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
@@ -23,26 +28,38 @@ use \Firebase\JWT\JWT;
 require_once 'config_jwt.php';
 
 
+
 // ----------------- ROUTER ------------------
 $method = strtolower($_SERVER['REQUEST_METHOD']);
-$actionStr = $_GET['action'] ?? '';
-$action = explode('/', strtolower(trim($actionStr, '/')));
+$actionStr = trim((string) ($_GET['action'] ?? ''), '/');
+$action = $actionStr === '' ? [] : explode('/', $actionStr);
+$resource = strtolower($action[0] ?? '');
 
-$nameFoo = $method . ucfirst($action[0]);
+$authRoutes = [
+    'post:login' => 'postLogin',
+    'get:checkstatus' => 'getCheckStatus',
+];
+
+$routeKey = $method . ':' . $resource;
+$nameFoo = $authRoutes[$routeKey] ?? ($method . ucfirst($resource));
 
 $params = array_slice($action, 1);
 
-if ($method === 'post' && count($params) === 1 && $params[0] === 'photo') {
+if (!isset($authRoutes[$routeKey]) && $method === 'post' && count($params) === 1 && strtolower($params[0]) === 'photo') {
 
-    $nameFoo = $method . ucfirst($action[0]) . 'Photo';
+    $nameFoo = $method . ucfirst($resource) . 'Photo';
     $params = [];
 
-} elseif ($method === 'delete' && count($params) === 2 && is_numeric($params[0]) && $params[1] === 'photo') {
+} elseif (!isset($authRoutes[$routeKey]) && $method === 'delete' && count($params) === 2 && is_numeric($params[0]) && strtolower($params[1]) === 'photo') {
     
-    $nameFoo = $method . ucfirst($action[0]) . 'Photo';
+    $nameFoo = $method . ucfirst($resource) . 'Photo';
     $params = [(int) $params[0]];
 
-} elseif (count($params) > 0 && ($method === 'get' || $method === 'patch')) {
+} elseif (!isset($authRoutes[$routeKey]) && $method === 'get' && $resource === 'stock' && count($params) === 2 && strtolower($params[0]) === 'line') {
+    $nameFoo = 'getStockByLine';
+    $params = [$params[1]];
+
+} elseif (!isset($authRoutes[$routeKey]) && count($params) > 0 && ($method === 'get' || $method === 'patch')) {
     
     if (is_numeric($params[0])) {
 
@@ -175,6 +192,106 @@ function getStockUploadDir()
     return __DIR__ . '/uploads/stock/';
 }
 
+function findUserConflict(SQLite3 $db, ?string $username, ?string $email, ?int $excludeUserId = null): ?array {
+    $checks = [
+        'username' => [
+            'value' => $username, 'code' => 'USERNAME_ALREADY_EXISTS', 'message' => 'A user with that username already exists.'],
+        'email' => [
+            'value' => $email, 'code' => 'EMAIL_ALREADY_EXISTS', 'message' => 'A user with that email already exists.']
+    ];
+
+    foreach ($checks as $field => $check) {
+        if ($check['value'] === null) {
+            continue;
+        }
+
+        $sql = "SELECT id FROM users WHERE $field = :value";
+
+        if ($excludeUserId !== null) {
+            $sql .= ' AND id != :excludeUserId';
+        }
+
+        $sql .= ' LIMIT 1';
+
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':value', $check['value'], SQLITE3_TEXT);
+
+        if ($excludeUserId !== null) {
+            $stmt->bindValue(':excludeUserId', $excludeUserId, SQLITE3_INTEGER);
+        }
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not verify existing user.');
+        }
+
+        if ($result->fetchArray(SQLITE3_ASSOC)) {
+            return [
+                'code' => $check['code'],
+                'message' => $check['message'],
+            ];
+        }
+    }
+
+    return null;
+}
+
+function findStockConflict(SQLite3 $db, ?string $imei, ?int $line, ?int $excludeStockId = null): ?array {
+    $checks = [
+        'imei' => [
+            'value' => $imei,
+            'type' => SQLITE3_TEXT,
+            'code' => 'IMEI_ALREADY_EXISTS',
+            'message' => 'A stock item with that IMEI already exists.'
+        ],
+        'line' => [
+            'value' => $line,
+            'type' => SQLITE3_INTEGER,
+            'code' => 'LINE_ALREADY_EXISTS',
+            'message' => 'A stock item with that line already exists.'
+        ]];
+
+    foreach ($checks as $field => $check) {
+        if ($check['value'] === null) {
+            continue;
+        }
+
+        $sql = "SELECT id FROM stock WHERE $field = :value";
+
+        if ($excludeStockId !== null) {
+            $sql .= ' AND id != :excludeStockId';
+        }
+
+        $sql .= ' LIMIT 1';
+
+        $stmt = $db->prepare($sql);
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare stock conflict query.');
+        }
+
+        $stmt->bindValue(':value', $check['value'], $check['type']);
+
+        if ($excludeStockId !== null) {
+            $stmt->bindValue(':excludeStockId', $excludeStockId, SQLITE3_INTEGER);
+        }
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not verify stock conflicts.');
+        }
+
+        if ($result->fetchArray(SQLITE3_ASSOC)) {
+            return ['code' => $check['code'], 'message' => $check['message']];
+        }
+    }
+
+    return null;
+}
+
+
 
 
 // ----------------- Establecer Base de datos ------------------
@@ -208,43 +325,100 @@ function postReset() {
 
 }
 
-
-
-// ----------------- Authenticacion y Autorizacion------------------
+// ----------------- Autenticacion y Autorizacion ------------------
 
 function authenticate($email, $password)
 {
-    
-    $db=initDB();
-    $sql = "SELECT id, username, password FROM users WHERE email = :email";
+    $db = initDB();
+
+    $sql = 'SELECT id, username, password, role FROM users WHERE email = :email';
+
     $stmt = $db->prepare($sql);
-    
+
     if (!$stmt) {
         error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
-    
+
     $stmt->bindValue(':email', $email, SQLITE3_TEXT);
+
     $result = $stmt->execute();
-    
+
     if (!$result) {
         error_log($db->lastErrorMsg());
+
         outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
-    
-    $ret = false;
-    
-    if ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-        if (password_verify($password, $row['password'])) {
-            $ret = [
-                'id'       => $row['id'],
-                'username' => $row['username'],
-            ];
-        }
-    }
-    
-    return $ret;
 
+    $user = $result->fetchArray(SQLITE3_ASSOC);
+
+    if (!$user || !password_verify($password, $user['password'])) {
+        return false;
+    }
+
+    return [
+        'id'       => (int) $user['id'],
+        'username' => $user['username'],
+        'role'     => (int) $user['role']
+    ];
+}
+
+
+function postLogin()
+{
+ 
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!is_array($data)) {
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid JSON body']], 400);
+    }
+
+    if (!array_key_exists('email', $data) || !array_key_exists('password', $data)) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'MISSING_CREDENTIALS', 'message' => 'Email and password are required']], 400);
+    }
+
+    if (!is_string($data['email']) || !is_string($data['password'])) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'Invalid credentials format']], 400);
+    }
+
+
+    $email = trim($data['email']);
+    $password = $data['password'];
+
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email']], 400);
+    }
+
+
+    $logged = authenticate($email, $password);
+
+    if ($logged === false) {
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'Invalid email or password']], 401);
+    }
+
+    $now = time();
+
+    $payload = [
+        'iss'  => 'inventario-api',
+        'aud'  => 'inventario-angular',
+        'iat'  => $now,
+        'exp'  => $now + JWT_EXP,
+        'uid'  => $logged['id'],
+        'name' => $logged['username'],
+        'role' => $logged['role']
+    ];
+
+    $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
+
+    outputJson(['success' => true, 'jwt' => $jwt], 200);
 }
 
 function requireLogin()
@@ -252,83 +426,109 @@ function requireLogin()
     try {
 
         $headers = getallheaders();
-        if (!isset($headers['Authorization'])) {
-            throw new Exception("Token requerido", 1);
+
+        $authorization = $headers['Authorization'] ?? null;
+
+        if (!$authorization) {
+            throw new Exception('Authorization header missing');
         }
-        list($jwt) = sscanf($headers['Authorization'], 'Bearer %s');
+        //control con expresion regular del formato del Bearer + Token
+        if (!preg_match('/^Bearer\s+(.+)$/i', $authorization, $matches)) {
+            throw new Exception('Invalid Authorization header');
+        }
+
+        $jwt = trim($matches[1]);
+
+        if ($jwt === '') {
+            throw new Exception('Empty token');
+        }
+
         $decoded = JWT::decode($jwt, JWT_KEY, [JWT_ALG]);
 
-    } catch(Exception $e) {
+        if (!isset($decoded->uid) || !isset($decoded->exp) || !isset($decoded->role)) {
+            throw new Exception('Invalid token claims');
+        }
 
+        if (!is_numeric($decoded->uid) || (int) $decoded->uid <= 0) {
+            throw new Exception('Invalid user ID in token');
+        }
+
+
+        if (!is_numeric($decoded->role) || !in_array((int) $decoded->role, [1, 2, 3], true)) {
+            throw new Exception('Invalid user role in token');
+        }
+
+        return $decoded;
+
+    } catch (Exception $e) {
+        error_log('Authentication error: ' . $e->getMessage());
         outputJson(['success' => false, 'error' => ['code' => 'UNAUTHORIZED', 'message' => 'Authentication required']], 401);
-
     }
-    return $decoded;
 }
 
 
-function postLogin()
-{
-    $loginData = json_decode(file_get_contents("php://input"), true);
-
-    if (!is_array($loginData)) {
-        outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid JSON body']], 400);
-    }
-
-
-    if (!isset($loginData['email']) || !isset($loginData['password'])) {
-        outputJson(['success' => false,'error' => ['code' => 'MISSING_CREDENTIALS', 'message' => 'Email and password are required']], 400);
-    }
-
-    if (!is_string($loginData['email']) || !is_string($loginData['password'])) {
-
-        outputJson([
-            'success' => false,
-            'error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'Invalid credentials format']], 400);
-    }
-
-    $email = trim($loginData['email']);
-    $password = $loginData['password'];
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-
-        outputJson(['success' => false, 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email']], 400);
-
-    }
-
-
-    $logged = authenticate($loginData['email'], $loginData['password']);
-
-    if ($logged===false) {
-        outputJson(['success' => false, 'error' => ['code' => 'UNAUTHORIZED', 'message' => 'Authentication required']], 401);
-    }
-    $payload = [
-        'uid'       => $logged['id'],
-        'name'    => $logged['username'],
-        'exp'       => time() + JWT_EXP,
-    ];
-    $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
-    outputJson(['success' => true,'data' => ['jwt' => $jwt]], 201);
-
-}
-
-
-
-function patchLogin()
+function requireRole(array $allowedRoles)
 {
     $payload = requireLogin();
-    $payload->exp = time() + JWT_EXP;
-    $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
-    outputJson(['success' => true,'data' => ['jwt' => $jwt]], 200);
+
+    if (empty($allowedRoles)) {
+        outputJson(['success' => false, 'error' => ['code' => 'FORBIDDEN', 'message' => 'Access denied']], 403);
+    }
+
+    $userRole = (int) $payload->role;
+
+    if (!in_array($userRole, $allowedRoles, true)) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'FORBIDDEN', 'message' => 'You do not have permission to perform this action']], 403);
+    }
+
+
+    return $payload;
 }
 
+
+function getCheckStatus()
+{
+    $payload = requireLogin();
+    $db = initDB();
+    $stmt = $db->prepare('SELECT id, username, email, role, user_image, created_at FROM users WHERE id = :id');
+
+    if (!$stmt) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
+    $stmt->bindValue(':id', (int) $payload->uid, SQLITE3_INTEGER);
+
+    $result = $stmt->execute();
+
+    if (!$result) {
+
+        error_log($db->lastErrorMsg());
+        outputJson([
+            'success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
+    $user = $result->fetchArray(SQLITE3_ASSOC);
+
+    if (!$user) {
+
+        outputJson(['success' => false, 'error' => ['code' => 'UNAUTHORIZED', 'message' => 'User no longer exists']], 401);
+    }
+
+    $user['id'] = (int) $user['id'];
+    $user['role'] = (int) $user['role'];
+
+    outputJson(['success' => true, 'data' => ['user' => $user, 'jwt-payload' => $payload]], 200); //sacar el paylaod en prod
+}
 
 
 // ----------------- Auditar (solo Admin)------------------
 
 function getLogs() {
 
-    requireLogin();
+    requireRole([1]);
 
     $db = initDB();
     $result = $db->query('SELECT * FROM logs');
@@ -348,7 +548,7 @@ function getLogs() {
 
 function getLogsByName($name){
 
-    requireLogin(); 
+    requireRole([1]); 
     $bd=initDB();
     $sql = "SELECT * FROM logs WHERE username LIKE :name";
     $stmt = $bd->prepare($sql);
@@ -384,12 +584,34 @@ function getLogsByName($name){
 
 }
 
+function getUsersFull() {
+
+    //requireRole([1]);
+
+    $bd = initDB();
+    $result = $bd->query('SELECT id, username, email, password ,role, user_image, created_at FROM users');
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
+    }
+
+
+    $ret = [];
+    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
+        settype($fila['id'], 'integer');
+        $ret[] = $fila;
+    }
+    outputJson(['success' => true,'data' => $ret]);
+}
+
+
 
 // ----------------- Api ------------------
 
 function getUsers() {
 
-    requireLogin();
+    //requireRole([1]);
 
 	$bd = initDB();
 	$result = $bd->query('SELECT id, username, email, role, user_image, created_at FROM users');
@@ -411,7 +633,7 @@ function getUsers() {
 
 function getUsersById($id)
 {
-    requireLogin(); 
+    //requireRole([1,2,3]); 
     $bd=initDB();
     $sql = "SELECT id, username, email, role, user_image, created_at FROM users WHERE id =:id";
     $stmt = $bd->prepare($sql);
@@ -443,7 +665,7 @@ function getUsersById($id)
 
 function getUsersByName($name)
 {
-    requireLogin(); 
+    //requireRole([1]); 
     $bd=initDB();
     $stmt = $bd->prepare("SELECT id, username, email, role, user_image, created_at FROM users WHERE username LIKE :name");
 
@@ -479,14 +701,8 @@ function getUsersByName($name)
 
 function postUsers()
 {
-    requireLogin();
-
+    //requireRole([1]);
     $db = initDB();
-
-    // -----------------------------
-    // Request
-    // -----------------------------
-
     $data = $_POST;
 
     if (!is_array($data)) {
@@ -494,10 +710,6 @@ function postUsers()
         outputJson(['success' => false, 'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid request']], 400);
 
     }
-
-    // -----------------------------
-    // Required fields
-    // -----------------------------
 
     $requiredFields = ['username','email','password','role'];
 
@@ -511,10 +723,6 @@ function postUsers()
 
         }
     }
-
-    // -----------------------------
-    // String validation
-    // -----------------------------
 
     $stringFields = ['username', 'email', 'password'];
 
@@ -547,6 +755,9 @@ function postUsers()
     }
 
     $role = (int) $data['role'];
+
+    //TODO in email: MaxLength validator, Regex pattern validator(^[a-zA-Z0-9.@_%+-]+$)
+    //TODO in password: MinLenght MaxLength validator, Regex pattern validator (^[a-zA-Z0-9.@_%+-]+$)
     
     $upload = null;
 
@@ -569,6 +780,16 @@ function postUsers()
         }
         error_log($db->lastErrorMsg());
         outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    $conflict = findUserConflict($db, $data['username'], $data['email']);
+
+    if ($conflict !== null) {
+        $db->exec('ROLLBACK');
+        if ($userImage !== null) {
+            deleteImageFile($userImage, getUsersUploadDir());
+        }
+        outputJson(['success' => false, 'error' => $conflict,], 409);
     }
 
     try {
@@ -619,7 +840,7 @@ function postUsers()
 
 function deleteUsers()
 {
-    requireLogin();
+    //requireRole([1]);
     $db = initDB();
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -734,7 +955,7 @@ function deleteUsers()
 
 function deleteUsersPhoto($id)
 {
-    requireLogin();
+    //requireRole([1,2,3]);
 
     $db = initDB();
     if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
@@ -809,7 +1030,7 @@ function deleteUsersPhoto($id)
 
 function patchUsersById($id)
 {
-    requireLogin();
+    //requireRole([1,2,3]);
     $db = initDB();
 
     //Input checks
@@ -924,6 +1145,12 @@ function patchUsersById($id)
 
         }
 
+        $conflict = findUserConflict($db, $data['username'] ?? null, $data['email'] ?? null, (int) $id);
+
+        if ($conflict !== null) {
+            $db->exec('ROLLBACK');
+            outputJson(['success' => false,'error' => $conflict], 409);
+        }
 
         $updates = [];
         $params = [];
@@ -1027,8 +1254,7 @@ function patchUsersById($id)
 function postUsersPhoto()
 {   
 
-
-    requireLogin();
+    //requireRole([1,2,3]);
 
     $db = initDB();
     $id = $_POST['id'] ?? null;
@@ -1124,10 +1350,10 @@ function postUsersPhoto()
 
 function getStock() {
 
-    requireLogin();
+    //requireRole([1,2]);
 
-    $bd = initDB();
-    $result = $bd->query('SELECT * FROM stock');
+    $db = initDB();
+    $result = $db->query('SELECT * FROM stock');
     if (!$result) {
         error_log($db->lastErrorMsg());
         outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrive stock']], 500);
@@ -1143,6 +1369,7 @@ function getStock() {
 
 function getStockById($id)
 {
+    //requireRole([1,2]);
     $db = initDB();
 
     if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
@@ -1182,9 +1409,48 @@ function getStockById($id)
     outputJson(['success' => true, 'data' => $ret], 200);
 }
 
+function getStockByLine($line)
+{
+    // requireRole([1, 2]);
+
+    if (!is_string($line) || $line === '' || !ctype_digit($line)) {
+        outputJson(['success' => false, 'error' => ['code' => 'INVALID_LINE', 'message' => 'Line must contain only numbers']], 400);
+    }
+
+    
+    $db = initDB();
+
+    $stmt = $db->prepare(
+        'SELECT id, imei, model, brand, ph_provider, phone_image, line, line_provider FROM stock WHERE line LIKE :line');
+
+    if (!$stmt) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare stock search']], 500);
+    }
+
+       $stmt->bindValue(':line', '%' . $line . '%', SQLITE3_TEXT);
+
+    $result = $stmt->execute();
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrieve stock']], 500);
+    }
+
+    $stock = [];
+
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $row['id'] = (int) $row['id'];
+        $row['line'] = (int) $row['line'];
+        $stock[] = $row;
+    }
+
+    outputJson(['success' => true, 'data' => $stock], 200);
+}
+
 function postStock()
 {
-    requireLogin();
+    //requireRole([1,2]);
 
     $db = initDB();
 
@@ -1289,6 +1555,18 @@ function postStock()
 
     try {
 
+
+        $conflict = findStockConflict($db, $data['imei'], $line);
+
+        if ($conflict !== null) {
+            $db->exec('ROLLBACK');
+            if ($phoneImage !== null) {
+                deleteImageFile($phoneImage, getStockUploadDir());
+            }
+            outputJson(['success' => false, 'error' => $conflict], 409);
+        }
+
+
         $stmt = $db->prepare('INSERT INTO stock (imei, model, brand, ph_provider, phone_image, line, line_provider) VALUES (:imei, :model, :brand, :ph_provider, :phone_image, :line, :line_provider)');
 
         if (!$stmt) {
@@ -1336,6 +1614,7 @@ function postStock()
 
 function patchStockById($id)
 {
+    //requireRole([1,2]);
     $db = initDB();
 
     // -----------------------------
@@ -1442,6 +1721,13 @@ function patchStockById($id)
             outputJson(['success' => false, 'error' => ['code' => 'STOCK_NOT_FOUND', 'message' => 'Stock item not found']], 404);
         }
 
+        $conflict = findStockConflict($db, array_key_exists('imei', $data) ? $data['imei'] : null, array_key_exists('line', $data) ? (int) $data['line'] : null, (int) $id);
+
+        if ($conflict !== null) {
+            $db->exec('ROLLBACK');
+            outputJson(['success' => false, 'error' => $conflict], 409);
+        }
+
         $updates = [];
         $params = [];
         $updatedFields = [];
@@ -1522,7 +1808,7 @@ function patchStockById($id)
 
 function postStockPhoto()
 {
-    requireLogin();
+    //requireRole([1,2]);
 
     $db = initDB();
 
@@ -1619,7 +1905,7 @@ function postStockPhoto()
 
 function deleteStock()
 {
-    requireLogin();
+    //requireRole([1,2]);
     $db = initDB();
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -1745,6 +2031,7 @@ function deleteStock()
 
 function deleteStockPhoto($id)
 {
+    //requireRole([1,2]);
     $db = initDB();
 
     if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
@@ -1821,7 +2108,7 @@ function deleteStockPhoto($id)
 
 function getSubscriptions() {
 
-    requireLogin();
+    requireRole([1,2,3]);
 
     $bd = initDB();
     $result = $bd->query('SELECT s.id, u.username, u.email, u.user_image, st.model, st.brand, st.imei, st.provider, st.phone_image, l.line, l.provider
@@ -1846,7 +2133,7 @@ function getSubscriptions() {
 
 function getSubscriptionsById($id)
 {
-    requireLogin();
+    requireRole([1,2,3]);
 
     $db = initDB();
 

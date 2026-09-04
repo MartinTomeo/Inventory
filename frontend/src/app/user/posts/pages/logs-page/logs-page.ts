@@ -1,11 +1,8 @@
-import { Component, signal, inject, resource } from '@angular/core';
-import { LogsList } from '../../components/logs-list/logs-list';
+import { Component, inject } from '@angular/core';
+import { LogsService } from '../../../services/logs.service';
 import { SearchInput } from '../../../../shared/components/search-input/search-input';
-import { PostService } from '../../services/post.service';
-import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { catchError } from 'rxjs/internal/operators/catchError';
-import { throwError } from 'rxjs/internal/observable/throwError';
+import { LogsList } from '../../components/logs-list/logs-list';
+
 
 @Component({
   selector: 'app-logs-page',
@@ -14,6 +11,7 @@ import { throwError } from 'rxjs/internal/observable/throwError';
 })
 export class LogsPage {
 
-  postsService = inject(PostService);
+  logsService = inject(LogsService);
+
 
  }

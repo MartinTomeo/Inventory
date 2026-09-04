@@ -1,5 +1,5 @@
-import { Component, input, ResourceRef } from '@angular/core';
-import { Logs } from '../../../interfaces/logs.interface';
+import { Component, inject, input, ResourceRef } from '@angular/core';
+import { LogsService } from '../../../services/logs.service';
 @Component({
   selector: 'logs-list',
   imports: [],
@@ -7,6 +7,7 @@ import { Logs } from '../../../interfaces/logs.interface';
 })
 export class LogsList {
 
-  logsResource =input.required<ResourceRef<Logs[]>>();
+  logsService =inject(LogsService);
+
 
 }

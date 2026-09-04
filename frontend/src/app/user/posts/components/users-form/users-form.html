@@ -1,0 +1,152 @@
+<div class="h-full card border border-base-200 bg-base-100 shadow-xl">
+  <div class="card-body p-6">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <!-- Photo -->
+      <div class="form-control">
+
+        <div class="flex flex-col items-center gap-3">
+          <div class="avatar">
+            <div
+              class="w-24 overflow-hidden rounded-lg ring ring-primary ring-offset-2 ring-offset-base-100"
+            >
+              <img
+                [src]="imageUrl()"
+                alt="User photo"
+                class="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <input
+              #photoInput
+              type="file"
+              class="hidden"
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onPhotoSelected($event)"
+            />
+
+            <button
+              type="button"
+              class="btn btn-outline btn-sm"
+              (click)="photoInput.click()"
+            >
+              Upload Image
+            </button>
+
+            @if (selectedPhoto()) {
+              <span class="text-sm text-base-content/70">
+                {{ selectedPhoto()!.name }}
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Username -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Username</span>
+        </label>
+
+        <input
+          type="text"
+          class="input input-bordered w-full"
+          formControlName="username"
+        />
+
+        @if (submittedControlErrors()['username']; as error) {
+          <span class="text-error">
+            {{ error }}
+          </span>
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Email</span>
+        </label>
+
+        <input
+          type="email"
+          class="input input-bordered w-full"
+          formControlName="email"
+        />
+
+        @if (submittedControlErrors()['email']; as error) {
+          <span class="text-error">
+            {{ error }}
+          </span>
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Password</span>
+        </label>
+
+        <input
+          type="password"
+          class="input input-bordered w-full"
+          formControlName="password"
+          [placeholder]="usersService.formMode() === 'new'
+            ? 'Enter password'
+            : 'Leave blank to keep current password'"
+        />
+
+        @if (submittedControlErrors()['password']; as error) {
+          <span class="text-error">
+            {{ error }}
+          </span>
+        }
+      </div>
+
+      <!-- Role -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Role</span>
+        </label>
+
+        <select class="select select-bordered w-full" formControlName="role">
+          <option [ngValue]="1">Admin</option>
+          <option [ngValue]="2">Audit</option>
+          <option [ngValue]="3">Editor</option>
+        </select>
+
+        @if (submittedControlErrors()['role']; as error) {
+          <span class="text-error">
+            {{ error }}
+          </span>
+        }
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-2 pt-2">
+        <button type="submit" class="btn btn-primary">
+          @if (usersService.formMode() === 'new') {
+            Create User
+          } @else {
+            Save Changes
+          }
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="clearForm()"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+@if (hasFormError()) {
+  <div class="toast toast-top toast-end z-50">
+    <div class="alert alert-error">
+      <span>{{ formError() }}</span>
+    </div>
+  </div>
+}

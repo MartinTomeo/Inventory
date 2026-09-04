@@ -1,0 +1,118 @@
+<div class="h-full overflow-y-auto rounded-box border border-base-content/5 bg-base-100">
+  <table class="table">
+    <thead>
+      <tr class="bg-base-200">
+        <th>ID</th>
+        <th>IMEI</th>
+        <th>Model</th>
+        <th>Brand</th>
+        <th>Phone Provider</th>
+        <th>Line</th>
+        <th>Line Provider</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @if (stockService.stockResource.error()) {
+        <tr>
+          <td colspan="8" class="text-center text-error">
+            {{ stockService.stockResource.error() }}
+          </td>
+        </tr>
+      }
+      @else if (stockService.stockResource.isLoading()) {
+        <tr>
+          <td colspan="8" class="text-center">
+            <span class="loading loading-spinner loading-md"></span>
+            Cargando stock...
+          </td>
+        </tr>
+      }
+      @else if (stockService.stockResource.value().length === 0) {
+        <tr>
+          <td colspan="8" class="text-center">
+            No se encontraron elementos de stock.
+          </td>
+        </tr>
+      }
+      @else {
+        @for (stock of stockService.stockResource.value(); track stock.id) {
+          <tr
+            class="cursor-pointer hover:bg-base-200"
+            (click)="selectStock(stock.id)"
+          >
+            <td>{{ stock.id }}</td>
+            <td>{{ stock.imei }}</td>
+            <td>{{ stock.model }}</td>
+            <td>{{ stock.brand }}</td>
+            <td>{{ stock.ph_provider }}</td>
+            <td>{{ stock.line }}</td>
+            <td>{{ stock.line_provider }}</td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-error btn-sm"
+                (click)="openDeleteModal($event, stock)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (stockToDelete(); as stock) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Delete stock item?</h3>
+
+      <p class="py-4">
+        Are you sure you want to delete
+        <strong>{{ stock.model }} — {{ stock.imei }}</strong>?
+        This action cannot be undone.
+      </p>
+
+      @if (deleteError()) {
+        <p class="text-error">{{ deleteError() }}</p>
+      }
+
+      <div class="modal-action">
+        <button
+          type="button"
+          class="btn"
+          [disabled]="isDeleting()"
+          (click)="closeDeleteModal()"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-error"
+          [disabled]="isDeleting()"
+          (click)="confirmDelete()"
+        >
+          @if (isDeleting()) {
+            <span class="loading loading-spinner loading-sm"></span>
+            Deleting...
+          } @else {
+            Delete
+          }
+        </button>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="modal-backdrop"
+      [disabled]="isDeleting()"
+      (click)="closeDeleteModal()"
+    >
+      Close
+    </button>
+  </div>
+}

@@ -1,9 +1,9 @@
 <section class="mb-4">
-  <search-input placeholder="Buscar por nombre de usuario" (value)="postsService.logsQuery.set($event.toString())"/><!--$event es para lo que emita el search input-->
+  <search-input placeholder="Buscar por nombre de usuario" (value)="logsService.query.set($event.toString())"/><!--$event es para lo que emita el search input-->
 </section>
-<section class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+<section class="h-[calc(100dvh-9rem)] overflow-auto rounded-box border border-base-content/5 bg-base-100">
 
-    <logs-list [logsResource]="postsService.logsResource"/>
+    <logs-list/>
 
 
 </section>

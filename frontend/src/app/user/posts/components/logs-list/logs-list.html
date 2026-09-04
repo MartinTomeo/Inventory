@@ -13,12 +13,12 @@
   <tbody>
 
 
-    @if(logsResource().error()) {
+    @if(logsService.logsResource.error()) {
       <tr>
-        <td colspan="4" class="text-center text-error">{{ logsResource().error() }}</td>
+        <td colspan="4" class="text-center text-error">{{ logsService.logsResource.error() }}</td>
       </tr>
     }
-    @else if(logsResource().isLoading()) {
+    @else if(logsService.logsResource.isLoading()) {
        <tr>
         <td colspan="4" class="text-center">
           <span class="loading loading-spinner loading-md"></span>
@@ -26,13 +26,13 @@
       </tr>
     }
     @else {
-      @if(!logsResource().hasValue()) {
+      @if(!logsService.logsResource.hasValue()) {
         <tr>
           <td colspan="4" class="text-center">No se encontraron logs.</td>
         </tr>
       }
       @else {
-          @for (log of logsResource().value(); track $index) {
+          @for (log of logsService.logsResource.value(); track $index) {
           <tr>
             <td>{{ log.id }}</td>
             <td>{{ log.username }}</td>
