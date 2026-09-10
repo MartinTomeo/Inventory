@@ -1,8 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Logs } from '../interfaces/logs.interface';
 import { environment } from '@environments/environment.development';
-import { Observable } from 'rxjs/internal/Observable';
-import { Subscriptions } from '../interfaces/subscriptions.interface';
 import { HttpClient } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { catchError, throwError } from 'rxjs';

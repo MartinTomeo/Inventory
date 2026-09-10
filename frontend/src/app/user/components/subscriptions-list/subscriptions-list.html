@@ -1,0 +1,146 @@
+<div class="h-full overflow-auto rounded-box border border-base-content/5 bg-base-100">
+  <table class="table table-pin-rows">
+    <thead>
+      <tr class="bg-base-200">
+        <th>
+          <input
+            type="checkbox"
+            class="checkbox checkbox-sm"
+            aria-label="Seleccionar todas las suscripciones visibles"
+            [checked]="allVisibleSelected()"
+            [indeterminate]="someVisibleSelected()"
+            (change)="toggleAllVisible($any($event.target).checked)"
+          />
+        </th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>IMEI</th>
+        <th>Model</th>
+        <th>Brand</th>
+        <th>Line</th>
+        <th>Phone Provider</th>
+        <th>Line Provider</th>
+        <th>Images</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @if (subsService.subsResource.error()) {
+        <tr>
+          <td colspan="11" class="text-center text-error">
+            {{ resourceError() }}
+          </td>
+        </tr>
+      }
+      @else if (subsService.subsResource.isLoading()) {
+        <tr>
+          <td colspan="11" class="text-center">
+            <span class="loading loading-spinner loading-md"></span>
+            Cargando suscripciones...
+          </td>
+        </tr>
+      }
+      @else if (subsService.subsResource.value().length === 0) {
+        <tr>
+          <td colspan="11" class="text-center">
+            No se encontraron suscripciones.
+          </td>
+        </tr>
+      }
+      @else {
+        @for (subscription of subsService.subsResource.value(); track subscription.id) {
+          <tr class="hover:bg-base-200">
+            <td>
+              <input
+                type="checkbox"
+                class="checkbox checkbox-sm"
+                [attr.aria-label]="'Seleccionar suscripción ' + subscription.id"
+                [checked]="subsService.isSelected(subscription.id)"
+                (change)="toggleSubscription(subscription.id, $any($event.target).checked)"
+              />
+            </td>
+            <td>{{ subscription.username }}</td>
+            <td>{{ subscription.email }}</td>
+            <td>{{ subscription.imei }}</td>
+            <td>{{ subscription.model }}</td>
+            <td>{{ subscription.brand }}</td>
+            <td>{{ subscription.line }}</td>
+            <td>{{ subscription.ph_provider }}</td>
+            <td>{{ subscription.line_provider }}</td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm"
+                (click)="toggleImages(subscription.id)"
+              >
+                @if (expandedSubscriptionId() === subscription.id) {
+                  Hide
+                }
+                @else {
+                  View
+                }
+              </button>
+            </td>
+          </tr>
+
+          @if (expandedSubscriptionId() === subscription.id) {
+            <tr>
+              <td colspan="11" class="bg-base-200/40 p-0">
+                <div class="flex flex-col items-center justify-center gap-8 p-6 sm:flex-row">
+                  <section class="flex min-w-40 flex-col items-center gap-3">
+                    <span class="font-semibold">User Image</span>
+
+                    <div class="avatar">
+                      <div
+                        class="h-28 w-28 overflow-hidden rounded-xl ring ring-primary ring-offset-2 ring-offset-base-100"
+                      >
+                        <img
+                          [src]="userImageUrl(subscription)"
+                          [alt]="'Photo of ' + subscription.username"
+                          class="h-full w-full object-cover"
+                        />
+                      </div>
+                    </div>
+
+                    <span class="text-sm text-base-content/70">
+                      {{ subscription.username }}
+                    </span>
+                  </section>
+
+                  <section class="flex min-w-40 flex-col items-center gap-3">
+                    <span class="font-semibold">Phone Image</span>
+
+                    @if (stockImageUrl(subscription); as imageUrl) {
+                      <div class="avatar">
+                        <div
+                          class="h-28 w-28 overflow-hidden rounded-xl ring ring-secondary ring-offset-2 ring-offset-base-100"
+                        >
+                          <img
+                            [src]="imageUrl"
+                            [alt]="subscription.brand + ' ' + subscription.model"
+                            class="h-full w-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    }
+                    @else {
+                      <div
+                        class="flex h-28 w-28 items-center justify-center rounded-xl bg-base-300 text-center text-sm text-base-content/60 ring ring-secondary ring-offset-2 ring-offset-base-100"
+                      >
+                        No image
+                      </div>
+                    }
+
+                    <span class="text-sm text-base-content/70">
+                      {{ subscription.brand }} {{ subscription.model }}
+                    </span>
+                  </section>
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      }
+    </tbody>
+  </table>
+</div>

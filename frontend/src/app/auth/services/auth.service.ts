@@ -16,7 +16,7 @@ export class AuthService {
 
   private http = inject(HttpClient);
   private _authStatus = signal<AuthStatus>('checking');
-  private _token = signal<string | null>(localStorage.getItem('token'));
+  private _token = signal<string | null>(null);
   private _currentUser = signal<AuthUser | null>(null);
 
 
@@ -25,7 +25,9 @@ export class AuthService {
   currentUser = computed(() => this._currentUser());
   isAuthenticated = computed(() => this._authStatus() === 'authenticated');
   username = computed(() => this._currentUser()?.username ?? '');
-
+  hasStoredToken(): boolean {
+    return !!localStorage.getItem('jwt');
+  }
 
   constructor() {
 
@@ -36,13 +38,14 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<boolean> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/login`, {email, password,})
+    return this.http
+      .post<AuthResponse>(`${environment.apiUrl}/login`, { email, password })
       .pipe(
-        tap(response => {
+        tap((response) => {
           this._token.set(response.jwt);
-          localStorage.setItem('token', response.jwt);
+          localStorage.setItem('jwt', response.jwt);
         }),
-        map(() => true),
+        switchMap(() => this.checkStatus()),
         catchError(() => {
           this.clearSession();
           return of(false);
@@ -50,9 +53,8 @@ export class AuthService {
       );
   }
 
-
   checkStatus(): Observable<boolean> {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('jwt');
     if (!token) {
       this.clearSession();
       return of(false);
@@ -86,7 +88,7 @@ export class AuthService {
   }
 
   private clearSession(): void {
-    localStorage.removeItem('token');
+    localStorage.removeItem('jwt');
     this._token.set(null);
     this._currentUser.set(null);
     this._authStatus.set('not-authenticated');

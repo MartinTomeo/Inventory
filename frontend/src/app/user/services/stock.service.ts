@@ -3,14 +3,8 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { environment } from '@environments/environment.development';
 import { catchError, map, of, throwError } from 'rxjs';
-import { CreateStockRequest } from '../interfaces/create-stock-req.interface';
-import { Stock } from '../interfaces/stock.interface';
-import { UpdateStockRequest } from '../interfaces/update-stock-req.interface';
-
-interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-}
+import { Stock, UpdateStockRequest, CreateStockRequest } from '../interfaces/stock.interface';
+import { ApiResponse } from '../interfaces/api-response.interface';
 
 export type StockFormMode = 'new' | 'edit';
 
@@ -71,11 +65,11 @@ export class StockService {
       formData.append('photo', photo);
     }
 
-    return this.http.post(`${environment.apiUrl}/stock`, formData);
+    return this.http.post<ApiResponse<{ id: number }>>(`${environment.apiUrl}/stock`, formData);
   }
 
-  updateStock(id: number, stock: UpdateStockRequest) {
-    return this.http.patch(`${environment.apiUrl}/stock/${id}`, stock);
+  updateStock(id: number, stock: UpdateStockRequest ) {
+    return this.http.patch<ApiResponse<{ id: number; updated: string[] }>>(`${environment.apiUrl}/stock/${id}`, stock);
   }
 
   uploadStockPhoto(id: number, photo: File) {
@@ -84,7 +78,7 @@ export class StockService {
     formData.append('id', id.toString());
     formData.append('photo', photo);
 
-    return this.http.post(`${environment.apiUrl}/stock/photo`, formData);
+    return this.http.post<ApiResponse<{ id: number; updated: string[]; image: string }>>(`${environment.apiUrl}/stock/photo`, formData);
   }
 
   deleteStock(idArray: number[]) {

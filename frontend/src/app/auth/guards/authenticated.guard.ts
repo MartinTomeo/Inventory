@@ -4,23 +4,25 @@ import { map } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 export const authenticatedGuard: CanActivateFn = () => {
-
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (!authService.token()) {
+  if (!authService.hasStoredToken()) {
+    authService.logout();
     return router.createUrlTree(['/']);
   }
 
-  if (authService.authStatus() === 'authenticated') return true;
+  // La sesión ya fue validada por login().
+  if (authService.authStatus() === 'authenticated' && authService.currentUser() !== null) {
+    return true;
+  }
 
-
-  return authService.checkStatus()
-    .pipe(
-      map(isAuthenticated => {
-        if (isAuthenticated) return true;
-        return router.createUrlTree(['/']);
-      })
-    );
-
+  // Se ejecuta al recargar la aplicación con un JWT almacenado.
+  return authService.checkStatus().pipe(
+    map((isAuthenticated) =>
+      isAuthenticated
+        ? true
+        : router.createUrlTree(['/'])
+    )
+  );
 };

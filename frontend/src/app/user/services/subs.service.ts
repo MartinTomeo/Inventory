@@ -1,67 +1,146 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
-import { environment } from '@environments/environment.development';
-import { Subscriptions } from '../interfaces/subscriptions.interface';
-import { throwError, catchError, of, shareReplay, Observable} from 'rxjs';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-
-
+import { environment } from '@environments/environment.development';
+import { catchError, map, Observable, throwError } from 'rxjs';
+import {
+  CreateSubscriptionRequest,
+  CreateSubscriptionResponse,
+  DeleteSubscriptionsResponse,
+  Subscription,
+  SubscriptionOptionsResponse,
+} from '../interfaces/subscriptions.interface';
+import { ApiResponse } from '../interfaces/api-response.interface';
 @Injectable({
   providedIn: 'root',
 })
 export class SubsService {
   private http = inject(HttpClient);
-  query = signal<string>('');
-  queryCacheSubscriptions = new Map<string, Observable<Subscriptions[]>>();
 
+  query = signal('');
+  selectedIds = signal<number[]>([]);
+  hasSelection = computed(() => this.selectedIds().length > 0);
 
-  getSubscriptions():Observable<Subscriptions[]> {
-    return this.http.get<Subscriptions[]>(`${environment.apiUrl}/subscriptions`);
+  getSubscriptions(): Observable<Subscription[]> {
+    return this.http
+      .get<ApiResponse<Subscription[]>>(`${environment.apiUrl}/subscriptions`)
+      .pipe(
+        map((response) =>
+          response.data.map((subscription) =>
+            this.normalizeSubscription(subscription)
+          )
+        )
+      );
   }
 
-  getSubscriptionsById(id: number): Observable<Subscriptions[]> {
-    return this.http.get<Subscriptions[]>(`${environment.apiUrl}/subscriptions/${id}`);
+  getSubscriptionsByUsername(username: string): Observable<Subscription[]> {
+    return this.http
+      .get<ApiResponse<Subscription[]>>(
+        `${environment.apiUrl}/subscriptions/${encodeURIComponent(username)}`
+      )
+      .pipe(
+        map((response) =>
+          response.data.map((subscription) =>
+            this.normalizeSubscription(subscription)
+          )
+        )
+      );
   }
 
-  getSubscriptionsByUsername(username: string): Observable<Subscriptions[]> {
-    return this.http.get<Subscriptions[]>(`${environment.apiUrl}/subscriptions/${username}`);
+  getSubscriptionOptions(): Observable<SubscriptionOptionsResponse> {
+    return this.http
+      .get<ApiResponse<SubscriptionOptionsResponse>>(
+        `${environment.apiUrl}/subscriptions/options`
+      )
+      .pipe(
+        map((response) => ({
+          users: response.data.users.map((user) => ({
+            ...user,
+            id: Number(user.id),
+          })),
+          stock: response.data.stock.map((stock) => ({
+            ...stock,
+            id: Number(stock.id),
+            line: Number(stock.line),
+          })),
+        }))
+      );
   }
 
-  subsResource = rxResource<Subscriptions[], { query: string }>({
-    params: () => ({ query: this.query() }),
-    defaultValue: [],
-    stream: ({ params }) => {
+  postSubscription(subscription: CreateSubscriptionRequest) {
+    return this.http.post<ApiResponse<CreateSubscriptionResponse>>(
+      `${environment.apiUrl}/subscriptions`,
+      subscription
+    );
+  }
 
-      const query = params.query.trim().toLowerCase();
-      const cached = this.queryCacheSubscriptions.get(query);
+  deleteSubscriptions(idArray: number[]) {
+    return this.http.delete<ApiResponse<DeleteSubscriptionsResponse>>(
+      `${environment.apiUrl}/subscriptions`,
+      { body: { idArray } }
+    );
+  }
 
-      if (cached) {
-        return cached;
+  isSelected(id: number): boolean {
+    return this.selectedIds().includes(id);
+  }
+
+  toggleSelection(id: number, checked: boolean) {
+    this.selectedIds.update((currentIds) => {
+      if (checked) {
+        return currentIds.includes(id) ? currentIds : [...currentIds, id];
       }
 
-      const request$ = (
-        !query
-          ? this.getSubscriptions()
-          : this.getSubscriptionsByUsername(query)
-      ).pipe(
-        shareReplay(1),
-        catchError(() => {
-          this.queryCacheSubscriptions.delete(query);
-          return throwError(() =>
-            new Error(
-              query
-                ? 'No hay usuarios que coincidan con la búsqueda.'
-                : 'No hay registros disponibles.'
-            )
-          );
-        })
+      return currentIds.filter((currentId) => currentId !== id);
+    });
+  }
+
+  selectAll(ids: number[], checked: boolean) {
+    this.selectedIds.update((currentIds) => {
+      if (!checked) {
+        return currentIds.filter((id) => !ids.includes(id));
+      }
+
+      return [...new Set([...currentIds, ...ids])];
+    });
+  }
+
+  clearSelection() {
+    this.selectedIds.set([]);
+  }
+
+  private normalizeSubscription(
+    subscription: Subscription
+  ): Subscription {
+    return {
+      ...subscription,
+      id: Number(subscription.id),
+      user_id: Number(subscription.user_id),
+      stock_id: Number(subscription.stock_id),
+      line: Number(subscription.line),
+    };
+  }
+
+  subsResource = rxResource<Subscription[], { query: string }>({
+    params: () => ({ query: this.query().trim() }),
+    defaultValue: [],
+    stream: ({ params }) => {
+      const request$ = params.query
+        ? this.getSubscriptionsByUsername(params.query)
+        : this.getSubscriptions();
+
+      return request$.pipe(
+        catchError(() =>
+          throwError(
+            () =>
+              new Error(
+                params.query
+                  ? 'No se pudieron buscar las suscripciones.'
+                  : 'No se pudieron cargar las suscripciones.'
+              )
+          )
+        )
       );
-
-
-      this.queryCacheSubscriptions.set(query, request$);
-      return request$;
-
-    }
+    },
   });
-
 }

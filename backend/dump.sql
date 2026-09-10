@@ -29,7 +29,10 @@ CREATE TABLE IF NOT EXISTS "subscriptions" (
     FOREIGN KEY ("stock_id") REFERENCES "stock" ("id") ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_subscriptions_user_stock ON subscriptions(user_id, stock_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_subscriptions_stock_id
+ON subscriptions(stock_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id
+ON subscriptions(user_id);
 
 -- stock table
 DROP TABLE IF EXISTS "stock";

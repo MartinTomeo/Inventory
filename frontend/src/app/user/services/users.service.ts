@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '@environments/environment.development';
-import { User } from '../interfaces/users.interface';
+import { User, UpdateUserRequest, CreateUserRequest } from '../interfaces/users.interface';
 import { catchError, throwError, of, map } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { CreateUserRequest } from '../interfaces/create-user.req.interface';
-import { UpdateUserRequest } from '../interfaces/update-user-req.interface';
+import { ApiResponse } from '../interfaces/api-response.interface';
 
 export type UserFormMode = 'new' | 'edit';
 
@@ -33,13 +32,13 @@ export class UsersService {
 
   getUsers() {
     return this.http
-      .get<{ success: boolean; data: User[] }>(`${environment.apiUrl}/users`)
+      .get<ApiResponse<User[]>>(`${environment.apiUrl}/users`)
       .pipe(map((response) => response.data));
   }
 
   getUsersById(id: number) {
   return this.http
-    .get<{ success: boolean; data: User }>(
+    .get<ApiResponse<User>>(
       `${environment.apiUrl}/users/${id}`
     )
     .pipe(map((response) => response.data));
@@ -47,7 +46,7 @@ export class UsersService {
 
   getUsersByName(query: string) {
   return this.http
-    .get<{ success: boolean; data: User[] }>(
+    .get<ApiResponse<User[]>>(
       `${environment.apiUrl}/users/${query}`
     )
     .pipe(map((response) => response.data));
@@ -66,7 +65,7 @@ export class UsersService {
       formData.append('photo', photo);
     }
 
-    return this.http.post(`${environment.apiUrl}/users`, formData);
+    return this.http.post<ApiResponse<{id: number}>>(`${environment.apiUrl}/users`, formData);
 
   }
 
@@ -74,7 +73,7 @@ export class UsersService {
 
   updateUser(id: number, user: UpdateUserRequest) {
 
-  return this.http.patch(`${environment.apiUrl}/users/${id}`, user);
+  return this.http.patch<ApiResponse<{ id: number; updated: string[] }>>(`${environment.apiUrl}/users/${id}`, user);
 
   }
 
@@ -85,14 +84,14 @@ export class UsersService {
     formData.append('id', id.toString());
     formData.append('photo', photo);
 
-    return this.http.post(
+    return this.http.post<ApiResponse<{ id: number; updated: string[]; image: string }>>(
       `${environment.apiUrl}/users/photo`,
       formData
     );
   }
 
   deleteUsers(idArray: number[]) {
-    return this.http.delete(`${environment.apiUrl}/users`, {
+    return this.http.delete<ApiResponse<{ deleted_count: number; ids: number[] }>>(`${environment.apiUrl}/users`, {
       body: { idArray },
     });
   }

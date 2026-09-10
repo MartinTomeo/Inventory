@@ -59,6 +59,12 @@ if (!isset($authRoutes[$routeKey]) && $method === 'post' && count($params) === 1
     $nameFoo = 'getStockByLine';
     $params = [$params[1]];
 
+}elseif (!isset($authRoutes[$routeKey]) && $method === 'get' && $resource === 'subscriptions' && count($params) === 1
+    && strtolower($params[0]) === 'options') 
+{
+    $nameFoo = 'getSubscriptionOptions';
+    $params = [];
+
 } elseif (!isset($authRoutes[$routeKey]) && count($params) > 0 && ($method === 'get' || $method === 'patch')) {
     
     if (is_numeric($params[0])) {
@@ -330,14 +336,11 @@ function postReset() {
 function authenticate($email, $password)
 {
     $db = initDB();
-
     $sql = 'SELECT id, username, password, role FROM users WHERE email = :email';
-
     $stmt = $db->prepare($sql);
 
     if (!$stmt) {
         error_log($db->lastErrorMsg());
-
         outputJson([
             'success' => false,
             'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
@@ -349,7 +352,6 @@ function authenticate($email, $password)
 
     if (!$result) {
         error_log($db->lastErrorMsg());
-
         outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
 
@@ -388,15 +390,12 @@ function postLogin()
             'error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'Invalid credentials format']], 400);
     }
 
-
     $email = trim($data['email']);
     $password = $data['password'];
-
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         outputJson(['success' => false, 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email']], 400);
     }
-
 
     $logged = authenticate($email, $password);
 
@@ -483,7 +482,6 @@ function requireRole(array $allowedRoles)
             'error' => ['code' => 'FORBIDDEN', 'message' => 'You do not have permission to perform this action']], 403);
     }
 
-
     return $payload;
 }
 
@@ -500,11 +498,9 @@ function getCheckStatus()
     }
 
     $stmt->bindValue(':id', (int) $payload->uid, SQLITE3_INTEGER);
-
     $result = $stmt->execute();
 
     if (!$result) {
-
         error_log($db->lastErrorMsg());
         outputJson([
             'success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
@@ -520,7 +516,7 @@ function getCheckStatus()
     $user['id'] = (int) $user['id'];
     $user['role'] = (int) $user['role'];
 
-    outputJson(['success' => true, 'data' => ['user' => $user, 'jwt-payload' => $payload]], 200); //sacar el paylaod en prod
+    outputJson(['success' => true, 'data' => ['user' => $user]], 200); //sacar el paylaod en prod
 }
 
 
@@ -550,7 +546,7 @@ function getLogsByName($name){
 
     requireRole([1]); 
     $bd=initDB();
-    $sql = "SELECT * FROM logs WHERE username LIKE :name";
+    $sql = "SELECT * FROM logs WHERE username LIKE :name COLLATE NOCASE";
     $stmt = $bd->prepare($sql);
 
     if (!$stmt) {
@@ -584,34 +580,11 @@ function getLogsByName($name){
 
 }
 
-function getUsersFull() {
-
-    //requireRole([1]);
-
-    $bd = initDB();
-    $result = $bd->query('SELECT id, username, email, password ,role, user_image, created_at FROM users');
-
-    if (!$result) {
-        error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
-    }
-
-
-    $ret = [];
-    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($fila['id'], 'integer');
-        $ret[] = $fila;
-    }
-    outputJson(['success' => true,'data' => $ret]);
-}
-
-
-
 // ----------------- Api ------------------
 
 function getUsers() {
 
-    //requireRole([1]);
+    requireRole([1]);
 
 	$bd = initDB();
 	$result = $bd->query('SELECT id, username, email, role, user_image, created_at FROM users');
@@ -633,7 +606,7 @@ function getUsers() {
 
 function getUsersById($id)
 {
-    //requireRole([1,2,3]); 
+    requireRole([1]); 
     $bd=initDB();
     $sql = "SELECT id, username, email, role, user_image, created_at FROM users WHERE id =:id";
     $stmt = $bd->prepare($sql);
@@ -665,9 +638,9 @@ function getUsersById($id)
 
 function getUsersByName($name)
 {
-    //requireRole([1]); 
+    requireRole([1]); 
     $bd=initDB();
-    $stmt = $bd->prepare("SELECT id, username, email, role, user_image, created_at FROM users WHERE username LIKE :name");
+    $stmt = $bd->prepare("SELECT id, username, email, role, user_image, created_at FROM users WHERE username LIKE :name COLLATE NOCASE");
 
     if (!$stmt) {
         error_log($db->lastErrorMsg());
@@ -701,7 +674,7 @@ function getUsersByName($name)
 
 function postUsers()
 {
-    //requireRole([1]);
+    requireRole([1]);
     $db = initDB();
     $data = $_POST;
 
@@ -840,7 +813,7 @@ function postUsers()
 
 function deleteUsers()
 {
-    //requireRole([1]);
+    requireRole([1]);
     $db = initDB();
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -955,7 +928,7 @@ function deleteUsers()
 
 function deleteUsersPhoto($id)
 {
-    //requireRole([1,2,3]);
+    requireRole([1]);
 
     $db = initDB();
     if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
@@ -1030,7 +1003,7 @@ function deleteUsersPhoto($id)
 
 function patchUsersById($id)
 {
-    //requireRole([1,2,3]);
+    requireRole([1]);
     $db = initDB();
 
     //Input checks
@@ -1254,7 +1227,7 @@ function patchUsersById($id)
 function postUsersPhoto()
 {   
 
-    //requireRole([1,2,3]);
+    requireRole([1]);
 
     $db = initDB();
     $id = $_POST['id'] ?? null;
@@ -1350,7 +1323,7 @@ function postUsersPhoto()
 
 function getStock() {
 
-    //requireRole([1,2]);
+    requireRole([1,2]);
 
     $db = initDB();
     $result = $db->query('SELECT * FROM stock');
@@ -1369,7 +1342,7 @@ function getStock() {
 
 function getStockById($id)
 {
-    //requireRole([1,2]);
+    requireRole([1,2]);
     $db = initDB();
 
     if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
@@ -1411,7 +1384,7 @@ function getStockById($id)
 
 function getStockByLine($line)
 {
-    // requireRole([1, 2]);
+    requireRole([1, 2]);
 
     if (!is_string($line) || $line === '' || !ctype_digit($line)) {
         outputJson(['success' => false, 'error' => ['code' => 'INVALID_LINE', 'message' => 'Line must contain only numbers']], 400);
@@ -1450,14 +1423,8 @@ function getStockByLine($line)
 
 function postStock()
 {
-    //requireRole([1,2]);
-
+    requireRole([1,2]);
     $db = initDB();
-
-    // -----------------------------
-    // Request
-    // -----------------------------
-
     $data = $_POST;
 
     if (!is_array($data)) {
@@ -1467,10 +1434,6 @@ function postStock()
             'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid request']], 400);
 
     }
-
-    // -----------------------------
-    // Required fields
-    // -----------------------------
 
     $requiredFields = ['imei', 'model', 'brand', 'ph_provider', 'line', 'line_provider'];
 
@@ -1484,10 +1447,6 @@ function postStock()
 
         }
     }
-
-    // -----------------------------
-    // String validation
-    // -----------------------------
 
     $stringFields = ['imei', 'model', 'brand', 'ph_provider', 'line_provider'];
 
@@ -1614,22 +1573,14 @@ function postStock()
 
 function patchStockById($id)
 {
-    //requireRole([1,2]);
+    requireRole([1,2]);
     $db = initDB();
-
-    // -----------------------------
-    // 1. Validar ID
-    // -----------------------------
 
     if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
 
         outputJson(['success' => false, 'error' => ['code' => 'INVALID_STOCK_ID', 'message' => 'Invalid stock ID']], 400);
 
     }
-
-    // -----------------------------
-    // 2. JSON
-    // -----------------------------
 
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -1808,10 +1759,8 @@ function patchStockById($id)
 
 function postStockPhoto()
 {
-    //requireRole([1,2]);
-
+    requireRole([1,2]);
     $db = initDB();
-
     $id = $_POST['id'] ?? null;
 
     if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0 || $id ===null) {
@@ -1905,7 +1854,7 @@ function postStockPhoto()
 
 function deleteStock()
 {
-    //requireRole([1,2]);
+    requireRole([1,2]);
     $db = initDB();
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -1932,15 +1881,9 @@ function deleteStock()
     }
 
     $idArray = array_map('intval', $idArray);
-
     // Remove duplicated IDs
     $idArray = array_values(array_unique($idArray));
-
     $ids = implode(',', array_fill(0, count($idArray), '?'));
-
-    // -----------------------------
-    // Transaction
-    // -----------------------------
 
     if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
 
@@ -2031,7 +1974,7 @@ function deleteStock()
 
 function deleteStockPhoto($id)
 {
-    //requireRole([1,2]);
+    requireRole([1,2]);
     $db = initDB();
 
     if (!filter_var($id, FILTER_VALIDATE_INT) || $id <= 0) {
@@ -2111,10 +2054,14 @@ function getSubscriptions() {
     requireRole([1,2,3]);
 
     $bd = initDB();
-    $result = $bd->query('SELECT s.id, u.username, u.email, u.user_image, st.model, st.brand, st.imei, st.provider, st.phone_image, l.line, l.provider
-        FROM subscriptions s 
-        INNER JOIN users u ON s.user_id=u.id
-        INNER JOIN stock st ON s.stock_id=st.id');
+    $result = $bd->query($sql = '
+    SELECT s.id, s.user_id, s.stock_id,
+        u.username, u.email, u.user_image,
+        st.imei, st.model, st.brand, st.ph_provider, st.phone_image, st.line, st.line_provider
+    FROM subscriptions AS s
+    INNER JOIN users AS u ON u.id = s.user_id
+    INNER JOIN stock AS st ON st.id = s.stock_id
+    ORDER BY s.id DESC');
 
     if (!$result) {
         error_log($db->lastErrorMsg());
@@ -2122,54 +2069,330 @@ function getSubscriptions() {
     }
 
     $ret = [];
-    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($fila['id'], 'integer');
-        $ret[] = $fila;
+
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $row['id'] = (int) $row['id'];
+        $row['user_id'] = (int) $row['user_id'];
+        $row['stock_id'] = (int) $row['stock_id'];
+
+        $ret[] = $row;
     }
 
     outputJson(['success' => true,'data' => $ret]);
 
 }
 
-function getSubscriptionsById($id)
+function getSubscriptionsByName($username)
 {
-    requireRole([1,2,3]);
+    requireRole([1, 2, 3]);
+    $username = trim((string) $username);
+    if ($username === '') {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_USERNAME', 'message' => 'Username is required']], 400);
+    }
 
     $db = initDB();
 
-    $sql = "
-        SELECT s.id, u.username, u.email, u.user_image, st.model, st.brand, st.imei, st.provider, st.phone_image
-        FROM subscriptions s
-        INNER JOIN users u ON s.user_id = u.id
-        INNER JOIN stock st ON s.stock_id = st.id
-        WHERE s.id = :id";
-
-    $stmt = $db->prepare($sql);
+    $stmt = $db->prepare('
+    SELECT s.id, s.user_id, s.stock_id,
+        u.username, u.email, u.user_image,
+        st.imei, st.model, st.brand, st.ph_provider, st.phone_image, st.line, st.line_provider
+        FROM subscriptions AS s
+        INNER JOIN users AS u ON u.id = s.user_id
+        INNER JOIN stock AS st ON st.id = s.stock_id
+        WHERE u.username LIKE :username COLLATE NOCASE
+        ORDER BY s.id DESC');
 
     if (!$stmt) {
         error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare subscription get']], 500);
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare subscription search']], 500);
     }
 
-    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
-
+    $stmt->bindValue(':username','%' . $username . '%', SQLITE3_TEXT);
     $result = $stmt->execute();
 
     if (!$result) {
         error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not get subscription']], 500);
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not search subscriptions']], 500);
     }
 
     $ret = [];
+    
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $row['id'] = (int) $row['id'];
+        $row['user_id'] = (int) $row['user_id'];
+        $row['stock_id'] = (int) $row['stock_id'];
 
-    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($fila['id'], 'integer');
-        $ret[] = $fila;
+        $ret[] = $row;
     }
 
-    outputJson(['success' => true,'data' => $ret]);
-    
+
+    outputJson(['success' => true, 'data' => $ret]);
 }
+
+
+function getSubscriptionOptions()
+{
+    requireRole([1, 2, 3]);
+
+    $db = initDB();
+
+    $usersResult = $db->query('SELECT id, username, email FROM users ORDER BY username COLLATE NOCASE');
+
+    if (!$usersResult) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not get subscription users']], 500);
+    }
+
+    $stockResult = $db->query(
+        'SELECT st.id, st.imei, st.model, st.brand, st.line
+         FROM stock st
+         LEFT JOIN subscriptions s ON s.stock_id = st.id WHERE s.id IS NULL ORDER BY st.line');
+
+    if (!$stockResult) {
+        error_log($db->lastErrorMsg());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not get available stock']], 500);
+    }
+
+    $users = [];
+
+    while ($row = $usersResult->fetchArray(SQLITE3_ASSOC)) {
+        $row['id'] = (int) $row['id'];
+        $users[] = $row;
+    }
+
+    $stock = [];
+
+    while ($row = $stockResult->fetchArray(SQLITE3_ASSOC)) {
+        $row['id'] = (int) $row['id'];
+        $row['line'] = (int) $row['line'];
+        $stock[] = $row;
+    }
+
+    outputJson(['success' => true, 'data' => ['users' => $users, 'stock' => $stock]], 200);
+}
+
+
+
+function postSubscriptions()
+{
+    requireRole([1, 2, 3]);
+
+    $db = initDB();
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!is_array($data)) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid JSON body']], 400);
+    }
+
+    $userId = filter_var($data['user_id'] ?? null, FILTER_VALIDATE_INT);
+
+    $stockId = filter_var($data['stock_id'] ?? null, FILTER_VALIDATE_INT);
+
+    if ($userId === false || $userId <= 0) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_USER_ID', 'message' => 'Invalid user ID']], 400);
+    }
+
+    if ($stockId === false || $stockId <= 0) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_STOCK_ID', 'message' => 'Invalid stock ID']], 400);
+    }
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+        error_log($db->lastErrorMsg());
+
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    try {
+        $stmt = $db->prepare(
+            'SELECT
+                EXISTS(
+                    SELECT 1 FROM users WHERE id = :user_id
+                ) AS user_exists,
+                EXISTS(
+                    SELECT 1 FROM stock WHERE id = :stock_id
+                ) AS stock_exists,
+                EXISTS(
+                    SELECT 1
+                    FROM subscriptions
+                    WHERE stock_id = :stock_id
+                ) AS stock_assigned'
+        );
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare validation query');
+        }
+
+        $stmt->bindValue(':user_id', $userId, SQLITE3_INTEGER);
+        $stmt->bindValue(':stock_id', $stockId, SQLITE3_INTEGER);
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not validate subscription');
+        }
+
+        $status = $result->fetchArray(SQLITE3_ASSOC);
+
+        if (!(int) $status['user_exists']) {
+            $db->exec('ROLLBACK');
+
+            outputJson([
+                'success' => false,
+                'error' => [
+                    'code' => 'USER_NOT_FOUND', 'message' => 'User not found']], 404);
+        }
+
+        if (!(int) $status['stock_exists']) {
+            $db->exec('ROLLBACK');
+
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'STOCK_NOT_FOUND', 'message' => 'Stock item not found']], 404);
+        }
+
+        if ((int) $status['stock_assigned']) {
+            $db->exec('ROLLBACK');
+
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'STOCK_ALREADY_ASSIGNED', 'message' => 'The selected stock item already has a user']], 409);
+        }
+
+        $stmt = $db->prepare('INSERT INTO subscriptions (user_id, stock_id) VALUES (:user_id, :stock_id)');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare subscription creation');
+        }
+
+        $stmt->bindValue(':user_id', $userId, SQLITE3_INTEGER);
+        $stmt->bindValue(':stock_id', $stockId, SQLITE3_INTEGER);
+
+        if (!$stmt->execute()) {
+            if ($db->lastErrorCode() === 19) {
+                $db->exec('ROLLBACK');
+                outputJson([
+                    'success' => false,
+                    'error' => ['code' => 'STOCK_ALREADY_ASSIGNED', 'message' => 'The selected stock item already has a user']], 409);
+            }
+
+            throw new Exception('Could not create subscription');
+        }
+
+        $id = $db->lastInsertRowID();
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit subscription');
+        }
+    } catch (Exception $error) {
+        $db->exec('ROLLBACK');
+        error_log($error->getMessage());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not create subscription']], 500);
+    }
+
+    outputJson(['success' => true, 'data' => ['id' => (int) $id]], 201);
+}
+
+
+function deleteSubscriptions()
+{
+    requireRole([1, 2, 3]);
+    $db = initDB();
+    $data = json_decode(file_get_contents('php://input'), true);
+    $idArray = $data['idArray'] ?? [];
+
+    if (!is_array($idArray) || empty($idArray)) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Subscription IDs are required']], 400);
+    }
+
+    foreach ($idArray as $id) {
+        if (filter_var($id, FILTER_VALIDATE_INT) === false || (int) $id <= 0) {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_SUBSCRIPTION_ID', 'message' => 'Invalid subscription ID']], 400);
+        }
+    }
+
+    $idArray = array_values(array_unique(array_map('intval', $idArray)));
+    $placeholders = implode(',', array_fill(0, count($idArray), '?'));
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    try {
+        $stmt = $db->prepare("SELECT id FROM subscriptions WHERE id IN ($placeholders)");
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare subscription query');
+        }
+
+        foreach ($idArray as $index => $id) {
+            $stmt->bindValue($index + 1, $id, SQLITE3_INTEGER);
+        }
+
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not retrieve subscriptions');
+        }
+
+        $foundIds = [];
+
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            $foundIds[] = (int) $row['id'];
+        }
+
+        if (count($foundIds) !== count($idArray)) {
+            $db->exec('ROLLBACK');
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'SUBSCRIPTION_NOT_FOUND', 'message' => 'One or more subscriptions do not exist']], 404);
+        }
+
+        $stmt = $db->prepare("DELETE FROM subscriptions WHERE id IN ($placeholders)");
+        if (!$stmt) {
+            throw new Exception('Could not prepare subscription deletion');
+        }
+        foreach ($idArray as $index => $id) {
+            $stmt->bindValue($index + 1, $id, SQLITE3_INTEGER);
+        }
+        if (!$stmt->execute()) {
+            throw new Exception('Could not delete subscriptions');
+        }
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit subscription deletion');
+        }
+    } catch (Exception $error) {
+        $db->exec('ROLLBACK');
+        error_log($error->getMessage());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not delete subscriptions']], 500);
+    }
+
+    outputJson(['success' => true, 'data' => ['deleted_count' => count($idArray), 'ids' => $idArray]]);
+}
+
+
 
 
 ?>

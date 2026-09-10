@@ -1,10 +1,21 @@
 <nav class="sticky top-0 z-50 isolate w-full bg-base-100 shadow-sm">
   <div class="menu bg-base-200 rounded-box flex w-full flex-row justify-between overflow-visible">
     <ul class="flex flex-row">
-      <li><a routerLink="/user/subs" routerLinkActive="btn-primary" class="btn">Subscriptions</a></li>
-      <li><a routerLink="/user/stock" routerLinkActive="btn-primary" class="btn">Stock</a></li>
-      <li><a routerLink="/user/logs" routerLinkActive="btn-primary" class="btn">Logs</a></li>
-      <li><a routerLink="/user/users" routerLinkActive="btn-primary" class="btn">Users</a></li>
+      @if (hasAnyRole(roleAccess.subscriptions)) {
+        <li><a routerLink="/user/subs" routerLinkActive="btn-primary" class="btn">Subscriptions</a></li>
+      }
+
+      @if (hasAnyRole(roleAccess.stock)) {
+        <li><a routerLink="/user/stock" routerLinkActive="btn-primary" class="btn">Stock</a></li>
+      }
+
+      @if (hasAnyRole(roleAccess.logs)) {
+        <li><a routerLink="/user/logs" routerLinkActive="btn-primary" class="btn">Logs</a></li>
+      }
+
+      @if (hasAnyRole(roleAccess.users)) {
+        <li><a routerLink="/user/users" routerLinkActive="btn-primary" class="btn">Users</a></li>
+      }
     </ul>
 
     <ul class="flex flex-row">
@@ -15,8 +26,8 @@
           </summary>
 
           <ul class="absolute right-0 z-50 w-52 rounded-box bg-base-100 p-2 shadow">
-            <li><a routerLink="/user/profile/settings" class="btn">Settings</a></li>
-            <li><button type="button" routerLink="/" class="btn">Log Out</button></li>
+            <li><a routerLink="/user/profile" class="btn">Settings</a></li>
+            <li><button type="button" (click)="logout()" class="btn">Log Out</button></li>
           </ul>
         </details>
       </li>

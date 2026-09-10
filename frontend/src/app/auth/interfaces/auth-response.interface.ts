@@ -1,5 +1,4 @@
-
 export interface AuthResponse {
-  succes: boolean;
+  success: boolean;
   jwt: string;
 }
