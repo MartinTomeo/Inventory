@@ -1,1 +1,195 @@
-<h1>{{profileService.getProfile()}}</h1>
+<div class="mx-auto max-w-6xl space-y-6 p-4 md:p-6">
+  <h1 class="text-2xl font-bold">Mi perfil</h1>
+
+  @if (errorMessage(); as message) {
+    <div role="alert" class="alert alert-error">
+      {{ message }}
+    </div>
+  }
+
+  @if (successMessage(); as message) {
+    <div role="status" class="alert alert-success">
+      {{ message }}
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="flex justify-center p-8" role="status">
+      <span class="loading loading-spinner loading-lg"></span>
+      <span class="sr-only">Cargando perfil</span>
+    </div>
+  } @else if (profile(); as profileData) {
+    <section class="card bg-base-100 shadow-lg">
+      <div class="card-body gap-6">
+        <!-- Imagen propia -->
+        <div class="flex flex-col items-center gap-3">
+          <div class="avatar">
+            <div class="w-24 rounded-lg ring ring-primary ring-offset-2">
+              @if (profileData.user.user_image; as filename) {
+                <img
+                  [src]="imageUrl('users', filename)"
+                  alt="Foto de perfil"
+                />
+              } @else {
+                <div
+                  class="flex h-full items-center justify-center bg-base-200"
+                >
+                  Sin foto
+                </div>
+              }
+            </div>
+          </div>
+
+          <input
+            #photoInput
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            class="hidden"
+            [disabled]="isSaving()"
+            (change)="onPhotoSelected($event)"
+          />
+
+          <button
+            type="button"
+            class="btn btn-sm"
+            [disabled]="isSaving()"
+            (click)="photoInput.click()"
+          >
+            Seleccionar imagen
+          </button>
+
+          @if (selectedPhoto(); as photo) {
+            <span class="max-w-full break-all text-sm">
+              {{ photo.name }}
+            </span>
+
+            <button
+              type="button"
+              class="btn btn-primary btn-sm"
+              [disabled]="isSaving()"
+              (click)="uploadPhoto(photoInput)"
+            >
+              Guardar imagen
+            </button>
+          }
+        </div>
+
+        <!-- Datos propios -->
+        <form
+          [formGroup]="profileForm"
+          (ngSubmit)="updateProfile()"
+        >
+          <fieldset
+            class="grid gap-4 md:grid-cols-2"
+            [disabled]="isSaving()"
+          >
+            <div class="flex flex-col gap-1">
+              <label for="profile-username" class="label">Usuario</label>
+
+              <input
+                id="profile-username"
+                type="text"
+                class="input input-bordered w-full"
+                formControlName="username"
+                autocomplete="username"
+              />
+
+              @if (isSubmitted() && fieldErrors()['username']) {
+                <span class="text-sm text-error">
+                  {{ fieldErrors()['username'] }}
+                </span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label for="profile-email" class="label">Email</label>
+
+              <input
+                id="profile-email"
+                type="email"
+                class="input input-bordered w-full"
+                formControlName="email"
+                autocomplete="email"
+              />
+
+              @if (isSubmitted() && fieldErrors()['email']) {
+                <span class="text-sm text-error">
+                  {{ fieldErrors()['email'] }}
+                </span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-1 md:col-span-2">
+              <label for="profile-password" class="label">
+                Nueva contraseña
+              </label>
+
+              <input
+                id="profile-password"
+                type="password"
+                class="input input-bordered w-full"
+                formControlName="password"
+                autocomplete="new-password"
+                placeholder="Dejar vacío para conservar la contraseña"
+              />
+
+              @if (isSubmitted() && fieldErrors()['password']) {
+                <span class="text-sm text-error">
+                  {{ fieldErrors()['password'] }}
+                </span>
+              }
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary md:col-span-2"
+            >
+              {{ isSaving() ? 'Guardando…' : 'Guardar cambios' }}
+            </button>
+          </fieldset>
+        </form>
+      </div>
+    </section>
+
+    <!-- Stock: solo lectura -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold">Equipos asignados</h2>
+
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @for (item of profileData.stock; track item.id) {
+          <article class="card bg-base-100 shadow-lg">
+            @if (item.phone_image; as filename) {
+              <figure class="h-44 bg-base-200 p-3">
+                <img
+                  [src]="imageUrl('stock', filename)"
+                  [alt]="item.brand + ' ' + item.model"
+                  class="h-full w-full object-contain"
+                  loading="lazy"
+                />
+              </figure>
+            }
+
+            <div class="card-body">
+              <h3 class="card-title">
+                {{ item.brand }} {{ item.model }}
+              </h3>
+
+              <p class="break-all">IMEI: {{ item.imei }}</p>
+              <p>Línea: {{ item.line }}</p>
+              <p>Proveedor del equipo: {{ item.ph_provider }}</p>
+              <p>Proveedor de línea: {{ item.line_provider }}</p>
+            </div>
+          </article>
+        } @empty {
+          <p class="rounded-box bg-base-200 p-4 sm:col-span-2 lg:col-span-3">
+            No tenés equipos asignados.
+          </p>
+        }
+      </div>
+    </section>
+  } @else {
+    <button type="button" class="btn" (click)="loadProfile()">
+      Reintentar
+    </button>
+  }
+</div>

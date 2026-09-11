@@ -7,13 +7,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const token = localStorage.getItem('jwt');
 
-  const authReq = token
-    ? req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-    : req;
+  //para pasar req cuando aun no se tiene jwt
+  const authReq = token ? req.clone({setHeaders: {Authorization: `Bearer ${token}`,}}): req;
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {

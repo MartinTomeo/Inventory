@@ -25,9 +25,6 @@ export class AuthService {
   currentUser = computed(() => this._currentUser());
   isAuthenticated = computed(() => this._authStatus() === 'authenticated');
   username = computed(() => this._currentUser()?.username ?? '');
-  hasStoredToken(): boolean {
-    return !!localStorage.getItem('jwt');
-  }
 
   constructor() {
 
@@ -94,5 +91,15 @@ export class AuthService {
     this._authStatus.set('not-authenticated');
 
   }
+
+  //para poder actualizarlo desde profile
+  updateCurrentUser(user: AuthUser): void {
+    this._currentUser.set(user);
+  }
+
+  hasStoredToken(): boolean {
+    return !!localStorage.getItem('jwt');
+  }
+
 
 }

@@ -38,7 +38,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (pm.response.code === 200) {\n\n  const json = pm.response.json();\n\n  pm.environment.set('jwt', json.jwt);\n\n}"
+                  "if (pm.response.code === 200) {\n  const json = pm.response.json();\n  pm.environment.set('jwt', json.jwt);\n\n}"
                 ]
               }
             }
@@ -158,7 +158,7 @@
           "response": []
         },
         {
-          "name": "Create User (form-data; optional photo)",
+          "name": "Create User (form-data)",
           "event": [
             {
               "listen": "test",
@@ -605,6 +605,24 @@
           "response": []
         },
         {
+          "name": "Get Subscriptions Options",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/options",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subscriptions",
+                "options"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Delete Subscriptions",
           "request": {
             "method": "DELETE",
@@ -690,6 +708,84 @@
               "path": [
                 "subscriptions",
                 "admin"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Patch Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"adminUpdated\",\r\n    \"email\": \"adminUpdated@example.com\",\r\n    \"password\": \"adminUpdated\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Profile Photo (form-data)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/Usuario/Pictures/GsWeG9nXoAE0Sy8.jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/profile/photo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile",
+                "photo"
               ]
             }
           },

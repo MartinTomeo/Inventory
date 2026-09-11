@@ -516,8 +516,306 @@ function getCheckStatus()
     $user['id'] = (int) $user['id'];
     $user['role'] = (int) $user['role'];
 
-    outputJson(['success' => true, 'data' => ['user' => $user]], 200); //sacar el paylaod en prod
+    outputJson(['success' => true, 'data' => ['user' => $user]], 200);
 }
+
+// ----------------- Profile ---------------------
+
+
+function getProfile()
+{
+    $payload = requireLogin();
+    $userId = (int) $payload->uid;
+    $db = initDB();
+
+    $stmt = $db->prepare('SELECT id, username, email, role, user_image, created_at FROM users WHERE id = :id');
+
+    if (!$stmt) {
+        error_log($db->lastErrorMsg());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare profile query']], 500);
+    }
+
+    $stmt->bindValue(':id', $userId, SQLITE3_INTEGER);
+    $result = $stmt->execute();
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrieve profile']], 500);
+    }
+
+    $user = $result->fetchArray(SQLITE3_ASSOC);
+
+    if (!$user) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'USER_NOT_FOUND', 'message' => 'User not found']], 404);
+    }
+
+    $user['id'] = (int) $user['id'];
+    $user['role'] = (int) $user['role'];
+
+    $stmt = $db->prepare(
+        'SELECT s.id AS subscription_id,
+            st.id, st.imei, st.model, st.brand, st.ph_provider, st.phone_image, st.line, st.line_provider
+         FROM subscriptions s
+         INNER JOIN stock st ON st.id = s.stock_id
+         WHERE s.user_id = :user_id
+         ORDER BY st.brand, st.model'
+    );
+
+    if (!$stmt) {
+        error_log($db->lastErrorMsg());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare assigned stock query']], 500);
+    }
+
+    $stmt->bindValue(':user_id', $userId, SQLITE3_INTEGER);
+    $result = $stmt->execute();
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrieve assigned stock']], 500);
+    }
+
+    $stock = [];
+
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $row['subscription_id'] = (int) $row['subscription_id'];
+        $row['id'] = (int) $row['id'];
+        $row['line'] = (int) $row['line'];
+
+        $stock[] = $row;
+    }
+
+    outputJson(['success' => true, 'data' => ['user' => $user, 'stock' => $stock]], 200);
+}
+
+
+function patchProfile()
+{
+    $payload = requireLogin();
+    $userId = (int) $payload->uid;
+    $db = initDB();
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!is_array($data)) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid JSON body']], 400);
+    }
+
+    if (empty($data)) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'NO_FIELDS_TO_UPDATE', 'message' => 'No fields were provided for update']], 400);
+    }
+
+    $allowedFields = ['username', 'email', 'password'];
+
+    foreach ($data as $field => $value) {
+        if (!in_array($field, $allowedFields, true)) {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_FIELD', 'message' => "Field '$field' cannot be modified"]], 400);
+        }
+    }
+
+    if (array_key_exists('username', $data)) {
+        if (!is_string($data['username']) || trim($data['username']) === '') {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_USERNAME', 'message' => 'Invalid username']], 400);
+        }
+
+        $data['username'] = trim($data['username']);
+    }
+
+    if (array_key_exists('email', $data)) {
+        if (!is_string($data['email']) || !filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL)) {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email address']], 400);
+        }
+
+        $data['email'] = trim($data['email']);
+    }
+
+    if (array_key_exists('password', $data)) {
+        if (!is_string($data['password']) || strlen($data['password']) < 8) {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_PASSWORD', 'message' => 'Password must contain at least 8 characters']], 400);
+        }
+    }
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+        error_log($db->lastErrorMsg());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    try {
+        $conflict = findUserConflict($db, $data['username'] ?? null, $data['email'] ?? null, $userId);
+
+        if ($conflict !== null) {
+            $db->exec('ROLLBACK');
+            outputJson(['success' => false, 'error' => $conflict], 409);
+        }
+
+        $updates = [];
+        $params = [];
+
+        foreach ($allowedFields as $field) {
+            if (!array_key_exists($field, $data)) {
+                continue;
+            }
+            $updates[] = "$field = :$field";
+            $params[$field] = $field === 'password' ? password_hash($data[$field], PASSWORD_DEFAULT) : $data[$field];
+        }
+
+        $sql = 'UPDATE users SET ' . implode(', ', $updates) . ' WHERE id = :id';
+
+        $stmt = $db->prepare($sql);
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare profile update');
+        }
+
+        foreach ($params as $field => $value) {
+            $stmt->bindValue(":$field", $value, SQLITE3_TEXT);
+        }
+
+        $stmt->bindValue(':id', $userId, SQLITE3_INTEGER);
+
+        if (!$stmt->execute()) {
+            throw new Exception('Could not update profile');
+        }
+
+        $stmt = $db->prepare('SELECT id, username, email, role, user_image, created_at FROM users WHERE id = :id');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare updated profile query');
+        }
+
+        $stmt->bindValue(':id', $userId, SQLITE3_INTEGER);
+        $result = $stmt->execute();
+
+        if (!$result) {
+            throw new Exception('Could not retrieve updated profile');
+        }
+
+        $user = $result->fetchArray(SQLITE3_ASSOC);
+
+        if (!$user) {
+            throw new Exception('Updated user not found');
+        }
+
+        $user['id'] = (int) $user['id'];
+        $user['role'] = (int) $user['role'];
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit profile update');
+        }
+
+        outputJson(['success' => true, 'data' => ['user' => $user, 'updated' => array_keys($params)]], 200);
+
+    } catch (Exception $e) {
+        $db->exec('ROLLBACK');
+        error_log($e->getMessage());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not update profile']], 500);
+    }
+}
+
+
+function postProfilePhoto()
+{
+    $payload = requireLogin();
+    $userId = (int) $payload->uid;
+    $db = initDB();
+
+    $stmt = $db->prepare('SELECT user_image FROM users WHERE id = :id');
+
+    if (!$stmt) {
+        error_log($db->lastErrorMsg());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not prepare profile image query']], 500);
+    }
+
+    $stmt->bindValue(':id', $userId, SQLITE3_INTEGER);
+    $result = $stmt->execute();
+
+    if (!$result) {
+        error_log($db->lastErrorMsg());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrieve profile']], 500);
+    }
+
+    $user = $result->fetchArray(SQLITE3_ASSOC);
+
+    if (!$user) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'USER_NOT_FOUND', 'message' => 'User not found']], 404);
+    }
+
+    $upload = saveUploadedImage($_FILES['photo'] ?? null, getUsersUploadDir());
+
+    if (!$upload['success']) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => $upload['code'], 'message' => $upload['message']]], 400);
+    }
+
+    $oldImage = $user['user_image'];
+    $newImage = $upload['fileName'];
+
+    if (!$db->exec('BEGIN IMMEDIATE TRANSACTION')) {
+        deleteImageFile($newImage, getUsersUploadDir());
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not start transaction']], 500);
+    }
+
+    try {
+        $stmt = $db->prepare('UPDATE users SET user_image = :user_image WHERE id = :id');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare profile image update');
+        }
+
+        $stmt->bindValue(':user_image', $newImage, SQLITE3_TEXT);
+        $stmt->bindValue(':id', $userId, SQLITE3_INTEGER);
+
+        if (!$stmt->execute()) {
+            throw new Exception('Could not update profile image');
+        }
+
+        if (!$db->exec('COMMIT')) {
+            throw new Exception('Could not commit profile image update');
+        }
+
+    } catch (Exception $e) {
+        $db->exec('ROLLBACK');
+        deleteImageFile($newImage, getUsersUploadDir());
+        error_log($e->getMessage());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not update profile photo']], 500);
+    }
+
+    deleteImageFile($oldImage, getUsersUploadDir());
+    outputJson(['success' => true, 'data' => ['image' => $newImage, 'updated' => ['user_image']]], 200);
+}
+
 
 
 // ----------------- Auditar (solo Admin)------------------
@@ -2391,8 +2689,6 @@ function deleteSubscriptions()
 
     outputJson(['success' => true, 'data' => ['deleted_count' => count($idArray), 'ids' => $idArray]]);
 }
-
-
 
 
 ?>
