@@ -1,3 +1,5 @@
+import { finalize, of, switchMap } from 'rxjs';
+import { PhotoUtils } from '../../../shared/utils/photo-utils';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -16,8 +18,11 @@ export class UsersForm {
   private fb = inject(FormBuilder);
   usersService = inject(UsersService);
   formUtils = FormUtils;
+  isSaving = signal(false);
   isSubmited = signal(false);
   selectedPhoto = signal<File | null>(null);
+  photoError = signal<string | null>(null);
+  readonly photoAccept = PhotoUtils.accept;
   selectedUser = computed(() =>
     this.usersService.selectedUserResource.value()
   );
@@ -59,6 +64,7 @@ export class UsersForm {
           role: 1,
         });
         this.selectedPhoto.set(null);
+        this.photoError.set(null);
         return;
       }
 
@@ -78,28 +84,29 @@ export class UsersForm {
       });
 
       this.selectedPhoto.set(null);
+      this.photoError.set(null);
     });
   }
 
-  onPhotoSelected(event: Event) {
+  onPhotoSelected(event: Event): void {
+    if (this.isSaving()) return;
 
-    const input = event.target as HTMLInputElement;
-
-    if (!input.files?.length) {
-      return;
-    }
-
-    this.selectedPhoto.set(input.files[0]);
+    const selection = PhotoUtils.select(event);
+    if (!selection) return;
+    this.selectedPhoto.set(selection.photo);
+    this.photoError.set(selection.error);
   }
 
   onSubmit() {
+    if (this.isSaving()) return;
+
     this.hasFormError.set(false);
     this.isSubmited.set(true);
 
     const errors = this.evaluateFormErrors();
     this.submittedControlErrors.set(errors);
 
-    if (this.userForm.invalid) {
+    if (this.userForm.invalid || this.photoError()) {
       this.userForm.markAllAsTouched();
       return;
     }
@@ -112,10 +119,14 @@ export class UsersForm {
   }
 
   clearForm() {
+    if (this.isSaving()) return;
+
     this.isSubmited.set(false);
     this.submittedControlErrors.set({});
     this.selectedPhoto.set(null);
+    this.photoError.set(null);
     this.usersService.newUser();
+    this.userForm.reset({ username: '', email: '', password: '', role: 1 });
   }
 
   private configurePasswordValidators(mode: 'new' | 'edit') {
@@ -146,6 +157,7 @@ export class UsersForm {
   }
 
   private createUser() {
+    this.isSaving.set(true);
     const value = this.userForm.getRawValue();
 
     this.usersService.postUser(
@@ -157,13 +169,17 @@ export class UsersForm {
       },
       this.selectedPhoto()
     )
+    .pipe(finalize(() => this.isSaving.set(false)))
     .subscribe({
       next: () => {
         this.usersService.usersResource.reload();
+        this.selectedPhoto.set(null);
+        this.photoError.set(null);
         this.submittedControlErrors.set({});
         this.isSubmited.set(false);
         this.hasFormError.set(false);
         this.usersService.newUser();
+        this.userForm.reset({ username: '', email: '', password: '', role: 1 });
       },
       error: (error: HttpErrorResponse) => {
         this.showRequestError(error);
@@ -173,46 +189,56 @@ export class UsersForm {
 
   private updateUser() {
     const id = this.usersService.selectedUserId();
-    if (id === null) {
-      return;
-    }
-    const value = this.userForm.getRawValue();
 
-    const payload: {
-      username: string;
-      email: string;
-      password?: string;
-      role: 1 | 2 | 3;
-    } = {
+    if (id === null || this.isSaving()) return;
+
+    const value = this.userForm.getRawValue();
+    const photo = this.selectedPhoto();
+    const payload = {
       username: value.username,
       email: value.email,
       role: value.role,
+      ...(value.password.trim() ? { password: value.password } : {}),
     };
 
-    if (value.password.trim()) {
-      payload.password = value.password;
-    }
+    let dataSaved = false;
+    this.isSaving.set(true);
 
-    this.usersService.updateUser(id, payload)
-      .subscribe({
-        next: () => {
-          const photo = this.selectedPhoto();
-          if (photo){
-            this.usersService.uploadUserPhoto(id, photo)
-              .subscribe({
-                next: () => {
-                  this.reloadResources();
-                }
-              });
-
-            return;
-          }
-          this.reloadResources();
-        },
-        error: (error: HttpErrorResponse) => {
-          this.showRequestError(error);
+    this.usersService.updateUser(id, payload).pipe(
+      switchMap(() => {
+        dataSaved = true;
+        return photo
+          ? this.usersService.uploadUserPhoto(id, photo)
+          : of(null);
+      }),
+      finalize(() => this.isSaving.set(false))
+    ).subscribe({
+      next: () => {
+        // La lista puede cambiar de selección mientras se guarda.
+        if (this.usersService.selectedUserId() !== id) {
+          this.usersService.usersResource.reload();
+          return;
         }
-      });
+        this.reloadResources();
+      },
+      error: (error: HttpErrorResponse) => {
+        if (dataSaved) {
+          this.usersService.usersResource.reload();
+        }
+        if (this.usersService.selectedUserId() !== id) return;
+
+        if (dataSaved && photo) {
+          const message = PhotoUtils.uploadError(error.error?.error?.code);
+          if (message) this.photoError.set(message);
+          this.showFormError(
+            'Los datos se guardaron, pero no se pudo subir la imagen.' +
+            (message ? ` ${message}` : '')
+          );
+          return;
+        }
+        this.showRequestError(error);
+      },
+    });
   }
 
   private reloadResources() {
@@ -220,16 +246,22 @@ export class UsersForm {
     this.usersService.usersResource.reload();
     this.usersService.selectedUserResource.reload();
     this.selectedPhoto.set(null);
+    this.photoError.set(null);
     this.submittedControlErrors.set({});
     this.isSubmited.set(false);
     this.hasFormError.set(false);
   }
 
+  private formErrorTimeout?: ReturnType<typeof setTimeout>;
+
   private showFormError(message: string) {
+    if (this.formErrorTimeout !== undefined) {
+      clearTimeout(this.formErrorTimeout);
+    }
     this.formError.set(message);
     this.hasFormError.set(true);
 
-    setTimeout(() => {
+    this.formErrorTimeout = setTimeout(() => {
       this.hasFormError.set(false);
     }, 2000);
   }
@@ -238,17 +270,29 @@ export class UsersForm {
     const code = error.error?.error?.code;
 
     if (code === 'USERNAME_ALREADY_EXISTS') {
-      this.showFormError('A user with that username already exists.');
+      this.showFormError('Ya existe un usuario con ese nombre.');
       return;
     }
 
     if (code === 'EMAIL_ALREADY_EXISTS') {
-      this.showFormError('A user with that email already exists.');
+      this.showFormError('Ya existe un usuario con ese email.');
       return;
     }
 
-    this.showFormError('The user could not be saved. Please try again.');
-}
+    // Un conflicto siempre se muestra como aviso general.
+    if (error.status === 409) {
+      this.showFormError('No se pudo guardar: hay datos repetidos o en conflicto.');
+      return;
+    }
+
+    const photoMessage = PhotoUtils.uploadError(code);
+    if (photoMessage) {
+      this.photoError.set(photoMessage);
+      return;
+    }
+
+    this.showFormError('No se pudo guardar. Intentá nuevamente.');
+  }
 
 
 private evaluateFormErrors(): Record<string, string> {
@@ -264,7 +308,5 @@ private evaluateFormErrors(): Record<string, string> {
 
   return errors;
 }
-
-
 
 }

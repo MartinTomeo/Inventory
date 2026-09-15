@@ -17,7 +17,7 @@
       @if (stockService.stockResource.error()) {
         <tr>
           <td colspan="8" class="text-center text-error">
-            {{ stockService.stockResource.error() }}
+            {{ stockService.stockResource.error()?.message }}
           </td>
         </tr>
       }

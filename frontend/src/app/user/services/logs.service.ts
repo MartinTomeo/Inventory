@@ -3,7 +3,8 @@ import { Logs } from '../interfaces/logs.interface';
 import { environment } from '@environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { catchError, throwError } from 'rxjs';
+import { catchError, throwError, map } from 'rxjs';
+import { ApiResponse } from '../interfaces/api-response.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -13,11 +14,12 @@ export class LogsService {
 
 
   getLogs() {
-    return this.http.get<Logs[]>(`${environment.apiUrl}/logs`);
+    return this.http.get<ApiResponse<Logs[]>>(`${environment.apiUrl}/logs`) .pipe(map(response => response.data));
   }
 
   getLogsByUsername(username: string) {
-    return this.http.get<Logs[]>(`${environment.apiUrl}/logs/${username}`);
+    return this.http
+      .get<ApiResponse<Logs[]>>(`${environment.apiUrl}/logs/${encodeURIComponent(username.trim())}`).pipe(map(response => response.data));
   }
 
 

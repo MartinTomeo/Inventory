@@ -59,13 +59,17 @@ if (!isset($authRoutes[$routeKey]) && $method === 'post' && count($params) === 1
     $nameFoo = 'getStockByLine';
     $params = [$params[1]];
 
-}elseif (!isset($authRoutes[$routeKey]) && $method === 'get' && $resource === 'subscriptions' && count($params) === 1
+ }elseif (!isset($authRoutes[$routeKey]) && $method === 'get' && $resource === 'subscriptions' && count($params) === 1
     && strtolower($params[0]) === 'options') 
 {
     $nameFoo = 'getSubscriptionOptions';
     $params = [];
 
-} elseif (!isset($authRoutes[$routeKey]) && count($params) > 0 && ($method === 'get' || $method === 'patch')) {
+} elseif ($method === 'get' && $resource === 'logs' && count($params) === 1)
+{
+    $nameFoo = 'getLogsByName';
+
+}  elseif (!isset($authRoutes[$routeKey]) && count($params) > 0 && ($method === 'get' || $method === 'patch')) {
     
     if (is_numeric($params[0])) {
 
@@ -92,9 +96,9 @@ if (function_exists($nameFoo)) {
 
 function outputJson($data = null, int $code = 200): never
 {
-
     http_response_code($code);
     header('Content-Type: application/json');
+    recordRequestLog($code);
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -297,13 +301,73 @@ function findStockConflict(SQLite3 $db, ?string $imei, ?int $line, ?int $exclude
     return null;
 }
 
+function recordRequestLog(int $statusCode): void
+{
+    static $recorded = false;
 
+    if ($recorded) {
+        return;
+    }
+
+    $recorded = true;
+
+    $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? '');
+
+    if ($method === 'OPTIONS') {
+        return;
+    }
+
+    // Tu router obtiene la ruta desde $_GET['action'].
+    $route = trim((string) ($_GET['action'] ?? ''), '/');
+
+    $username = $GLOBALS['requestLogUsername'] ?? 'anonymous';
+
+    // No se guardan el body, las contraseñas ni el JWT.
+    $action = '/' . $route . ' [HTTP ' . $statusCode . ']';
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+
+    $db = null;
+
+    try {
+        $db = initDB();
+
+        // Los errores de SQLite se capturan en el catch.
+        $db->enableExceptions(true);
+        
+
+        $stmt = $db->prepare(
+            'INSERT INTO logs (username, action, method, ip)
+             VALUES (:username, :action, :method, :ip)'
+        );
+
+        $stmt->bindValue(':username', $username, SQLITE3_TEXT);
+        $stmt->bindValue(':action', $action, SQLITE3_TEXT);
+        $stmt->bindValue(':method', $method, SQLITE3_TEXT);
+        $stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
+
+        $result = $stmt->execute();
+        $result->finalize();
+        $stmt->close();
+
+    } catch (Throwable $e) {
+        // Un fallo del log no reemplaza la respuesta del endpoint.
+        error_log('Request logging error: ' . $e->getMessage());
+
+    } finally {
+        if ($db instanceof SQLite3) {
+            $db->close();
+        }
+    }
+}
 
 
 // ----------------- Establecer Base de datos ------------------
 
 function initDB() {
-    return new SQLite3('data.db');
+    $db = new SQLite3(__DIR__ . '/data.db');
+    $db->busyTimeout(3000);
+    return $db;
 }
 
 function postReset() {
@@ -403,6 +467,8 @@ function postLogin()
         outputJson(['success' => false, 'error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'Invalid email or password']], 401);
     }
 
+    $GLOBALS['requestLogUsername'] = $logged['username'];
+
     $now = time();
 
     $payload = [
@@ -456,6 +522,9 @@ function requireLogin()
         if (!is_numeric($decoded->role) || !in_array((int) $decoded->role, [1, 2, 3], true)) {
             throw new Exception('Invalid user role in token');
         }
+
+        $GLOBALS['requestLogUsername'] = isset($decoded->name) && is_string($decoded->name) ? $decoded->name : 'user#' . (int) $decoded->uid;
+
 
         return $decoded;
 
@@ -618,7 +687,7 @@ function patchProfile()
             'error' => ['code' => 'NO_FIELDS_TO_UPDATE', 'message' => 'No fields were provided for update']], 400);
     }
 
-    $allowedFields = ['username', 'email', 'password'];
+    $allowedFields = ['email', 'password'];
 
     foreach ($data as $field => $value) {
         if (!in_array($field, $allowedFields, true)) {
@@ -626,16 +695,6 @@ function patchProfile()
                 'success' => false,
                 'error' => ['code' => 'INVALID_FIELD', 'message' => "Field '$field' cannot be modified"]], 400);
         }
-    }
-
-    if (array_key_exists('username', $data)) {
-        if (!is_string($data['username']) || trim($data['username']) === '') {
-            outputJson([
-                'success' => false,
-                'error' => ['code' => 'INVALID_USERNAME', 'message' => 'Invalid username']], 400);
-        }
-
-        $data['username'] = trim($data['username']);
     }
 
     if (array_key_exists('email', $data)) {
@@ -664,7 +723,7 @@ function patchProfile()
     }
 
     try {
-        $conflict = findUserConflict($db, $data['username'] ?? null, $data['email'] ?? null, $userId);
+        $conflict = findUserConflict($db, null, $data['email'] ?? null, $userId);
 
         if ($conflict !== null) {
             $db->exec('ROLLBACK');
@@ -820,63 +879,61 @@ function postProfilePhoto()
 
 // ----------------- Auditar (solo Admin)------------------
 
-function getLogs() {
-
+function getLogs()
+{
     requireRole([1]);
-
-    $db = initDB();
-    $result = $db->query('SELECT * FROM logs');
-
-    if(!result){
-        error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
-    }
-
-    $ret = [];
-    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($fila['id'], 'integer');
-        $ret[] = $fila;
-    }
-    outputJson(['success' => true,'data' => $ret]);
+    respondWithLogs();
 }
 
-function getLogsByName($name){
-
-    requireRole([1]); 
-    $bd=initDB();
-    $sql = "SELECT * FROM logs WHERE username LIKE :name COLLATE NOCASE";
-    $stmt = $bd->prepare($sql);
-
-    if (!$stmt) {
-        error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
-    }
-
-    $stmt->bindValue(':name', "%$name%", SQLITE3_TEXT);
-    
-    $result = $stmt->execute();
-
-    if (!$result) {
-        error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
-    }
-
-    $users = [];
-
-    // 2. Loop through all rows returned by the query
-    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($row['id'], 'integer');
-        $users[] = $row;
-    }
-
-    if (!$users) {
-        outputJson(['success' => false, 'error' => ['code' => 'NOT_FOUND', 'message' => 'User not found']], 404);
-    }
-
-
-    outputJson(['success' => true,'data' => $users]);
-
+function getLogsByName($name)
+{
+    requireRole([1]);
+    respondWithLogs(trim((string) $name));
 }
+
+function respondWithLogs(?string $name = null): never
+{
+    try {
+        $db = initDB();
+        $db->enableExceptions(true);
+
+        $sql = 'SELECT id, username, action, method, ip, created_at FROM logs';
+
+        if ($name !== null && $name !== '') {
+            $sql .= ' WHERE username LIKE :name COLLATE NOCASE';
+        }
+
+        $sql .= ' ORDER BY id DESC LIMIT 200';
+
+        $stmt = $db->prepare($sql);
+
+        if ($name !== null && $name !== '') {
+            $stmt->bindValue(':name', '%' . $name . '%', SQLITE3_TEXT);
+        }
+
+        $result = $stmt->execute();
+
+        $logs = [];
+
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            $row['id'] = (int) $row['id'];
+            $logs[] = $row;
+        }
+
+        $result->finalize();
+        $stmt->close();
+        $db->close();
+
+    } catch (Throwable $e) {
+        error_log('Read logs error: ' . $e->getMessage());
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not retrieve logs']], 500);
+    }
+
+    outputJson(['success' => true, 'data' => $logs]);
+}
+
 
 // ----------------- Api ------------------
 
@@ -924,6 +981,10 @@ function getUsersById($id)
     }
 
     $user = $result->fetchArray(SQLITE3_ASSOC);
+    // Liberar la lectura antes de que outputJson() escriba el log.
+    $result->finalize();
+    $stmt->close();
+    $bd->close();
 
     if (!$user) {
         outputJson(['success' => false, 'error' => ['code' => 'NOT_FOUND', 'message' => 'User not found']], 404);
@@ -960,10 +1021,6 @@ function getUsersByName($name)
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         settype($row['id'], 'integer');
         $ret[] = $row;
-    }
-
-    if (!$ret) {
-        outputError(404);
     }
 
 
@@ -1670,6 +1727,10 @@ function getStockById($id)
     }
 
     $ret = $result->fetchArray(SQLITE3_ASSOC);
+    // Liberar la lectura antes de que outputJson() escriba el log.
+    $result->finalize();
+    $stmt->close();
+    $db->close();
 
     if (!$ret) {
 

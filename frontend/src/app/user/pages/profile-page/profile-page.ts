@@ -1,3 +1,4 @@
+import { PhotoUtils } from '../../../shared/utils/photo-utils';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -22,6 +23,8 @@ export class ProfilePage implements OnInit {
 
   profile = signal<ProfileResponse | null>(null);
   selectedPhoto = signal<File | null>(null);
+  photoError = signal<string | null>(null);
+  readonly photoAccept = PhotoUtils.accept;
 
   isLoading = signal(false);
   isSaving = signal(false);
@@ -30,13 +33,13 @@ export class ProfilePage implements OnInit {
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
 
-  fieldErrors = signal<Record<string, string | null>>({username: null, email: null, password: null});
+  fieldErrors = signal<Record<string, string | null>>({email: null, password: null});
 
 
   private readonly uploadsUrl = `${environment.apiUrl}/uploads`;
 
   profileForm = this.fb.nonNullable.group({
-    username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z0-9._-]+$/)]],
+    username: [''],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9.@_%+-]+$/)]],
     password: ['', [Validators.minLength(8), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z0-9.@_%+-]+$/)]]});
 
@@ -69,7 +72,6 @@ export class ProfilePage implements OnInit {
 
           this.isSubmitted.set(false);
           this.fieldErrors.set({
-            username: null,
             email: null,
             password: null,
           });
@@ -95,13 +97,11 @@ export class ProfilePage implements OnInit {
     const values = this.profileForm.getRawValue();
 
     this.profileForm.patchValue({
-      username: values.username.trim(),
       email: values.email.trim(),
     });
 
     // Estos mensajes quedan fijos hasta el próximo submit.
     this.fieldErrors.set({
-      username: FormUtils.getFieldError(this.profileForm, 'username'),
       email: FormUtils.getFieldError(this.profileForm, 'email'),
       password: FormUtils.getFieldError(this.profileForm, 'password'),
     });
@@ -113,10 +113,6 @@ export class ProfilePage implements OnInit {
 
     const data = this.profileForm.getRawValue();
     const update: UpdateProfileRequest = {};
-
-    if (data.username !== currentProfile.user.username) {
-      update.username = data.username;
-    }
 
     if (data.email !== currentProfile.user.email) {
       update.email = data.email;
@@ -164,36 +160,16 @@ export class ProfilePage implements OnInit {
   }
 
   onPhotoSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const photo = input.files?.[0] ?? null;
-
-    this.selectedPhoto.set(null);
-    this.errorMessage.set(null);
-    this.successMessage.set(null);
-
-    if (!photo) return;
-
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-
-    if (!allowedTypes.includes(photo.type)) {
-      input.value = '';
-      this.errorMessage.set('Seleccioná una imagen JPG, PNG o WebP.');
-      return;
-    }
-
-    if (photo.size > 5 * 1024 * 1024) {
-      input.value = '';
-      this.errorMessage.set('La imagen no puede superar los 5 MB.');
-      return;
-    }
-
-    this.selectedPhoto.set(photo);
+    const selection = PhotoUtils.select(event);
+    if (!selection) return;
+    this.selectedPhoto.set(selection.photo);
+    this.photoError.set(selection.error);
   }
 
   uploadPhoto(input: HTMLInputElement): void {
     const photo = this.selectedPhoto();
 
-    if (!photo || !this.profile() || this.isSaving()) return;
+    if (!photo || this.photoError() || !this.profile() || this.isSaving()) return;
 
     this.isSaving.set(true);
     this.errorMessage.set(null);
@@ -225,6 +201,7 @@ export class ProfilePage implements OnInit {
           }
 
           this.selectedPhoto.set(null);
+          this.photoError.set(null);
           input.value = '';
 
           this.successMessage.set('Imagen actualizada correctamente.');
@@ -243,6 +220,8 @@ export class ProfilePage implements OnInit {
 
   private getErrorMessage(error: unknown, fallback: string): string {
     if (error instanceof HttpErrorResponse) {
+      const photoMessage = PhotoUtils.uploadError(error.error?.error?.code);
+      if (photoMessage) return photoMessage;
       const message = error.error?.error?.message;
 
       if (typeof message === 'string') {

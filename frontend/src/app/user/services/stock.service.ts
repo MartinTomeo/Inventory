@@ -88,25 +88,22 @@ export class StockService {
   }
 
   stockResource = rxResource({
-    params: () => ({ query: this.query() }),
+    params: () => ({ query: this.query().trim() }),
     defaultValue: [],
     stream: ({ params }) => {
-      const query = params.query.trim();
-
-      if (!query) {
-        return this.getStock().pipe(
-          catchError(() =>
-            throwError(() => new Error('No hay elementos de stock disponibles.'))
-          )
-        );
-      }
-
-      return this.getStockByLine(query).pipe(
-        catchError(() =>
-          throwError(
-            () => new Error('No hay elementos de stock que coincidan con la línea.')
-          )
-        )
+      const request$ = params.query
+        ? this.getStockByLine(params.query)
+        : this.getStock();
+      return request$.pipe(
+        catchError((error) => {
+          console.error('Error al cargar stock', {
+            query: params.query,
+            status: error.status,
+            url: error.url,
+            response: error.error,
+          });
+          return throwError(() => error);
+        })
       );
     },
   });

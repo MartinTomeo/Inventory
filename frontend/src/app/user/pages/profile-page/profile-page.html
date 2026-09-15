@@ -1,4 +1,4 @@
-<div class="mx-auto max-w-6xl space-y-6 p-4 md:p-6">
+<div class="mx-auto max-w-7xl space-y-4 p-4 md:p-6">
   <h1 class="text-2xl font-bold">Mi perfil</h1>
 
   @if (errorMessage(); as message) {
@@ -19,177 +19,209 @@
       <span class="sr-only">Cargando perfil</span>
     </div>
   } @else if (profile(); as profileData) {
-    <section class="card bg-base-100 shadow-lg">
-      <div class="card-body gap-6">
-        <!-- Imagen propia -->
-        <div class="flex flex-col items-center gap-3">
-          <div class="avatar">
-            <div class="w-24 rounded-lg ring ring-primary ring-offset-2">
+    <div class="grid items-start gap-6 lg:grid-cols-[24rem_minmax(0,1fr)]">
+
+      <!-- Izquierda: foto y formulario -->
+      <aside class="card min-w-0 bg-base-100 shadow-lg">
+        <div class="card-body gap-5">
+          <h2 class="card-title">Datos de mi cuenta</h2>
+
+          <div class="flex flex-col items-center gap-3">
+            <div
+              class="h-24 w-24 overflow-hidden rounded-lg bg-base-200
+                     ring ring-primary ring-offset-2 ring-offset-base-100"
+            >
               @if (profileData.user.user_image; as filename) {
                 <img
                   [src]="imageUrl('users', filename)"
                   alt="Foto de perfil"
+                  class="h-full w-full object-cover"
                 />
               } @else {
-                <div
-                  class="flex h-full items-center justify-center bg-base-200"
-                >
+                <div class="flex h-full items-center justify-center text-sm">
                   Sin foto
                 </div>
               }
             </div>
-          </div>
 
-          <input
-            #photoInput
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            class="hidden"
-            [disabled]="isSaving()"
-            (change)="onPhotoSelected($event)"
-          />
+            <input
+              #photoInput
+              type="file"
+              [accept]="photoAccept"
+              class="hidden"
+              [disabled]="isSaving()"
+              (change)="onPhotoSelected($event)"
+            />
+            <span class="text-xs text-base-content/70">JPG, PNG o WebP · Máximo 5 MB</span>
+            @if (photoError(); as error) {
+              <span role="alert" class="text-error text-sm">{{ error }}</span>
+            }
 
-          <button
-            type="button"
-            class="btn btn-sm"
-            [disabled]="isSaving()"
-            (click)="photoInput.click()"
-          >
-            Seleccionar imagen
-          </button>
-
-          @if (selectedPhoto(); as photo) {
-            <span class="max-w-full break-all text-sm">
-              {{ photo.name }}
-            </span>
 
             <button
               type="button"
-              class="btn btn-primary btn-sm"
+              class="btn btn-sm"
               [disabled]="isSaving()"
-              (click)="uploadPhoto(photoInput)"
+              (click)="photoInput.click()"
             >
-              Guardar imagen
+              Seleccionar imagen
             </button>
-          }
+
+            @if (selectedPhoto(); as photo) {
+              <span class="max-w-full break-all text-center text-sm">
+                {{ photo.name }}
+              </span>
+
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                [disabled]="isSaving()"
+                (click)="uploadPhoto(photoInput)"
+              >
+                Guardar imagen
+              </button>
+            }
+          </div>
+
+          <form
+            [formGroup]="profileForm"
+            (ngSubmit)="updateProfile()"
+          >
+            <fieldset class="flex flex-col gap-3" [disabled]="isSaving()">
+              <div class="flex flex-col gap-1">
+                <label for="profile-username" class="label">Usuario</label>
+
+                <input
+                  id="profile-username"
+                  type="text"
+                  class="input input-bordered w-full"
+                  formControlName="username"
+                  autocomplete="username"
+                  readonly
+                />
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="profile-email" class="label">Email</label>
+
+                <input
+                  id="profile-email"
+                  type="email"
+                  class="input input-bordered w-full"
+                  formControlName="email"
+                  autocomplete="email"
+                />
+
+                @if (isSubmitted() && fieldErrors()['email']) {
+                  <span class="text-sm text-error">
+                    {{ fieldErrors()['email'] }}
+                  </span>
+                }
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="profile-password" class="label">
+                  Nueva contraseña
+                </label>
+
+                <input
+                  id="profile-password"
+                  type="password"
+                  class="input input-bordered w-full"
+                  formControlName="password"
+                  autocomplete="new-password"
+                />
+
+                <span class="text-xs text-base-content/70">
+                  Dejá el campo vacío para conservar tu contraseña.
+                </span>
+
+                @if (isSubmitted() && fieldErrors()['password']) {
+                  <span class="text-sm text-error">
+                    {{ fieldErrors()['password'] }}
+                  </span>
+                }
+              </div>
+
+              <button type="submit" class="btn btn-primary mt-2 w-full">
+                {{ isSaving() ? 'Guardando…' : 'Guardar cambios' }}
+              </button>
+            </fieldset>
+          </form>
+        </div>
+      </aside>
+
+      <!-- Derecha: equipos asignados -->
+      <section class="min-w-0 space-y-4">
+        <div class="flex items-center justify-between gap-3">
+          <h2 class="text-xl font-bold">Equipos asignados</h2>
+          <span class="badge badge-neutral">
+            {{ profileData.stock.length }}
+          </span>
         </div>
 
-        <!-- Datos propios -->
-        <form
-          [formGroup]="profileForm"
-          (ngSubmit)="updateProfile()"
-        >
-          <fieldset
-            class="grid gap-4 md:grid-cols-2"
-            [disabled]="isSaving()"
-          >
-            <div class="flex flex-col gap-1">
-              <label for="profile-username" class="label">Usuario</label>
-
-              <input
-                id="profile-username"
-                type="text"
-                class="input input-bordered w-full"
-                formControlName="username"
-                autocomplete="username"
-              />
-
-              @if (isSubmitted() && fieldErrors()['username']) {
-                <span class="text-sm text-error">
-                  {{ fieldErrors()['username'] }}
-                </span>
-              }
-            </div>
-
-            <div class="flex flex-col gap-1">
-              <label for="profile-email" class="label">Email</label>
-
-              <input
-                id="profile-email"
-                type="email"
-                class="input input-bordered w-full"
-                formControlName="email"
-                autocomplete="email"
-              />
-
-              @if (isSubmitted() && fieldErrors()['email']) {
-                <span class="text-sm text-error">
-                  {{ fieldErrors()['email'] }}
-                </span>
-              }
-            </div>
-
-            <div class="flex flex-col gap-1 md:col-span-2">
-              <label for="profile-password" class="label">
-                Nueva contraseña
-              </label>
-
-              <input
-                id="profile-password"
-                type="password"
-                class="input input-bordered w-full"
-                formControlName="password"
-                autocomplete="new-password"
-                placeholder="Dejar vacío para conservar la contraseña"
-              />
-
-              @if (isSubmitted() && fieldErrors()['password']) {
-                <span class="text-sm text-error">
-                  {{ fieldErrors()['password'] }}
-                </span>
-              }
-            </div>
-
-            <button
-              type="submit"
-              class="btn btn-primary md:col-span-2"
-            >
-              {{ isSaving() ? 'Guardando…' : 'Guardar cambios' }}
-            </button>
-          </fieldset>
-        </form>
-      </div>
-    </section>
-
-    <!-- Stock: solo lectura -->
-    <section class="space-y-4">
-      <h2 class="text-xl font-bold">Equipos asignados</h2>
-
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        @for (item of profileData.stock; track item.id) {
-          <article class="card bg-base-100 shadow-lg">
-            @if (item.phone_image; as filename) {
-              <figure class="h-44 bg-base-200 p-3">
-                <img
-                  [src]="imageUrl('stock', filename)"
-                  [alt]="item.brand + ' ' + item.model"
-                  class="h-full w-full object-contain"
-                  loading="lazy"
-                />
+        <div class="grid gap-4 sm:grid-cols-2">
+          @for (item of profileData.stock; track item.id) {
+            <article class="card min-w-0 overflow-hidden bg-base-100 shadow-lg">
+              <figure class="h-48 bg-base-200 p-4">
+                @if (item.phone_image; as filename) {
+                  <img
+                    [src]="imageUrl('stock', filename)"
+                    [alt]="item.brand + ' ' + item.model"
+                    class="h-full w-full object-contain"
+                    loading="lazy"
+                  />
+                } @else {
+                  <span class="text-sm text-base-content/60">
+                    Equipo sin imagen
+                  </span>
+                }
               </figure>
-            }
 
-            <div class="card-body">
-              <h3 class="card-title">
-                {{ item.brand }} {{ item.model }}
-              </h3>
+              <div class="card-body gap-3 p-5">
+                <h3 class="card-title break-words">
+                  {{ item.brand }} {{ item.model }}
+                </h3>
 
-              <p class="break-all">IMEI: {{ item.imei }}</p>
-              <p>Línea: {{ item.line }}</p>
-              <p>Proveedor del equipo: {{ item.ph_provider }}</p>
-              <p>Proveedor de línea: {{ item.line_provider }}</p>
+                <dl class="space-y-2 text-sm">
+                  <div>
+                    <dt class="text-base-content/60">IMEI</dt>
+                    <dd class="break-all font-medium">{{ item.imei }}</dd>
+                  </div>
+
+                  <div>
+                    <dt class="text-base-content/60">Línea</dt>
+                    <dd class="font-medium">{{ item.line }}</dd>
+                  </div>
+
+                  <div>
+                    <dt class="text-base-content/60">Proveedor del equipo</dt>
+                    <dd class="break-words font-medium">
+                      {{ item.ph_provider }}
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt class="text-base-content/60">Proveedor de línea</dt>
+                    <dd class="break-words font-medium">
+                      {{ item.line_provider }}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </article>
+          } @empty {
+            <div class="rounded-box bg-base-200 p-6 sm:col-span-2">
+              No tenés equipos asignados.
             </div>
-          </article>
-        } @empty {
-          <p class="rounded-box bg-base-200 p-4 sm:col-span-2 lg:col-span-3">
-            No tenés equipos asignados.
-          </p>
-        }
-      </div>
-    </section>
+          }
+        </div>
+      </section>
+    </div>
   } @else {
     <button type="button" class="btn" (click)="loadProfile()">
       Reintentar
     </button>
   }
 </div>
+

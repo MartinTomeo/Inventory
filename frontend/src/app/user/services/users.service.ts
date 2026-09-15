@@ -97,48 +97,43 @@ export class UsersService {
   }
 
   usersResource = rxResource({
-    params: () => ({ query: this.query() }),
+    params: () => ({ query: this.query().trim() }),
     defaultValue: [],
     stream: ({ params }) => {
-
-      if (!params.query || params.query.trim() === '') return this.getUsers().pipe(
-        catchError(() => {
-
-          return throwError(() => new Error('No hay usuarios disponibles.'));
+      const request$ = params.query
+        ? this.getUsersByName(params.query)
+        : this.getUsers();
+      return request$.pipe(
+        catchError((error) => {
+          console.error('Error al cargar usuarios', {
+            query: params.query,
+            status: error.status,
+            url: error.url,
+            response: error.error,
+          });
+          return throwError(() => error);
         })
       );
-
-      return this.getUsersByName(params.query).pipe(
-        catchError(() => {
-
-          return throwError(() => new Error('No hay usuarios que coincidan con la búsqueda.'));
-        })
-      );
-
-    }
+    },
   });
 
-selectedUserResource = rxResource<User | null, { id: number } | undefined>({
-  params: () => {
-    const id = this.selectedUserId();
-
-    return id === null ? undefined : { id };
-  },
-
-  defaultValue: null,
-
-  stream: ({ params }) => {
-    if (!params) {
-      return of(null);
-    }
-
-    return this.getUsersById(params.id).pipe(
-      catchError(() =>
-        throwError(() => new Error('No se pudo obtener el usuario seleccionado.'))
-      )
-    );
-  },
-});
+  selectedUserResource = rxResource<User | null, { id: number } | undefined>({
+    params: () => {
+      const id = this.selectedUserId();
+      return id === null ? undefined : { id };
+    },
+    defaultValue: null,
+    stream: ({ params }) => {
+      if (!params) {
+        return of(null);
+      }
+      return this.getUsersById(params.id).pipe(
+        catchError(() =>
+          throwError(() => new Error('No se pudo obtener el usuario seleccionado.'))
+        )
+      );
+    },
+  });
 
 
 

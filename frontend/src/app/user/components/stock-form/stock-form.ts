@@ -1,3 +1,5 @@
+import { finalize, of, switchMap } from 'rxjs';
+import { PhotoUtils } from '../../../shared/utils/photo-utils';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
@@ -19,8 +21,11 @@ export class StockForm {
 
   stockService = inject(StockService);
   formUtils = FormUtils;
+  isSaving = signal(false);
   isSubmited = signal(false);
   selectedPhoto = signal<File | null>(null);
+  photoError = signal<string | null>(null);
+  readonly photoAccept = PhotoUtils.accept;
   submittedControlErrors = signal<Record<string, string>>({});
 
   formError = signal('');
@@ -92,24 +97,25 @@ export class StockForm {
     });
   }
 
-  onPhotoSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
+  onPhotoSelected(event: Event): void {
+    if (this.isSaving()) return;
 
-    if (!input.files?.length) {
-      return;
-    }
-
-    this.selectedPhoto.set(input.files[0]);
+    const selection = PhotoUtils.select(event);
+    if (!selection) return;
+    this.selectedPhoto.set(selection.photo);
+    this.photoError.set(selection.error);
   }
 
   onSubmit() {
+    if (this.isSaving()) return;
+
     this.hasFormError.set(false);
     this.isSubmited.set(true);
 
     const errors = this.evaluateFormErrors();
     this.submittedControlErrors.set(errors);
 
-    if (this.stockForm.invalid) {
+    if (this.stockForm.invalid || this.photoError()) {
       this.stockForm.markAllAsTouched();
       return;
     }
@@ -123,11 +129,15 @@ export class StockForm {
   }
 
   clearForm() {
+    if (this.isSaving()) return;
+
     this.resetFormState();
     this.stockService.newStock();
+    this.stockForm.reset({ imei: '', model: '', brand: '', ph_provider: '', line: '', line_provider: '' });
   }
 
   private createStock() {
+    this.isSaving.set(true);
     const value = this.stockForm.getRawValue();
 
     this.stockService
@@ -142,11 +152,13 @@ export class StockForm {
         },
         this.selectedPhoto()
       )
+      .pipe(finalize(() => this.isSaving.set(false)))
       .subscribe({
         next: () => {
           this.stockService.stockResource.reload();
           this.resetFormState();
           this.stockService.newStock();
+          this.stockForm.reset({ imei: '', model: '', brand: '', ph_provider: '', line: '', line_provider: '' });
         },
         error: (error: HttpErrorResponse) => {
           this.showRequestError(error);
@@ -157,46 +169,57 @@ export class StockForm {
   private updateStock() {
     const id = this.stockService.selectedStockId();
 
-    if (id === null) {
-      return;
-    }
+    if (id === null || this.isSaving()) return;
 
     const value = this.stockForm.getRawValue();
+    const photo = this.selectedPhoto();
+    const payload = {
+      imei: value.imei,
+      model: value.model,
+      brand: value.brand,
+      ph_provider: value.ph_provider,
+      line: Number(value.line),
+      line_provider: value.line_provider,
+    };
 
-    this.stockService
-      .updateStock(id, {
-        imei: value.imei,
-        model: value.model,
-        brand: value.brand,
-        ph_provider: value.ph_provider,
-        line: Number(value.line),
-        line_provider: value.line_provider,
-      })
-      .subscribe({
-        next: () => {
-          const photo = this.selectedPhoto();
+    let dataSaved = false;
+    this.isSaving.set(true);
 
-          if (!photo) {
-            this.reloadResources();
-            return;
-          }
+    this.stockService.updateStock(id, payload).pipe(
+      switchMap(() => {
+        dataSaved = true;
+        return photo
+          ? this.stockService.uploadStockPhoto(id, photo)
+          : of(null);
+      }),
+      finalize(() => this.isSaving.set(false))
+    ).subscribe({
+      next: () => {
+        // La lista puede cambiar de selección mientras se guarda.
+        if (this.stockService.selectedStockId() !== id) {
+          this.stockService.stockResource.reload();
+          return;
+        }
+        this.reloadResources();
+      },
+      error: (error: HttpErrorResponse) => {
+        if (dataSaved) {
+          this.stockService.stockResource.reload();
+        }
+        if (this.stockService.selectedStockId() !== id) return;
 
-          this.stockService.uploadStockPhoto(id, photo).subscribe({
-            next: () => {
-              this.reloadResources();
-            },
-            error: () => {
-              this.reloadResources();
-              this.showFormError(
-                'The stock item was updated, but its image could not be uploaded.'
-              );
-            },
-          });
-        },
-        error: (error: HttpErrorResponse) => {
-          this.showRequestError(error);
-        },
-      });
+        if (dataSaved && photo) {
+          const message = PhotoUtils.uploadError(error.error?.error?.code);
+          if (message) this.photoError.set(message);
+          this.showFormError(
+            'Los datos se guardaron, pero no se pudo subir la imagen.' +
+            (message ? ` ${message}` : '')
+          );
+          return;
+        }
+        this.showRequestError(error);
+      },
+    });
   }
 
   private reloadResources() {
@@ -207,16 +230,22 @@ export class StockForm {
 
   private resetFormState() {
     this.selectedPhoto.set(null);
+    this.photoError.set(null);
     this.submittedControlErrors.set({});
     this.isSubmited.set(false);
     this.hasFormError.set(false);
   }
 
+  private formErrorTimeout?: ReturnType<typeof setTimeout>;
+
   private showFormError(message: string) {
+    if (this.formErrorTimeout !== undefined) {
+      clearTimeout(this.formErrorTimeout);
+    }
     this.formError.set(message);
     this.hasFormError.set(true);
 
-    setTimeout(() => {
+    this.formErrorTimeout = setTimeout(() => {
       this.hasFormError.set(false);
     }, 2000);
   }
@@ -225,17 +254,30 @@ export class StockForm {
     const code = error.error?.error?.code;
 
     if (code === 'IMEI_ALREADY_EXISTS') {
-      this.showFormError('A stock item with that IMEI already exists.');
+      this.showFormError('Ya existe un equipo con ese IMEI.');
       return;
     }
 
     if (code === 'LINE_ALREADY_EXISTS') {
-      this.showFormError('A stock item with that line already exists.');
+      this.showFormError('Ya existe un equipo con esa línea.');
       return;
     }
 
-    this.showFormError('The stock item could not be saved. Please try again.');
+    // Un conflicto siempre se muestra como aviso general.
+    if (error.status === 409) {
+      this.showFormError('No se pudo guardar: hay datos repetidos o en conflicto.');
+      return;
+    }
+
+    const photoMessage = PhotoUtils.uploadError(code);
+    if (photoMessage) {
+      this.photoError.set(photoMessage);
+      return;
+    }
+
+    this.showFormError('No se pudo guardar. Intentá nuevamente.');
   }
+
 
   private evaluateFormErrors(): Record<string, string> {
     const errors: Record<string, string> = {};
@@ -251,3 +293,4 @@ export class StockForm {
     return errors;
   }
 }
+
