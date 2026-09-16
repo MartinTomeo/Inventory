@@ -2,19 +2,15 @@
   <div class="menu bg-base-200 rounded-box flex w-full flex-row justify-between overflow-visible">
     <ul class="flex flex-row">
       @if (hasAnyRole(roleAccess.subscriptions)) {
-        <li><a routerLink="/user/subs" routerLinkActive="btn-primary" class="btn">Subscriptions</a></li>
+        <li><a routerLink="/user/subs" routerLinkActive="btn-primary" class="btn" (click)="renewSession()">Subscriptions</a></li>
       }
 
       @if (hasAnyRole(roleAccess.stock)) {
-        <li><a routerLink="/user/stock" routerLinkActive="btn-primary" class="btn">Stock</a></li>
-      }
-
-      @if (hasAnyRole(roleAccess.logs)) {
-        <li><a routerLink="/user/logs" routerLinkActive="btn-primary" class="btn">Logs</a></li>
+        <li><a routerLink="/user/stock" routerLinkActive="btn-primary" class="btn" (click)="renewSession()">Stock</a></li>
       }
 
       @if (hasAnyRole(roleAccess.users)) {
-        <li><a routerLink="/user/users" routerLinkActive="btn-primary" class="btn">Users</a></li>
+        <li><a routerLink="/user/users" routerLinkActive="btn-primary" class="btn" (click)="renewSession()">Users</a></li>
       }
     </ul>
 
@@ -26,7 +22,7 @@
           </summary>
 
           <ul class="absolute right-0 z-50 w-52 rounded-box bg-base-100 p-2 shadow">
-            <li><a routerLink="/user/profile" class="btn">Settings</a></li>
+            <li><a routerLink="/user/profile" class="btn" (click)="renewSession()">Settings</a></li>
             <li><button type="button" (click)="logout()" class="btn">Log Out</button></li>
           </ul>
         </details>

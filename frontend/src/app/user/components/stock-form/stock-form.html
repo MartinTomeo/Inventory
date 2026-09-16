@@ -24,9 +24,14 @@
               #photoInput
               type="file"
               class="hidden"
-              accept="image/jpeg,image/png,image/webp"
+              [accept]="photoAccept"
               (change)="onPhotoSelected($event)"
             />
+            <span class="text-xs text-base-content/70">JPG, PNG o WebP · Máximo 5 MB</span>
+            @if (photoError(); as error) {
+              <span role="alert" class="text-error text-sm">{{ error }}</span>
+            }
+
 
             <button
               type="button"
@@ -143,3 +148,4 @@
     </div>
   </div>
 }
+

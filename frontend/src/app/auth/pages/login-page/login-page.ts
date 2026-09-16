@@ -27,6 +27,7 @@ export class LoginPage {
   onSubmit(): void {
     this.isSubmitted.set(true);
     this.hasError.set(false);
+    this.authService.logoutError.set(null);
     this.fieldErrors.set({
       email: FormUtils.getFieldError(this.loginForm, 'email'),
       password: FormUtils.getFieldError(this.loginForm, 'password'),

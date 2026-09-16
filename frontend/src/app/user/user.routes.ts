@@ -27,13 +27,6 @@ export const userRoutes: Routes = [
             .then(m => m.StockPage),
       },
       {
-        path: 'logs',
-        canActivate: [roleGuard(ROLE_ACCESS.logs)],
-        loadComponent: () =>
-          import('./pages/logs-page/logs-page')
-            .then(m => m.LogsPage),
-      },
-      {
         path: 'users',
         canActivate: [roleGuard(ROLE_ACCESS.users)],
         loadComponent: () =>

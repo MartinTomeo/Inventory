@@ -6,6 +6,11 @@
     </div>
     <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
       <div class="card-body">
+      @if (authService.logoutError(); as message) {
+        <div role="alert" class="alert alert-warning">
+          <span>{{ message }}</span>
+        </div>
+      }
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="on" class="login-form">
           <fieldset class="fieldset">
             <label class="label">Email</label>
@@ -33,6 +38,6 @@
       <span>Error! Revise los valores del formulario</span>
     </div>
   }
-
 </div>
+
 

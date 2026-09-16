@@ -18,6 +18,9 @@ export class TopMenu {
     const role = this.authService.currentUser()?.role;
     return role !== undefined && allowedRoles.includes(role);
   }
+  renewSession(): void {
+    this.authService.refreshSession().subscribe();
+  }
 
   logout(): void {
     this.authService.logout();

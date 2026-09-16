@@ -1,3 +1,4 @@
+import { PhotoUtils } from '../../../shared/utils/photo-utils';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
@@ -21,6 +22,8 @@ export class StockForm {
   formUtils = FormUtils;
   isSubmited = signal(false);
   selectedPhoto = signal<File | null>(null);
+  photoError = signal<string | null>(null);
+  readonly photoAccept = PhotoUtils.accept;
   submittedControlErrors = signal<Record<string, string>>({});
 
   formError = signal('');
@@ -92,14 +95,12 @@ export class StockForm {
     });
   }
 
-  onPhotoSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
+  onPhotoSelected(event: Event): void {
+    const selection = PhotoUtils.select(event);
+    if (!selection) return;
 
-    if (!input.files?.length) {
-      return;
-    }
-
-    this.selectedPhoto.set(input.files[0]);
+    this.selectedPhoto.set(selection.photo);
+    this.photoError.set(selection.error);
   }
 
   onSubmit() {
@@ -109,7 +110,7 @@ export class StockForm {
     const errors = this.evaluateFormErrors();
     this.submittedControlErrors.set(errors);
 
-    if (this.stockForm.invalid) {
+    if (this.stockForm.invalid || this.photoError()) {
       this.stockForm.markAllAsTouched();
       return;
     }
@@ -185,10 +186,11 @@ export class StockForm {
             next: () => {
               this.reloadResources();
             },
-            error: () => {
-              this.reloadResources();
+            error: (error: HttpErrorResponse) => {
+              const message = PhotoUtils.uploadError(error.error?.error?.code);
+              if (message) this.photoError.set(message);
               this.showFormError(
-                'The stock item was updated, but its image could not be uploaded.'
+                message ?? 'The stock item was updated, but its image could not be uploaded.'
               );
             },
           });
@@ -207,6 +209,7 @@ export class StockForm {
 
   private resetFormState() {
     this.selectedPhoto.set(null);
+    this.photoError.set(null);
     this.submittedControlErrors.set({});
     this.isSubmited.set(false);
     this.hasFormError.set(false);
@@ -223,6 +226,11 @@ export class StockForm {
 
   private showRequestError(error: HttpErrorResponse) {
     const code = error.error?.error?.code;
+    const photoMessage = PhotoUtils.uploadError(code);
+    if (photoMessage) {
+      this.photoError.set(photoMessage);
+      return;
+    }
 
     if (code === 'IMEI_ALREADY_EXISTS') {
       this.showFormError('A stock item with that IMEI already exists.');
@@ -251,3 +259,4 @@ export class StockForm {
     return errors;
   }
 }
+

@@ -10,8 +10,11 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"created_at" DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username
+ON users(username COLLATE NOCASE);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email
+ON users(email COLLATE NOCASE);
 
 -- Permision Types
 -- 1 admin -- full permision
@@ -63,6 +66,34 @@ CREATE TABLE IF NOT EXISTS "logs" (
     "created_at" DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+DROP TABLE IF EXISTS sessions;
+CREATE TABLE IF NOT EXISTS sessions (
+    sid TEXT PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    expires_at INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_sessions_user_id
+ON sessions(user_id);
+
+CREATE INDEX IF NOT EXISTS idx_sessions_expires_at
+ON sessions(expires_at);
+
+-- Revocar las sesiones cuando cambia el rol.
+CREATE TRIGGER IF NOT EXISTS revoke_sessions_after_role_change
+AFTER UPDATE OF role ON users
+WHEN OLD.role != NEW.role
+BEGIN
+    DELETE FROM sessions WHERE user_id = NEW.id;
+END;
+
+-- Eliminar sesiones incluso si la conexión no activó foreign_keys.
+CREATE TRIGGER IF NOT EXISTS revoke_sessions_after_user_delete
+AFTER DELETE ON users
+BEGIN
+    DELETE FROM sessions WHERE user_id = OLD.id;
+END;;
 
 -- ============================================
 -- 1. USUARIOS (50 usuarios con 3 niveles de permiso)

@@ -1,3 +1,4 @@
+import { PhotoUtils } from '../../../shared/utils/photo-utils';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -18,6 +19,8 @@ export class UsersForm {
   formUtils = FormUtils;
   isSubmited = signal(false);
   selectedPhoto = signal<File | null>(null);
+  photoError = signal<string | null>(null);
+  readonly photoAccept = PhotoUtils.accept;
   selectedUser = computed(() =>
     this.usersService.selectedUserResource.value()
   );
@@ -59,6 +62,7 @@ export class UsersForm {
           role: 1,
         });
         this.selectedPhoto.set(null);
+        this.photoError.set(null);
         return;
       }
 
@@ -78,18 +82,16 @@ export class UsersForm {
       });
 
       this.selectedPhoto.set(null);
+      this.photoError.set(null);
     });
   }
 
-  onPhotoSelected(event: Event) {
+  onPhotoSelected(event: Event): void {
+    const selection = PhotoUtils.select(event);
+    if (!selection) return;
 
-    const input = event.target as HTMLInputElement;
-
-    if (!input.files?.length) {
-      return;
-    }
-
-    this.selectedPhoto.set(input.files[0]);
+    this.selectedPhoto.set(selection.photo);
+    this.photoError.set(selection.error);
   }
 
   onSubmit() {
@@ -99,7 +101,7 @@ export class UsersForm {
     const errors = this.evaluateFormErrors();
     this.submittedControlErrors.set(errors);
 
-    if (this.userForm.invalid) {
+    if (this.userForm.invalid || this.photoError()) {
       this.userForm.markAllAsTouched();
       return;
     }
@@ -115,6 +117,7 @@ export class UsersForm {
     this.isSubmited.set(false);
     this.submittedControlErrors.set({});
     this.selectedPhoto.set(null);
+    this.photoError.set(null);
     this.usersService.newUser();
   }
 
@@ -160,6 +163,8 @@ export class UsersForm {
     .subscribe({
       next: () => {
         this.usersService.usersResource.reload();
+        this.selectedPhoto.set(null);
+        this.photoError.set(null);
         this.submittedControlErrors.set({});
         this.isSubmited.set(false);
         this.hasFormError.set(false);
@@ -202,6 +207,9 @@ export class UsersForm {
               .subscribe({
                 next: () => {
                   this.reloadResources();
+                },
+                error: (error: HttpErrorResponse) => {
+                  this.showRequestError(error);
                 }
               });
 
@@ -220,6 +228,7 @@ export class UsersForm {
     this.usersService.usersResource.reload();
     this.usersService.selectedUserResource.reload();
     this.selectedPhoto.set(null);
+    this.photoError.set(null);
     this.submittedControlErrors.set({});
     this.isSubmited.set(false);
     this.hasFormError.set(false);
@@ -236,6 +245,11 @@ export class UsersForm {
 
   private showRequestError(error: HttpErrorResponse) {
     const code = error.error?.error?.code;
+    const photoMessage = PhotoUtils.uploadError(code);
+    if (photoMessage) {
+      this.photoError.set(photoMessage);
+      return;
+    }
 
     if (code === 'USERNAME_ALREADY_EXISTS') {
       this.showFormError('A user with that username already exists.');

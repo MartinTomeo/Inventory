@@ -211,7 +211,7 @@ function findUserConflict(SQLite3 $db, ?string $username, ?string $email, ?int $
             continue;
         }
 
-        $sql = "SELECT id FROM users WHERE $field = :value";
+        $sql = "SELECT id FROM users WHERE $field COLLATE NOCASE = :value";
 
         if ($excludeUserId !== null) {
             $sql .= ' AND id != :excludeUserId';
@@ -403,66 +403,148 @@ function postLogin()
         outputJson(['success' => false, 'error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'Invalid email or password']], 401);
     }
 
-    $now = time();
+    try {
+        $db = initDB();
+        $now = time();
+        $sid = bin2hex(random_bytes(32));
 
-    $payload = [
-        'iss'  => 'inventario-api',
-        'aud'  => 'inventario-angular',
-        'iat'  => $now,
-        'exp'  => $now + JWT_EXP,
-        'uid'  => $logged['id'],
-        'name' => $logged['username'],
-        'role' => $logged['role']
-    ];
+        // Limpieza de sesiones vencidas.
+        sessionQuery($db, 'DELETE FROM sessions WHERE expires_at <= :now',[':now' => $now]);
 
-    $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
+        $payload = [
+            'iss' => 'inventario-api',
+            'aud' => 'inventario-angular',
+            'iat' => $now,
+            'exp' => $now + JWT_EXP,
+            'sid' => $sid,
+            'uid' => $logged['id'],
+            'name' => $logged['username'],
+            'role' => $logged['role']
+        ];
+
+        $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
+
+        sessionQuery(
+            $db,
+            'INSERT INTO sessions (sid, user_id, expires_at)
+             SELECT :sid, id, :expires_at
+             FROM users
+             WHERE id = :user_id AND role = :role',
+            [':sid' => $sid, ':expires_at' => $payload['exp'], ':user_id' => $logged['id'], ':role' => $logged['role']]);
+
+        if ($db->changes() !== 1) {
+            outputJson(['success' => false, 'error' => ['code' => 'UNAUTHORIZED', 'message' => 'Please log in again']], 401);
+        }
+
+    } catch (Throwable $error) {
+        sessionDatabaseError($error);
+    }
 
     outputJson(['success' => true, 'jwt' => $jwt], 200);
 }
 
+
+function patchLogin()
+{
+    $payload = requireLogin();
+
+    try {
+        $db = initDB();
+        $now = time();
+
+        $payload->iat = $now;
+        $payload->exp = $now + JWT_EXP;
+
+        $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
+
+        sessionQuery($db, 'UPDATE sessions SET expires_at = MAX(expires_at, :expires_at) WHERE sid = :sid AND user_id = :user_id AND expires_at > :now', [':expires_at' => $payload->exp, ':sid' => $payload->sid, ':user_id' => $payload->uid, ':now' => $now]);
+
+        if ($db->changes() !== 1) {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'SESSION_REVOKED', 'message' => 'Session expired or revoked']], 401);
+        }
+
+    } catch (Throwable $error) {
+        sessionDatabaseError($error);
+    }
+
+    outputJson(['success' => true, 'jwt' => $jwt], 200);
+}
+
+function deleteLogin()
+{
+    // Validar firma y vencimiento, sin exigir que la fila siga existiendo.
+    // Así, repetir el logout de una sesión eliminada también es válido.
+    $payload = decodeLoginToken();
+
+    try {
+        $db = initDB();
+
+        sessionQuery(
+            $db,
+            'DELETE FROM sessions
+             WHERE sid = :sid AND user_id = :user_id',
+            [
+                ':sid' => $payload->sid,
+                ':user_id' => $payload->uid
+            ]
+        );
+
+    } catch (Throwable $error) {
+        sessionDatabaseError($error);
+    }
+
+    outputJson([
+        'success' => true,
+        'data' => [
+            'message' => 'Session closed'
+        ]
+    ], 200);
+}
+
 function requireLogin()
 {
+    $payload = decodeLoginToken();
+
     try {
+        $db = initDB();
 
-        $headers = getallheaders();
+        $result = sessionQuery(
+            $db,
+            'SELECT s.sid
+             FROM sessions s
+             INNER JOIN users u ON u.id = s.user_id
+             WHERE s.sid = :sid
+               AND s.user_id = :user_id
+               AND s.expires_at > :now
+               AND u.role = :role
+             LIMIT 1',
+            [
+                ':sid' => $payload->sid,
+                ':user_id' => $payload->uid,
+                ':now' => time(),
+                ':role' => $payload->role
+            ]
+        );
 
-        $authorization = $headers['Authorization'] ?? null;
+        $session = $result->fetchArray(SQLITE3_ASSOC);
 
-        if (!$authorization) {
-            throw new Exception('Authorization header missing');
-        }
-        //control con expresion regular del formato del Bearer + Token
-        if (!preg_match('/^Bearer\s+(.+)$/i', $authorization, $matches)) {
-            throw new Exception('Invalid Authorization header');
-        }
-
-        $jwt = trim($matches[1]);
-
-        if ($jwt === '') {
-            throw new Exception('Empty token');
-        }
-
-        $decoded = JWT::decode($jwt, JWT_KEY, [JWT_ALG]);
-
-        if (!isset($decoded->uid) || !isset($decoded->exp) || !isset($decoded->role)) {
-            throw new Exception('Invalid token claims');
-        }
-
-        if (!is_numeric($decoded->uid) || (int) $decoded->uid <= 0) {
-            throw new Exception('Invalid user ID in token');
-        }
-
-
-        if (!is_numeric($decoded->role) || !in_array((int) $decoded->role, [1, 2, 3], true)) {
-            throw new Exception('Invalid user role in token');
-        }
-
-        return $decoded;
-
-    } catch (Exception $e) {
-        error_log('Authentication error: ' . $e->getMessage());
-        outputJson(['success' => false, 'error' => ['code' => 'UNAUTHORIZED', 'message' => 'Authentication required']], 401);
+    } catch (Throwable $error) {
+        sessionDatabaseError($error);
     }
+
+    if (!$session) {
+        outputJson([
+            'success' => false,
+            'error' => [
+                'code' => 'SESSION_REVOKED',
+                'message' => 'Session expired or revoked'
+            ]
+        ], 401);
+    }
+
+    return $payload;
 }
 
 
@@ -518,6 +600,63 @@ function getCheckStatus()
 
     outputJson(['success' => true, 'data' => ['user' => $user]], 200);
 }
+
+function sessionQuery(SQLite3 $db, string $sql, array $params = []): SQLite3Result {
+    $stmt = $db->prepare($sql);
+
+    if (!$stmt) {
+        throw new RuntimeException('Could not prepare session query');
+    }
+
+    foreach ($params as $name => $value) {
+        $type = is_int($value) ? SQLITE3_INTEGER : SQLITE3_TEXT;
+        $stmt->bindValue($name, $value, $type);
+    }
+
+    $result = $stmt->execute();
+
+    if (!$result) {
+        throw new RuntimeException('Could not execute session query');
+    }
+
+    return $result;
+}
+
+function sessionDatabaseError(Throwable $error): never
+{
+    error_log('Session error: ' . $error->getMessage());
+    outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not process session']], 500);
+}
+
+
+function decodeLoginToken(): object
+{
+    try {
+        $headers = array_change_key_case(getallheaders(), CASE_LOWER);
+
+        $authorization = $headers['authorization'] ?? '';
+
+        if (!preg_match('/^Bearer\s+(.+)$/i', $authorization, $matches)) {
+            throw new RuntimeException('Missing or invalid Authorization');
+        }
+
+        $jwt = trim($matches[1]);
+        $payload = JWT::decode($jwt, JWT_KEY, [JWT_ALG]);
+
+        if (!isset($payload->uid, $payload->role, $payload->exp, $payload->sid ) || !is_int($payload->uid) || $payload->uid <= 0 || !is_int($payload->role) || !in_array($payload->role, [1, 2, 3], true) || !is_int($payload->exp) || $payload->exp <= time() || !is_string($payload->sid) || !preg_match('/^[a-f0-9]{64}$/D', $payload->sid))
+        {
+            throw new RuntimeException('Invalid token claims');
+        }
+
+        return $payload;
+
+    } catch (Throwable $error) {
+        error_log('Authentication error: ' . $error->getMessage());
+        outputJson(['success' => false, 'error' => ['code' => 'UNAUTHORIZED', 'message' => 'Authentication required']], 401);
+    }
+}
+
+
 
 // ----------------- Profile ---------------------
 
@@ -618,7 +757,7 @@ function patchProfile()
             'error' => ['code' => 'NO_FIELDS_TO_UPDATE', 'message' => 'No fields were provided for update']], 400);
     }
 
-    $allowedFields = ['username', 'email', 'password'];
+    $allowedFields = ['email', 'password'];
 
     foreach ($data as $field => $value) {
         if (!in_array($field, $allowedFields, true)) {
@@ -626,16 +765,6 @@ function patchProfile()
                 'success' => false,
                 'error' => ['code' => 'INVALID_FIELD', 'message' => "Field '$field' cannot be modified"]], 400);
         }
-    }
-
-    if (array_key_exists('username', $data)) {
-        if (!is_string($data['username']) || trim($data['username']) === '') {
-            outputJson([
-                'success' => false,
-                'error' => ['code' => 'INVALID_USERNAME', 'message' => 'Invalid username']], 400);
-        }
-
-        $data['username'] = trim($data['username']);
     }
 
     if (array_key_exists('email', $data)) {
@@ -664,7 +793,7 @@ function patchProfile()
     }
 
     try {
-        $conflict = findUserConflict($db, $data['username'] ?? null, $data['email'] ?? null, $userId);
+        $conflict = findUserConflict($db, null, $data['email'] ?? null, $userId);
 
         if ($conflict !== null) {
             $db->exec('ROLLBACK');
@@ -817,68 +946,6 @@ function postProfilePhoto()
 }
 
 
-
-// ----------------- Auditar (solo Admin)------------------
-
-function getLogs() {
-
-    requireRole([1]);
-
-    $db = initDB();
-    $result = $db->query('SELECT * FROM logs');
-
-    if(!result){
-        error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
-    }
-
-    $ret = [];
-    while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($fila['id'], 'integer');
-        $ret[] = $fila;
-    }
-    outputJson(['success' => true,'data' => $ret]);
-}
-
-function getLogsByName($name){
-
-    requireRole([1]); 
-    $bd=initDB();
-    $sql = "SELECT * FROM logs WHERE username LIKE :name COLLATE NOCASE";
-    $stmt = $bd->prepare($sql);
-
-    if (!$stmt) {
-        error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
-    }
-
-    $stmt->bindValue(':name', "%$name%", SQLITE3_TEXT);
-    
-    $result = $stmt->execute();
-
-    if (!$result) {
-        error_log($db->lastErrorMsg());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
-    }
-
-    $users = [];
-
-    // 2. Loop through all rows returned by the query
-    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-        settype($row['id'], 'integer');
-        $users[] = $row;
-    }
-
-    if (!$users) {
-        outputJson(['success' => false, 'error' => ['code' => 'NOT_FOUND', 'message' => 'User not found']], 404);
-    }
-
-
-    outputJson(['success' => true,'data' => $users]);
-
-}
-
-// ----------------- Api ------------------
 
 function getUsers() {
 
