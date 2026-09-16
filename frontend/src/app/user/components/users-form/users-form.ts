@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'users-form',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './users-form.html',
+  host: {class: 'block h-full'}
 })
 export class UsersForm {
 
@@ -28,7 +29,7 @@ export class UsersForm {
   imageUrl = computed(() => {
     const user = this.selectedUser();
     if (!user?.user_image) {
-      return `${environment.apiUrl}/uploads/users/profile.png`;
+      return null;
     }
     return `${environment.apiUrl}/uploads/users/${user.user_image}`;
   });

@@ -19,7 +19,7 @@
             </div>
           </div>
 
-          <div class="flex flex-col items-center gap-2">
+          <div class="flex flex-col gap-2">
             <input
               #photoInput
               type="file"
@@ -42,7 +42,7 @@
             </button>
 
             @if (selectedPhoto()) {
-              <span class="max-w-64 truncate text-sm text-base-content/70">
+              <span class="max-w-64 truncate text-xs text-base-content/70">
                 {{ selectedPhoto()!.name }}
               </span>
             }

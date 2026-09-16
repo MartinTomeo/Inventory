@@ -1,5 +1,5 @@
-<div class="mx-auto max-w-7xl space-y-6 p-4 md:p-6">
-  <h1 class="text-2xl font-bold">Mi perfil</h1>
+<div class="mx-auto max-w-7xl space-y-6 p-2 md:p-6">
+  <h1 class="text-2xl font-bold">Profile</h1>
 
   @if (errorMessage(); as message) {
     <div role="alert" class="alert alert-error">
@@ -16,7 +16,7 @@
   @if (isLoading()) {
     <div class="flex justify-center p-8" role="status">
       <span class="loading loading-spinner loading-lg"></span>
-      <span class="sr-only">Cargando perfil</span>
+      <span class="sr-only">Loading Profile</span>
     </div>
   } @else if (profile(); as profileData) {
     <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
@@ -29,13 +29,13 @@
                 @if (profileData.user.user_image; as filename) {
                   <img
                     [src]="imageUrl('users', filename)"
-                    alt="Foto de perfil"
+                    alt="Profile Pic"
                   />
                 } @else {
                   <div
                     class="flex h-full items-center justify-center bg-base-200"
                   >
-                    Sin foto
+                    No Image
                   </div>
                 }
               </div>
@@ -56,11 +56,11 @@
               [disabled]="isSaving()"
               (click)="photoInput.click()"
             >
-              Seleccionar imagen
+              Select Image
             </button>
 
             <span class="text-xs text-base-content/70">
-              JPG, PNG o WebP · Máximo 5 MB
+              JPG, PNG o WebP · Max Size 5 MB
             </span>
 
             @if (photoError(); as message) {
@@ -80,7 +80,7 @@
                 [disabled]="isSaving() || isLoading() || !!photoError()"
                 (click)="uploadPhoto(photoInput)"
               >
-                Guardar imagen
+                Save Image
               </button>
             }
           </div>
@@ -95,7 +95,7 @@
               [disabled]="isSaving()"
             >
               <div class="flex flex-col gap-1">
-                <span class="label">Usuario</span>
+                <span class="label">User</span>
                 <p class="input input-bordered flex w-full items-center bg-base-200" aria-label="Usuario">
                   {{ profileData.user.username }}
                 </p>
@@ -121,7 +121,7 @@
 
               <div class="flex flex-col gap-1">
                 <label for="profile-password" class="label">
-                  Nueva contraseña
+                  New Password
                 </label>
 
                 <input
@@ -130,7 +130,7 @@
                   class="input input-bordered w-full"
                   formControlName="password"
                   autocomplete="new-password"
-                  placeholder="Dejar vacío para conservar la contraseña"
+                  placeholder="Leave empty to not change password"
                 />
 
                 @if (isSubmitted() && fieldErrors()['password']) {
@@ -144,57 +144,56 @@
                 type="submit"
                 class="btn btn-primary w-full"
               >
-                {{ isSaving() ? 'Guardando…' : 'Guardar cambios' }}
+                {{ isSaving() ? 'Saving...' : 'Save changes' }}
               </button>
             </fieldset>
           </form>
         </div>
       </section>
 
-      <!-- Stock: solo lectura -->
       <section class="min-w-0 space-y-4 lg:col-span-2" aria-labelledby="assigned-stock-title">
-        <h2 id="assigned-stock-title" class="text-xl font-bold">Equipos asignados</h2>
+      <h2 id="assigned-stock-title" class="text-xl font-bold">
+        Assigned Phones
+      </h2>
 
-        <div class="grid gap-4 sm:grid-cols-2">
-          @for (item of profileData.stock; track item.id) {
-            <article class="card min-w-0 overflow-hidden bg-base-100 shadow-lg">
-              @if (item.phone_image; as filename) {
-                <figure class="h-44 bg-base-200 p-3">
-                  <img
-                    [src]="imageUrl('stock', filename)"
-                    [alt]="item.brand + ' ' + item.model"
-                    class="h-full w-full object-contain"
-                    loading="lazy"
-                  />
-                </figure>
-              } @else {
-                <div class="flex h-44 items-center justify-center bg-base-200 text-sm text-base-content/60">
-                  Sin imagen del equipo
-                </div>
-              }
-
-              <div class="card-body min-w-0 break-words">
-                <h3 class="card-title">
-                  {{ item.brand }} {{ item.model }}
-                </h3>
-
-                <p class="break-all">IMEI: {{ item.imei }}</p>
-                <p>Línea: {{ item.line }}</p>
-                <p>Proveedor del equipo: {{ item.ph_provider }}</p>
-                <p>Proveedor de línea: {{ item.line_provider }}</p>
-              </div>
-            </article>
-          } @empty {
-            <p class="rounded-box bg-base-200 p-4 sm:col-span-2">
-              No tenés equipos asignados.
-            </p>
+      <div class="grid grid-flow-col grid-rows-2 auto-cols-[22rem] gap-4 overflow-x-auto pb-2">
+        @for (item of profileData.stock; track item.id) {
+          <article class="card card-side overflow-hidden rounded-2xl bg-base-100 shadow-md card-md">
+          @if (item.phone_image; as filename) {
+            <figure class="h-44 w-40 shrink-0 bg-base-200 p-3">
+              <img
+                [src]="imageUrl('stock', filename)"
+                [alt]="item.brand + ' ' + item.model"
+                class="h-full w-full object-contain rounded-2xl"
+                loading="lazy"
+              />
+            </figure>
+          } @else {
+            <div class="flex h-44 w-40 shrink-0 items-center justify-center bg-base-200 text-sm text-base-content/60 rounded-xl">
+              No Image
+            </div>
           }
-        </div>
-      </section>
+          <div class="card-body min-w-0 break-words">
+            <h3 class="card-title">
+              {{ item.brand }} {{ item.model }}
+            </h3>
+            <p class="break-all">IMEI: {{ item.imei }}</p>
+            <p>Line: {{ item.line }}</p>
+            <p>Phone Provider: {{ item.ph_provider }}</p>
+            <p>Line Provider: {{ item.line_provider }}</p>
+          </div>
+        </article>
+    } @empty {
+      <p class="rounded-box bg-base-200 p-4">
+        No phones assigned.
+      </p>
+    }
+  </div>
+</section>
     </div>
   } @else {
     <button type="button" class="btn" (click)="loadProfile()">
-      Reintentar
+      Retry
     </button>
   }
 </div>

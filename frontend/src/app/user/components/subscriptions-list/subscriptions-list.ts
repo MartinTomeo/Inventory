@@ -2,11 +2,13 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { environment } from '@environments/environment.development';
 import { Subscription } from '../../interfaces/subscriptions.interface';
 import { SubsService } from '../../services/subs.service';
+import { UserNamePipe } from '../../../shared/utils/user-name.pipe';
 
 @Component({
   selector: 'subscriptions-list',
-  imports: [],
+  imports: [UserNamePipe],
   templateUrl: './subscriptions-list.html',
+  host: {class: 'block h-full'}
 })
 export class SubscriptionsList {
   subsService = inject(SubsService);
@@ -44,10 +46,8 @@ export class SubscriptionsList {
     );
   }
 
-  userImageUrl(subscription: Subscription): string {
-    if (!subscription.user_image) {
-      return `${environment.apiUrl}/uploads/users/profile.png`;
-    }
+  userImageUrl(subscription: Subscription): string | null {
+    if (!subscription.user_image) return null;
 
     return `${environment.apiUrl}/uploads/users/${encodeURIComponent(
       subscription.user_image

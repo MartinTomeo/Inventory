@@ -1,22 +1,22 @@
 {
-	"id": "29188a30-8069-4b75-98ee-180bc5f88725",
+	"id": "3263e3d0-003f-4de8-b579-d215a321ebb7",
 	"name": "PHP SQLite JWT API",
-	"timestamp": "2026-09-16T16:54:34.056Z",
-	"collection_id": "29901853-5a9f3c3b-7a17-495f-984d-c8caad631a68",
+	"timestamp": "2026-09-16T20:19:42.978Z",
+	"collection_id": "29901853-e9a32870-8874-4baf-ac64-bdce49552a98",
 	"folder_id": 0,
-	"environment_id": "29901853-5b6fa555-0086-4fc6-bf6b-c7df441bb470",
-	"totalPass": 668,
+	"environment_id": "29901853-772183ba-db1c-42fd-bcf1-8d405054e821",
+	"totalPass": 709,
 	"delay": 0,
 	"persist": true,
 	"status": "finished",
-	"startedAt": "2026-09-16T16:54:17.658Z",
+	"startedAt": "2026-09-16T20:19:26.992Z",
 	"totalFail": 0,
 	"results": [
 		{
-			"id": "220cdf9f-d779-44f8-aa08-7d17da888e33",
+			"id": "9ab03d11-7433-4115-af9a-0544ead73897",
 			"name": "Login administrador e inicializar ejecución",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 96,
+			"time": 128,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -66,7 +66,7 @@
 				}
 			},
 			"times": [
-				96
+				128
 			],
 			"allTests": [
 				{
@@ -82,7 +82,7 @@
 			]
 		},
 		{
-			"id": "d3642a07-5a03-4ca8-9924-04c1b5431a51",
+			"id": "dabc705b-9160-4344-88ae-d3de9860d8f0",
 			"name": "CheckStatus administrador sin contraseña expuesta",
 			"url": "http://localhost/Inventory/backend/checkStatus",
 			"time": 9,
@@ -127,7 +127,7 @@
 			]
 		},
 		{
-			"id": "9fcfb271-bb07-4479-9976-c7567d659f05",
+			"id": "b0b9a70c-7cdf-46ae-b154-d59d95ee8412",
 			"name": "Credenciales incompletas",
 			"url": "http://localhost/Inventory/backend/login",
 			"time": 6,
@@ -172,7 +172,7 @@
 			]
 		},
 		{
-			"id": "2c1264f0-7ff8-4bc1-afec-69462d701aad",
+			"id": "1ffd7214-a84b-4215-acd2-4c01432c77f3",
 			"name": "Email inválido",
 			"url": "http://localhost/Inventory/backend/login",
 			"time": 7,
@@ -217,10 +217,10 @@
 			]
 		},
 		{
-			"id": "363c01a4-2fc5-4d7c-b26d-cef7d8ea3ba7",
+			"id": "07afda98-04f2-4622-b80a-981a54541808",
 			"name": "Tipos inválidos",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 7,
+			"time": 11,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -250,7 +250,7 @@
 				}
 			},
 			"times": [
-				7
+				11
 			],
 			"allTests": [
 				{
@@ -262,10 +262,10 @@
 			]
 		},
 		{
-			"id": "f27950d1-bd48-45d8-a9fe-0aed10737805",
+			"id": "81091516-6d61-443e-9fec-0f4b471d9779",
 			"name": "Contraseña incorrecta",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 66,
+			"time": 95,
 			"responseCode": {
 				"code": 401,
 				"name": "Unauthorized"
@@ -295,7 +295,7 @@
 				}
 			},
 			"times": [
-				66
+				95
 			],
 			"allTests": [
 				{
@@ -307,10 +307,10 @@
 			]
 		},
 		{
-			"id": "29d95392-9a25-490d-bf8b-7f32a992dbe0",
+			"id": "24931481-1d40-45fc-aaa1-5eaab64d17ee",
 			"name": "Intento SQL en login",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 5,
+			"time": 6,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -340,7 +340,7 @@
 				}
 			},
 			"times": [
-				5
+				6
 			],
 			"allTests": [
 				{
@@ -352,10 +352,10 @@
 			]
 		},
 		{
-			"id": "f4f33bda-fcee-452b-afad-ef3a528cbdb8",
+			"id": "b996b0ee-b846-4d6c-bb8c-acb33cb59d6a",
 			"name": "JSON malformado",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 8,
+			"time": 7,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -385,7 +385,7 @@
 				}
 			},
 			"times": [
-				8
+				7
 			],
 			"allTests": [
 				{
@@ -397,10 +397,10 @@
 			]
 		},
 		{
-			"id": "4efb93d6-53f2-4b4d-8936-6ff7fe490155",
+			"id": "87f5e151-514b-41ef-9efa-68906608b3cc",
 			"name": "Crear usuario a",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 82,
+			"time": 115,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -430,7 +430,7 @@
 				}
 			},
 			"times": [
-				82
+				115
 			],
 			"allTests": [
 				{
@@ -442,10 +442,10 @@
 			]
 		},
 		{
-			"id": "e023b1a1-c531-42d6-a405-fd4fb343413f",
+			"id": "115f3e6b-c1a0-44a1-b4cf-3e5999336771",
 			"name": "Crear usuario b",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 125,
+			"time": 119,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -475,7 +475,7 @@
 				}
 			},
 			"times": [
-				125
+				119
 			],
 			"allTests": [
 				{
@@ -487,10 +487,10 @@
 			]
 		},
 		{
-			"id": "d2ee5c14-66e4-415d-a434-82356d4b1297",
+			"id": "c3b71008-8fd3-48a9-ba29-b24cc5c87be9",
 			"name": "Crear usuario audit",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 80,
+			"time": 131,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -520,7 +520,7 @@
 				}
 			},
 			"times": [
-				80
+				131
 			],
 			"allTests": [
 				{
@@ -532,10 +532,10 @@
 			]
 		},
 		{
-			"id": "532db23e-60b4-4148-8d07-59583ca62738",
+			"id": "3eb41a63-0ad9-4c07-b93d-de5ccdb2ebda",
 			"name": "Crear usuario deleted",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 79,
+			"time": 123,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -565,7 +565,7 @@
 				}
 			},
 			"times": [
-				79
+				123
 			],
 			"allTests": [
 				{
@@ -577,10 +577,10 @@
 			]
 		},
 		{
-			"id": "2c55ea70-0eb3-4ac7-9512-0d8280e73dfd",
+			"id": "dd346cbc-c039-4851-ab43-42893b38ab26",
 			"name": "Username ocupado sin distinguir mayúsculas",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 7,
+			"time": 6,
 			"responseCode": {
 				"code": 409,
 				"name": "Conflict"
@@ -610,7 +610,7 @@
 				}
 			},
 			"times": [
-				7
+				6
 			],
 			"allTests": [
 				{
@@ -622,10 +622,10 @@
 			]
 		},
 		{
-			"id": "f30ada22-b340-4e6a-a046-d73951db3978",
+			"id": "c6c1addb-4216-449f-a5d6-9e719aac3c7d",
 			"name": "Email ocupado sin distinguir mayúsculas",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 8,
+			"time": 7,
 			"responseCode": {
 				"code": 409,
 				"name": "Conflict"
@@ -655,7 +655,7 @@
 				}
 			},
 			"times": [
-				8
+				7
 			],
 			"allTests": [
 				{
@@ -667,7 +667,7 @@
 			]
 		},
 		{
-			"id": "83b45cc2-2f5c-4240-a3db-cf5f6115c95c",
+			"id": "02ed9e50-bf96-4e60-a52d-08d50d7ae6ab",
 			"name": "Alta sin email",
 			"url": "http://localhost/Inventory/backend/users",
 			"time": 6,
@@ -712,10 +712,10 @@
 			]
 		},
 		{
-			"id": "aea6d8fe-abc4-4e42-b39e-091ab7e83af4",
+			"id": "a81be3d7-af42-4646-ac83-fc21d428e077",
 			"name": "Listado sin hashes",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 9,
+			"time": 14,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -745,7 +745,7 @@
 				}
 			},
 			"times": [
-				9
+				14
 			],
 			"allTests": [
 				{
@@ -757,9 +757,9 @@
 			]
 		},
 		{
-			"id": "aa8f8338-5c92-4059-8445-867c957c8f3d",
+			"id": "5040086d-9fab-4541-8c52-496d1dd948f7",
 			"name": "Usuario creado por ID",
-			"url": "http://localhost/Inventory/backend/users/51",
+			"url": "http://localhost/Inventory/backend/users/60",
 			"time": 6,
 			"responseCode": {
 				"code": 200,
@@ -802,9 +802,9 @@
 			]
 		},
 		{
-			"id": "a105e20c-be06-46bb-a462-381dff5a49bf",
+			"id": "9f5fec46-3344-45ec-ab44-55efe59faff0",
 			"name": "Búsqueda por nombre",
-			"url": "http://localhost/Inventory/backend/users/qa_a_mu4cbyfa27y",
+			"url": "http://localhost/Inventory/backend/users/qa_a_mu4jnsewk26",
 			"time": 7,
 			"responseCode": {
 				"code": 200,
@@ -847,10 +847,10 @@
 			]
 		},
 		{
-			"id": "a6d469b7-4126-4403-8bea-311f567299b6",
+			"id": "bf128b26-5ae1-4089-a9a1-f682f910ac39",
 			"name": "Editar sin modificar valores no genera conflicto",
-			"url": "http://localhost/Inventory/backend/users/51",
-			"time": 11,
+			"url": "http://localhost/Inventory/backend/users/60",
+			"time": 8,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -880,7 +880,7 @@
 				}
 			},
 			"times": [
-				11
+				8
 			],
 			"allTests": [
 				{
@@ -892,10 +892,10 @@
 			]
 		},
 		{
-			"id": "c1554f36-505b-4241-94af-56fb131ca79c",
+			"id": "432bccf5-9bb4-46d3-9b82-293208f3ddf9",
 			"name": "Administrador puede cambiar username",
-			"url": "http://localhost/Inventory/backend/users/51",
-			"time": 13,
+			"url": "http://localhost/Inventory/backend/users/60",
+			"time": 11,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -925,7 +925,7 @@
 				}
 			},
 			"times": [
-				13
+				11
 			],
 			"allTests": [
 				{
@@ -937,10 +937,10 @@
 			]
 		},
 		{
-			"id": "1c11a727-30e9-4ae7-bac9-7db746218560",
+			"id": "412af6d9-c8d5-41d0-929c-3eb0a40f2573",
 			"name": "Verificar cambio de username",
-			"url": "http://localhost/Inventory/backend/users/51",
-			"time": 8,
+			"url": "http://localhost/Inventory/backend/users/60",
+			"time": 6,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -970,7 +970,7 @@
 				}
 			},
 			"times": [
-				8
+				6
 			],
 			"allTests": [
 				{
@@ -982,10 +982,10 @@
 			]
 		},
 		{
-			"id": "c577711f-75bf-4da7-8995-1a28d7b59fcb",
+			"id": "26609dd6-3b32-4aa6-a072-409e08140b68",
 			"name": "Restaurar username QA",
-			"url": "http://localhost/Inventory/backend/users/51",
-			"time": 14,
+			"url": "http://localhost/Inventory/backend/users/60",
+			"time": 12,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1010,7 +1010,7 @@
 				}
 			},
 			"times": [
-				14
+				12
 			],
 			"allTests": [
 				{
@@ -1021,9 +1021,9 @@
 			]
 		},
 		{
-			"id": "834edb6c-0337-458f-bb94-b550e319d971",
+			"id": "2fa726c2-62e6-49c6-aac1-7dd7775b313a",
 			"name": "PATCH rechaza username ocupado",
-			"url": "http://localhost/Inventory/backend/users/52",
+			"url": "http://localhost/Inventory/backend/users/61",
 			"time": 7,
 			"responseCode": {
 				"code": 409,
@@ -1066,9 +1066,9 @@
 			]
 		},
 		{
-			"id": "1874fa64-6274-439e-ad73-7c3e84a52f40",
+			"id": "0542fbdf-d5c7-4e94-9055-0dcb4c338fe9",
 			"name": "PATCH rechaza email ocupado",
-			"url": "http://localhost/Inventory/backend/users/52",
+			"url": "http://localhost/Inventory/backend/users/61",
 			"time": 7,
 			"responseCode": {
 				"code": 409,
@@ -1111,10 +1111,10 @@
 			]
 		},
 		{
-			"id": "7b6b8d0a-5a93-4b24-9563-f8a67e2e1f72",
+			"id": "49530551-928f-4f18-a542-418b82b4f50d",
 			"name": "Users Sin campos",
-			"url": "http://localhost/Inventory/backend/users/51",
-			"time": 7,
+			"url": "http://localhost/Inventory/backend/users/60",
+			"time": 5,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -1144,7 +1144,7 @@
 				}
 			},
 			"times": [
-				7
+				5
 			],
 			"allTests": [
 				{
@@ -1156,9 +1156,9 @@
 			]
 		},
 		{
-			"id": "255159e7-4f28-4dc8-ad47-4af399441da6",
+			"id": "3022778f-7915-4466-b168-39c57f20465b",
 			"name": "Users Campo desconocido",
-			"url": "http://localhost/Inventory/backend/users/51",
+			"url": "http://localhost/Inventory/backend/users/60",
 			"time": 7,
 			"responseCode": {
 				"code": 400,
@@ -1201,10 +1201,10 @@
 			]
 		},
 		{
-			"id": "2f9a92d8-c573-48ea-8cba-93966f5be893",
+			"id": "30d1f355-92dd-4f9f-adb2-94e818dc49cd",
 			"name": "Users Rol inválido",
-			"url": "http://localhost/Inventory/backend/users/51",
-			"time": 9,
+			"url": "http://localhost/Inventory/backend/users/60",
+			"time": 12,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -1234,7 +1234,7 @@
 				}
 			},
 			"times": [
-				9
+				12
 			],
 			"allTests": [
 				{
@@ -1246,10 +1246,10 @@
 			]
 		},
 		{
-			"id": "a6de0fc0-bf83-42d7-82f0-9e1cdf7c875d",
+			"id": "1f7902cc-4b4a-466d-a44c-4e799241a9d7",
 			"name": "Users Password corta",
-			"url": "http://localhost/Inventory/backend/users/51",
-			"time": 13,
+			"url": "http://localhost/Inventory/backend/users/60",
+			"time": 8,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -1279,7 +1279,7 @@
 				}
 			},
 			"times": [
-				13
+				8
 			],
 			"allTests": [
 				{
@@ -1291,10 +1291,10 @@
 			]
 		},
 		{
-			"id": "443aa3df-cf43-4a9e-841d-a086fb1a1c77",
+			"id": "977fbabf-472c-4f3c-9aff-0268fc297d68",
 			"name": "Users Email inválido",
-			"url": "http://localhost/Inventory/backend/users/51",
-			"time": 10,
+			"url": "http://localhost/Inventory/backend/users/60",
+			"time": 13,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -1324,7 +1324,7 @@
 				}
 			},
 			"times": [
-				10
+				13
 			],
 			"allTests": [
 				{
@@ -1336,10 +1336,10 @@
 			]
 		},
 		{
-			"id": "eb564439-3cff-4248-9e41-b9524ed3f92a",
+			"id": "55bf2294-fce3-4437-8d8e-5f9efebcada0",
 			"name": "Login sesión A",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 90,
+			"time": 106,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1389,7 +1389,7 @@
 				}
 			},
 			"times": [
-				90
+				106
 			],
 			"allTests": [
 				{
@@ -1405,10 +1405,10 @@
 			]
 		},
 		{
-			"id": "340d7813-7cc1-4bde-b80e-c6715323c03d",
+			"id": "6ab75ebe-77cd-4d54-89f4-fc79cac6504b",
 			"name": "Login sesión B del mismo usuario",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 80,
+			"time": 101,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1463,7 +1463,7 @@
 				}
 			},
 			"times": [
-				80
+				101
 			],
 			"allTests": [
 				{
@@ -1480,10 +1480,10 @@
 			]
 		},
 		{
-			"id": "993c6596-048a-4e8d-9be3-dc89e2d1825f",
+			"id": "5c9ee82b-1ffd-4a61-a276-974b20832ffc",
 			"name": "Renovar A — conservar SID y volver a 12 horas",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 13,
+			"time": 20,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1538,7 +1538,7 @@
 				}
 			},
 			"times": [
-				13
+				20
 			],
 			"allTests": [
 				{
@@ -1555,10 +1555,10 @@
 			]
 		},
 		{
-			"id": "c53d0f47-2f68-467a-a927-2ce32599713b",
+			"id": "39cbcb04-15cf-4ac0-84e4-d4bbe32182a6",
 			"name": "Token anterior aún pertenece a sesión activa",
 			"url": "http://localhost/Inventory/backend/checkStatus",
-			"time": 8,
+			"time": 7,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1583,7 +1583,7 @@
 				}
 			},
 			"times": [
-				8
+				7
 			],
 			"allTests": [
 				{
@@ -1594,10 +1594,10 @@
 			]
 		},
 		{
-			"id": "f8a8f0d5-dedc-47e0-8283-797f9f19be9b",
+			"id": "8bfd374a-4fbc-4b85-a09d-efa5f26787e7",
 			"name": "Logout A",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 16,
+			"time": 18,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1622,7 +1622,7 @@
 				}
 			},
 			"times": [
-				16
+				18
 			],
 			"allTests": [
 				{
@@ -1633,10 +1633,10 @@
 			]
 		},
 		{
-			"id": "f6c04062-8d9a-425b-8751-b07fdbed26c1",
+			"id": "6ac51421-ac1a-4ac9-8a18-55fea377c971",
 			"name": "Revocada GET /checkStatus a_jwt",
 			"url": "http://localhost/Inventory/backend/checkStatus",
-			"time": 8,
+			"time": 6,
 			"responseCode": {
 				"code": 401,
 				"name": "Unauthorized"
@@ -1666,7 +1666,7 @@
 				}
 			},
 			"times": [
-				8
+				6
 			],
 			"allTests": [
 				{
@@ -1678,10 +1678,10 @@
 			]
 		},
 		{
-			"id": "4bba9f77-d1aa-40e8-b084-8b3945c0ba62",
+			"id": "9c236bc2-f813-438a-9a51-6a21ec425aeb",
 			"name": "Revocada GET /profile old_jwt",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 8,
+			"time": 7,
 			"responseCode": {
 				"code": 401,
 				"name": "Unauthorized"
@@ -1711,7 +1711,7 @@
 				}
 			},
 			"times": [
-				8
+				7
 			],
 			"allTests": [
 				{
@@ -1723,10 +1723,10 @@
 			]
 		},
 		{
-			"id": "dbe1cc5e-9a4e-430a-9f55-0aa532398675",
+			"id": "3432a1ac-c6b7-42d6-ba96-a8d05b4e1673",
 			"name": "Revocada PATCH /login a_jwt",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 10,
+			"time": 7,
 			"responseCode": {
 				"code": 401,
 				"name": "Unauthorized"
@@ -1756,7 +1756,7 @@
 				}
 			},
 			"times": [
-				10
+				7
 			],
 			"allTests": [
 				{
@@ -1768,10 +1768,10 @@
 			]
 		},
 		{
-			"id": "e1bd7e3e-b7b5-4b28-b7cf-1e4d27b34b76",
+			"id": "0239ac56-a6ee-44a5-bead-674a4fff3bcc",
 			"name": "Logout repetido idempotente",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 9,
+			"time": 8,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1796,7 +1796,7 @@
 				}
 			},
 			"times": [
-				9
+				8
 			],
 			"allTests": [
 				{
@@ -1807,10 +1807,10 @@
 			]
 		},
 		{
-			"id": "0223f9f2-3af0-47b4-92f7-3e6ba624bc32",
+			"id": "6d3d9803-6bab-4045-82f1-28e7be7b6323",
 			"name": "Sesión B sigue activa",
 			"url": "http://localhost/Inventory/backend/checkStatus",
-			"time": 6,
+			"time": 7,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -1840,7 +1840,7 @@
 				}
 			},
 			"times": [
-				6
+				7
 			],
 			"allTests": [
 				{
@@ -1852,9 +1852,54 @@
 			]
 		},
 		{
-			"id": "e8392465-07ae-4ffb-a95f-6776b6fb70cc",
+			"id": "e7a39e2a-2706-43a7-a3e4-337d1a9d8da9",
 			"name": "Sin token /checkStatus",
 			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 7,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "046a90ac-fbeb-4337-831e-344420c5c62b",
+			"name": "Sin token /profile",
+			"url": "http://localhost/Inventory/backend/profile",
 			"time": 6,
 			"responseCode": {
 				"code": 401,
@@ -1897,9 +1942,9 @@
 			]
 		},
 		{
-			"id": "4ebf4795-127d-47c6-b223-0cea1a304320",
-			"name": "Sin token /profile",
-			"url": "http://localhost/Inventory/backend/profile",
+			"id": "fa3e1449-e278-4d14-93f2-9fd37964379b",
+			"name": "Sin token /users",
+			"url": "http://localhost/Inventory/backend/users",
 			"time": 5,
 			"responseCode": {
 				"code": 401,
@@ -1942,52 +1987,7 @@
 			]
 		},
 		{
-			"id": "14a1689c-4798-44f9-bb08-59d0b89f2e10",
-			"name": "Sin token /users",
-			"url": "http://localhost/Inventory/backend/users",
-			"time": 6,
-			"responseCode": {
-				"code": 401,
-				"name": "Unauthorized"
-			},
-			"tests": {
-				"HTTP 401": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código UNAUTHORIZED": true
-			},
-			"testPassFailCounts": {
-				"HTTP 401": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código UNAUTHORIZED": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				6
-			],
-			"allTests": [
-				{
-					"HTTP 401": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código UNAUTHORIZED": true
-				}
-			]
-		},
-		{
-			"id": "dad7fd5a-f169-4adf-9cac-95a455713a80",
+			"id": "3f155497-fe70-440d-9cae-361e304289ae",
 			"name": "Sin token /stock",
 			"url": "http://localhost/Inventory/backend/stock",
 			"time": 6,
@@ -2032,7 +2032,7 @@
 			]
 		},
 		{
-			"id": "f8f063c8-fa7d-44f9-9463-79dbe6bef44b",
+			"id": "462c7066-dcda-4f21-827a-2521ba7705f4",
 			"name": "Sin token /subscriptions",
 			"url": "http://localhost/Inventory/backend/subscriptions",
 			"time": 5,
@@ -2077,7 +2077,7 @@
 			]
 		},
 		{
-			"id": "fd7f1be9-cab6-47c3-979f-891d3618293f",
+			"id": "3ae18d12-e3c9-4694-aeb3-5c5768286fb0",
 			"name": "Sin token PATCH login",
 			"url": "http://localhost/Inventory/backend/login",
 			"time": 6,
@@ -2122,7 +2122,7 @@
 			]
 		},
 		{
-			"id": "bb17e106-8606-4ade-8081-28925c4297b8",
+			"id": "c34fcbc3-8195-4290-94df-3440b872f0e1",
 			"name": "Sin token DELETE login",
 			"url": "http://localhost/Inventory/backend/login",
 			"time": 6,
@@ -2167,10 +2167,10 @@
 			]
 		},
 		{
-			"id": "397b1925-47a9-46eb-9524-9a98e323823f",
+			"id": "1db0ef7b-272b-4409-b834-2d4301da5cdf",
 			"name": "Firma alterada",
 			"url": "http://localhost/Inventory/backend/checkStatus",
-			"time": 36,
+			"time": 7,
 			"responseCode": {
 				"code": 401,
 				"name": "Unauthorized"
@@ -2200,7 +2200,7 @@
 				}
 			},
 			"times": [
-				36
+				7
 			],
 			"allTests": [
 				{
@@ -2212,7 +2212,7 @@
 			]
 		},
 		{
-			"id": "c4181ce4-5336-4997-ab41-244f8cb74d87",
+			"id": "249d6b5c-c195-44d8-9188-b87755738a33",
 			"name": "Bearer malformado",
 			"url": "http://localhost/Inventory/backend/checkStatus",
 			"time": 5,
@@ -2257,10 +2257,10 @@
 			]
 		},
 		{
-			"id": "8d840d2c-0cb0-430b-a0fc-b6900fcab2ce",
+			"id": "13efb9f1-9560-46be-bf98-66febcc17ef3",
 			"name": "Perfil propio y sin contraseña",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 7,
+			"time": 8,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -2290,7 +2290,7 @@
 				}
 			},
 			"times": [
-				7
+				8
 			],
 			"allTests": [
 				{
@@ -2302,7 +2302,7 @@
 			]
 		},
 		{
-			"id": "39443e56-e900-41f9-926d-e98a9efcada1",
+			"id": "15dabbb6-f19d-43e4-aa49-403d793d40ff",
 			"name": "Perfil rechaza username",
 			"url": "http://localhost/Inventory/backend/profile",
 			"time": 6,
@@ -2347,7 +2347,7 @@
 			]
 		},
 		{
-			"id": "250ff5fa-0ca9-44f8-be35-24048d5640a9",
+			"id": "129fac77-d026-41a2-9e3c-6ba82619c584",
 			"name": "Perfil rechaza role",
 			"url": "http://localhost/Inventory/backend/profile",
 			"time": 7,
@@ -2392,10 +2392,10 @@
 			]
 		},
 		{
-			"id": "4f191007-a86c-4895-ad1b-dd74a1ac7d33",
+			"id": "5b5cb32f-6f9d-476b-8b6b-7a4164c4e7a0",
 			"name": "Perfil rechaza id",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 14,
+			"time": 6,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -2425,7 +2425,7 @@
 				}
 			},
 			"times": [
-				14
+				6
 			],
 			"allTests": [
 				{
@@ -2437,7 +2437,7 @@
 			]
 		},
 		{
-			"id": "3a429a5b-862c-416d-a4c7-01b1d7a51fe2",
+			"id": "a5a03c1c-5b2d-4a1b-9c54-8d045cf7277d",
 			"name": "Perfil rechaza user_id",
 			"url": "http://localhost/Inventory/backend/profile",
 			"time": 7,
@@ -2482,7 +2482,7 @@
 			]
 		},
 		{
-			"id": "70d9a525-3b0e-42bd-8f48-cfc8cf663cc8",
+			"id": "977067a0-87b5-4417-b528-7e688267bbeb",
 			"name": "Perfil rechaza user_image",
 			"url": "http://localhost/Inventory/backend/profile",
 			"time": 7,
@@ -2527,10 +2527,10 @@
 			]
 		},
 		{
-			"id": "fa98fe9f-d6d2-4c87-ad49-5378520fc151",
+			"id": "ca6f72b9-3e2b-46cf-a81d-a610789f12a5",
 			"name": "Perfil email duplicado NOCASE",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 11,
+			"time": 14,
 			"responseCode": {
 				"code": 409,
 				"name": "Conflict"
@@ -2560,7 +2560,7 @@
 				}
 			},
 			"times": [
-				11
+				14
 			],
 			"allTests": [
 				{
@@ -2572,7 +2572,7 @@
 			]
 		},
 		{
-			"id": "d1609713-8bc0-4054-9c8f-e9ef2f44ac60",
+			"id": "c1df6a44-8245-434d-ad54-8e1a08bf0d91",
 			"name": "Perfil conservar email propio",
 			"url": "http://localhost/Inventory/backend/profile",
 			"time": 14,
@@ -2611,10 +2611,10 @@
 			]
 		},
 		{
-			"id": "42bb86bc-a644-49dc-a833-d51fb6c48c54",
+			"id": "5d383e89-8430-4dc1-9e6a-7eec125f81ec",
 			"name": "Perfil cambiar email",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 15,
+			"time": 13,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -2644,7 +2644,7 @@
 				}
 			},
 			"times": [
-				15
+				13
 			],
 			"allTests": [
 				{
@@ -2656,10 +2656,10 @@
 			]
 		},
 		{
-			"id": "2a89f32e-3ea7-4b31-8140-4cc3977be42d",
+			"id": "1b64fb47-eb70-4394-8be6-d5e29b634cce",
 			"name": "Otro usuario permanece intacto",
-			"url": "http://localhost/Inventory/backend/users/52",
-			"time": 7,
+			"url": "http://localhost/Inventory/backend/users/61",
+			"time": 6,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -2689,7 +2689,7 @@
 				}
 			},
 			"times": [
-				7
+				6
 			],
 			"allTests": [
 				{
@@ -2701,10 +2701,10 @@
 			]
 		},
 		{
-			"id": "3382705d-ba50-4cdf-819d-3079e58eaabe",
+			"id": "3f246cc5-1032-436d-a209-d80395affefe",
 			"name": "Restaurar email propio",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 12,
+			"time": 13,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -2729,7 +2729,7 @@
 				}
 			},
 			"times": [
-				12
+				13
 			],
 			"allTests": [
 				{
@@ -2740,7 +2740,7 @@
 			]
 		},
 		{
-			"id": "4b533438-9d15-40e4-ae61-754ab7d438e7",
+			"id": "390e2a25-2e36-4a99-8624-30e1945ba72d",
 			"name": "Perfil Vacío",
 			"url": "http://localhost/Inventory/backend/profile",
 			"time": 7,
@@ -2785,7 +2785,7 @@
 			]
 		},
 		{
-			"id": "a48c4251-1782-4acd-b933-1f6bfde98cad",
+			"id": "d74adf5e-e2bd-49cb-b122-8b77e59a372d",
 			"name": "Perfil Email inválido",
 			"url": "http://localhost/Inventory/backend/profile",
 			"time": 8,
@@ -2830,10 +2830,10 @@
 			]
 		},
 		{
-			"id": "9f4bf1d6-1c0a-4917-bfc6-768676adf95d",
+			"id": "1acae1e9-4c21-4bf4-9abf-657eb7441677",
 			"name": "Perfil Password corta",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 7,
+			"time": 9,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -2863,7 +2863,7 @@
 				}
 			},
 			"times": [
-				7
+				9
 			],
 			"allTests": [
 				{
@@ -2875,10 +2875,10 @@
 			]
 		},
 		{
-			"id": "d4bc3b85-fdeb-49ec-a12c-541a29509093",
+			"id": "009a1371-1d4e-4782-b63f-a241a07f58d9",
 			"name": "Cambiar password propia",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 102,
+			"time": 176,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -2903,7 +2903,7 @@
 				}
 			},
 			"times": [
-				102
+				176
 			],
 			"allTests": [
 				{
@@ -2914,10 +2914,10 @@
 			]
 		},
 		{
-			"id": "d4a57704-9cbc-4b1f-8fed-6b1357edc854",
+			"id": "2dee89b8-3e98-461e-9fb0-eb5245b35b38",
 			"name": "Password anterior rechazada",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 72,
+			"time": 108,
 			"responseCode": {
 				"code": 401,
 				"name": "Unauthorized"
@@ -2947,7 +2947,7 @@
 				}
 			},
 			"times": [
-				72
+				108
 			],
 			"allTests": [
 				{
@@ -2959,10 +2959,10 @@
 			]
 		},
 		{
-			"id": "901afbfd-3779-43a0-9ad1-0e422626ea5f",
+			"id": "57caeafe-a7ac-4df5-b803-b75d391f8bef",
 			"name": "Password nueva funciona",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 81,
+			"time": 131,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -3012,7 +3012,7 @@
 				}
 			},
 			"times": [
-				81
+				131
 			],
 			"allTests": [
 				{
@@ -3028,10 +3028,10 @@
 			]
 		},
 		{
-			"id": "14ccb274-977e-498e-a937-0c21f19eab7e",
+			"id": "7ef33f83-9e8e-48cd-ae89-d76e3a253b50",
 			"name": "Restaurar password QA",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 90,
+			"time": 145,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -3056,7 +3056,7 @@
 				}
 			},
 			"times": [
-				90
+				145
 			],
 			"allTests": [
 				{
@@ -3067,10 +3067,10 @@
 			]
 		},
 		{
-			"id": "0b4e5541-9ddc-407a-bf28-99e7b8ae1697",
+			"id": "0b552370-1f6c-4577-8658-ed9e30bc99e0",
 			"name": "Login audit",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 93,
+			"time": 104,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -3120,7 +3120,7 @@
 				}
 			},
 			"times": [
-				93
+				104
 			],
 			"allTests": [
 				{
@@ -3136,53 +3136,8 @@
 			]
 		},
 		{
-			"id": "2faeac80-9d82-4ac0-ae15-f685bd78939a",
+			"id": "39428937-83a2-4843-b440-f910739bfbc3",
 			"name": "a2_jwt no puede GET /users",
-			"url": "http://localhost/Inventory/backend/users",
-			"time": 6,
-			"responseCode": {
-				"code": 403,
-				"name": "Forbidden"
-			},
-			"tests": {
-				"HTTP 403": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código FORBIDDEN": true
-			},
-			"testPassFailCounts": {
-				"HTTP 403": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código FORBIDDEN": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				6
-			],
-			"allTests": [
-				{
-					"HTTP 403": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código FORBIDDEN": true
-				}
-			]
-		},
-		{
-			"id": "03235514-c5e9-4c23-bae8-317056e70fc7",
-			"name": "a2_jwt no puede POST /users",
 			"url": "http://localhost/Inventory/backend/users",
 			"time": 7,
 			"responseCode": {
@@ -3226,9 +3181,9 @@
 			]
 		},
 		{
-			"id": "9f001ab5-cbfc-4a35-a3fd-242dec7214f9",
-			"name": "a2_jwt no puede PATCH /users/{{qa_b_id}}",
-			"url": "http://localhost/Inventory/backend/users/52",
+			"id": "bfd9ee48-e20b-47ec-a8c3-251351ce8003",
+			"name": "a2_jwt no puede POST /users",
+			"url": "http://localhost/Inventory/backend/users",
 			"time": 6,
 			"responseCode": {
 				"code": 403,
@@ -3271,7 +3226,52 @@
 			]
 		},
 		{
-			"id": "222c584d-93bf-465b-9a58-90d7c5ab2b6c",
+			"id": "bdd2c349-db72-4fa0-9d80-f0d61ecf23fa",
+			"name": "a2_jwt no puede PATCH /users/{{qa_b_id}}",
+			"url": "http://localhost/Inventory/backend/users/61",
+			"time": 8,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "75d021c0-75d9-4313-a6e8-7e6367e7f281",
 			"name": "a2_jwt no puede DELETE /users",
 			"url": "http://localhost/Inventory/backend/users",
 			"time": 6,
@@ -3316,54 +3316,9 @@
 			]
 		},
 		{
-			"id": "9222980e-4490-4df7-8d3b-e24dc65ec34a",
+			"id": "5f03c61e-acbb-4148-bb8b-010c6e256463",
 			"name": "a2_jwt no puede POST /users/photo",
 			"url": "http://localhost/Inventory/backend/users/photo",
-			"time": 7,
-			"responseCode": {
-				"code": 403,
-				"name": "Forbidden"
-			},
-			"tests": {
-				"HTTP 403": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código FORBIDDEN": true
-			},
-			"testPassFailCounts": {
-				"HTTP 403": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código FORBIDDEN": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				7
-			],
-			"allTests": [
-				{
-					"HTTP 403": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código FORBIDDEN": true
-				}
-			]
-		},
-		{
-			"id": "c2e74f71-267b-4f43-b74f-83ac26979904",
-			"name": "a2_jwt no puede DELETE /users/{{qa_b_id}}/photo",
-			"url": "http://localhost/Inventory/backend/users/52/photo",
 			"time": 6,
 			"responseCode": {
 				"code": 403,
@@ -3406,7 +3361,52 @@
 			]
 		},
 		{
-			"id": "0fbb6840-386c-4d92-b74a-6fbe8f602191",
+			"id": "d5facbc9-9b36-4c2d-9dd0-4372b43dc005",
+			"name": "a2_jwt no puede DELETE /users/{{qa_b_id}}/photo",
+			"url": "http://localhost/Inventory/backend/users/61/photo",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "30cfdc07-c074-462d-9954-b5d8a2813445",
 			"name": "audit_jwt no puede GET /users",
 			"url": "http://localhost/Inventory/backend/users",
 			"time": 6,
@@ -3451,10 +3451,10 @@
 			]
 		},
 		{
-			"id": "b4a11896-40bd-4aae-bb29-7916f1a100af",
+			"id": "2fe73745-fd4d-44b8-b53d-21c9de1170d4",
 			"name": "audit_jwt no puede POST /users",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 7,
+			"time": 6,
 			"responseCode": {
 				"code": 403,
 				"name": "Forbidden"
@@ -3484,7 +3484,7 @@
 				}
 			},
 			"times": [
-				7
+				6
 			],
 			"allTests": [
 				{
@@ -3496,9 +3496,9 @@
 			]
 		},
 		{
-			"id": "fe4264a1-c1f5-4f8c-8f72-b0ce694a0dd1",
+			"id": "7f8d0fb6-5860-4a94-9945-b97900764a1a",
 			"name": "audit_jwt no puede PATCH /users/{{qa_b_id}}",
-			"url": "http://localhost/Inventory/backend/users/52",
+			"url": "http://localhost/Inventory/backend/users/61",
 			"time": 8,
 			"responseCode": {
 				"code": 403,
@@ -3541,7 +3541,7 @@
 			]
 		},
 		{
-			"id": "5feab46a-25d9-479e-a108-511560c3beba",
+			"id": "a16f68ad-7a12-4949-9ce7-091e5306ad5e",
 			"name": "audit_jwt no puede DELETE /users",
 			"url": "http://localhost/Inventory/backend/users",
 			"time": 6,
@@ -3586,9 +3586,99 @@
 			]
 		},
 		{
-			"id": "0170ee1b-75b3-4f9d-a18f-339583e06cfa",
+			"id": "7618639b-1e2f-4b8a-a12b-11060a9b9742",
 			"name": "audit_jwt no puede POST /users/photo",
 			"url": "http://localhost/Inventory/backend/users/photo",
+			"time": 9,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "49c9b9d5-411e-4f2d-ba4f-a4c381bb68ab",
+			"name": "audit_jwt no puede DELETE /users/{{qa_b_id}}/photo",
+			"url": "http://localhost/Inventory/backend/users/61/photo",
+			"time": 5,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "3d1a4def-c55d-4225-bc53-5b17f56dc71d",
+			"name": "Editor sin permiso stock GET",
+			"url": "http://localhost/Inventory/backend/stock",
 			"time": 6,
 			"responseCode": {
 				"code": 403,
@@ -3631,97 +3721,7 @@
 			]
 		},
 		{
-			"id": "36ff0969-3098-4423-93ff-b372832b2269",
-			"name": "audit_jwt no puede DELETE /users/{{qa_b_id}}/photo",
-			"url": "http://localhost/Inventory/backend/users/52/photo",
-			"time": 8,
-			"responseCode": {
-				"code": 403,
-				"name": "Forbidden"
-			},
-			"tests": {
-				"HTTP 403": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código FORBIDDEN": true
-			},
-			"testPassFailCounts": {
-				"HTTP 403": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código FORBIDDEN": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				8
-			],
-			"allTests": [
-				{
-					"HTTP 403": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código FORBIDDEN": true
-				}
-			]
-		},
-		{
-			"id": "b7daa948-2d75-447a-86bc-26d56ad5d486",
-			"name": "Editor sin permiso stock GET",
-			"url": "http://localhost/Inventory/backend/stock",
-			"time": 7,
-			"responseCode": {
-				"code": 403,
-				"name": "Forbidden"
-			},
-			"tests": {
-				"HTTP 403": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código FORBIDDEN": true
-			},
-			"testPassFailCounts": {
-				"HTTP 403": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código FORBIDDEN": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				7
-			],
-			"allTests": [
-				{
-					"HTTP 403": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código FORBIDDEN": true
-				}
-			]
-		},
-		{
-			"id": "b1f16993-a2d7-4a5c-b10d-7f73afb3e1b4",
+			"id": "e0b283c9-26bc-4bdd-8ddb-118da007aede",
 			"name": "Editor sin permiso stock POST",
 			"url": "http://localhost/Inventory/backend/stock",
 			"time": 6,
@@ -3766,7 +3766,7 @@
 			]
 		},
 		{
-			"id": "27a6814c-74df-4e95-9232-5ef97bcac2fd",
+			"id": "cd4a74a2-1afc-4b61-928b-5501b531cf3f",
 			"name": "Editor sin permiso stock PATCH",
 			"url": "http://localhost/Inventory/backend/stock/1",
 			"time": 6,
@@ -3811,10 +3811,10 @@
 			]
 		},
 		{
-			"id": "c4a5b7ad-1415-41a1-aada-90f59291c72d",
+			"id": "e15c3711-b850-4498-b50d-d1e3ae8bf8fb",
 			"name": "Editor sin permiso stock DELETE",
 			"url": "http://localhost/Inventory/backend/stock",
-			"time": 7,
+			"time": 6,
 			"responseCode": {
 				"code": 403,
 				"name": "Forbidden"
@@ -3844,7 +3844,7 @@
 				}
 			},
 			"times": [
-				7
+				6
 			],
 			"allTests": [
 				{
@@ -3856,10 +3856,10 @@
 			]
 		},
 		{
-			"id": "23769530-7783-402e-8519-54b9d4cd0571",
+			"id": "0b84f32f-fdbb-4258-b53f-af47b8cdf691",
 			"name": "Audit puede leer stock",
 			"url": "http://localhost/Inventory/backend/stock",
-			"time": 10,
+			"time": 6,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -3884,7 +3884,7 @@
 				}
 			},
 			"times": [
-				10
+				6
 			],
 			"allTests": [
 				{
@@ -3895,10 +3895,10 @@
 			]
 		},
 		{
-			"id": "7bb949b0-57ac-4bc1-98a0-e8c7aa6437a1",
+			"id": "294ae056-5be1-4430-b5bb-0f82269ccf2a",
 			"name": "a2_jwt puede consultar opciones",
 			"url": "http://localhost/Inventory/backend/subscriptions/options",
-			"time": 9,
+			"time": 6,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -3928,7 +3928,7 @@
 				}
 			},
 			"times": [
-				9
+				6
 			],
 			"allTests": [
 				{
@@ -3940,10 +3940,10 @@
 			]
 		},
 		{
-			"id": "62f56f05-a4a3-4199-b5c5-930f45de24ef",
+			"id": "281f5d20-53d4-4e11-a50e-055aaace0bdc",
 			"name": "audit_jwt puede consultar opciones",
 			"url": "http://localhost/Inventory/backend/subscriptions/options",
-			"time": 7,
+			"time": 8,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -3973,7 +3973,7 @@
 				}
 			},
 			"times": [
-				7
+				8
 			],
 			"allTests": [
 				{
@@ -3985,53 +3985,8 @@
 			]
 		},
 		{
-			"id": "ffc2b77a-09f4-4251-a2d6-a5526b1c6fd5",
+			"id": "a38efb1a-6677-42e4-b8a8-e327a0f0a01f",
 			"name": "Crear equipo s1",
-			"url": "http://localhost/Inventory/backend/stock",
-			"time": 17,
-			"responseCode": {
-				"code": 201,
-				"name": "Created"
-			},
-			"tests": {
-				"HTTP 201": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"ID positivo": true
-			},
-			"testPassFailCounts": {
-				"HTTP 201": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"ID positivo": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				17
-			],
-			"allTests": [
-				{
-					"HTTP 201": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"ID positivo": true
-				}
-			]
-		},
-		{
-			"id": "5d031b09-52bd-4918-af08-4143e700a741",
-			"name": "Crear equipo s2",
 			"url": "http://localhost/Inventory/backend/stock",
 			"time": 15,
 			"responseCode": {
@@ -4075,10 +4030,55 @@
 			]
 		},
 		{
-			"id": "9d4fa6cf-7e3e-469b-a874-b1d982502851",
+			"id": "993e9413-1c10-4452-9f16-309b259aa93d",
+			"name": "Crear equipo s2",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 12,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"HTTP 201": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"ID positivo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ID positivo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"HTTP 201": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"ID positivo": true
+				}
+			]
+		},
+		{
+			"id": "083e56cd-94a7-435d-9adc-b5d8ce236948",
 			"name": "Equipo por ID",
-			"url": "http://localhost/Inventory/backend/stock/101",
-			"time": 9,
+			"url": "http://localhost/Inventory/backend/stock/105",
+			"time": 8,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -4108,7 +4108,7 @@
 				}
 			},
 			"times": [
-				9
+				8
 			],
 			"allTests": [
 				{
@@ -4120,9 +4120,9 @@
 			]
 		},
 		{
-			"id": "2453a013-fa84-4146-9118-782334d7f423",
+			"id": "66567c1b-bc00-4a55-a4e2-9d115d65a58a",
 			"name": "Buscar línea",
-			"url": "http://localhost/Inventory/backend/stock/line/1877658118",
+			"url": "http://localhost/Inventory/backend/stock/line/1889967512",
 			"time": 7,
 			"responseCode": {
 				"code": 200,
@@ -4165,10 +4165,10 @@
 			]
 		},
 		{
-			"id": "d1ed9e00-425f-4827-992f-397a9b920748",
+			"id": "b7bc3fdd-5f6a-4cfe-a98d-8d9c3fdc6c50",
 			"name": "Alta stock duplicado imei",
 			"url": "http://localhost/Inventory/backend/stock",
-			"time": 8,
+			"time": 6,
 			"responseCode": {
 				"code": 409,
 				"name": "Conflict"
@@ -4198,7 +4198,7 @@
 				}
 			},
 			"times": [
-				8
+				6
 			],
 			"allTests": [
 				{
@@ -4210,10 +4210,10 @@
 			]
 		},
 		{
-			"id": "8828dfd0-c3fb-4e6d-b378-399bc2c4db45",
+			"id": "fb77cac3-4d5c-4335-82ca-5b236d187988",
 			"name": "PATCH stock duplicado imei",
-			"url": "http://localhost/Inventory/backend/stock/102",
-			"time": 8,
+			"url": "http://localhost/Inventory/backend/stock/106",
+			"time": 7,
 			"responseCode": {
 				"code": 409,
 				"name": "Conflict"
@@ -4243,7 +4243,7 @@
 				}
 			},
 			"times": [
-				8
+				7
 			],
 			"allTests": [
 				{
@@ -4255,10 +4255,10 @@
 			]
 		},
 		{
-			"id": "b20fb008-a61d-4c00-bd43-389874f2fbd1",
+			"id": "311ddcb6-4b1a-4141-bcd0-f5abfd4c5636",
 			"name": "Alta stock duplicado line",
 			"url": "http://localhost/Inventory/backend/stock",
-			"time": 8,
+			"time": 6,
 			"responseCode": {
 				"code": 409,
 				"name": "Conflict"
@@ -4288,7 +4288,7 @@
 				}
 			},
 			"times": [
-				8
+				6
 			],
 			"allTests": [
 				{
@@ -4300,9 +4300,9 @@
 			]
 		},
 		{
-			"id": "0fc47076-25f1-45dd-b06e-9131b95f5ad2",
+			"id": "99eb418a-c155-4a26-8f17-38af83b3bfb2",
 			"name": "PATCH stock duplicado line",
-			"url": "http://localhost/Inventory/backend/stock/102",
+			"url": "http://localhost/Inventory/backend/stock/106",
 			"time": 7,
 			"responseCode": {
 				"code": 409,
@@ -4345,10 +4345,10 @@
 			]
 		},
 		{
-			"id": "b69756aa-13ca-4ca7-a215-ebc90500f7db",
+			"id": "80a5fc68-f45e-413c-b73a-c0c186afb605",
 			"name": "Actualizar stock",
-			"url": "http://localhost/Inventory/backend/stock/101",
-			"time": 12,
+			"url": "http://localhost/Inventory/backend/stock/105",
+			"time": 13,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -4373,7 +4373,7 @@
 				}
 			},
 			"times": [
-				12
+				13
 			],
 			"allTests": [
 				{
@@ -4384,10 +4384,10 @@
 			]
 		},
 		{
-			"id": "6cf548f2-9cfa-41ab-a470-c438352e2931",
+			"id": "77f20ea6-110d-4dd8-b788-d791a31df5f2",
 			"name": "Verificar modelo persistido",
-			"url": "http://localhost/Inventory/backend/stock/101",
-			"time": 10,
+			"url": "http://localhost/Inventory/backend/stock/105",
+			"time": 8,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -4417,7 +4417,7 @@
 				}
 			},
 			"times": [
-				10
+				8
 			],
 			"allTests": [
 				{
@@ -4429,10 +4429,10 @@
 			]
 		},
 		{
-			"id": "6012b974-8980-4a8f-ad02-eb7567268b2c",
+			"id": "4fce5d3c-bb83-4b1b-a5b0-0f82296a1c5b",
 			"name": "Stock campo no permitido",
-			"url": "http://localhost/Inventory/backend/stock/101",
-			"time": 7,
+			"url": "http://localhost/Inventory/backend/stock/105",
+			"time": 6,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -4462,7 +4462,7 @@
 				}
 			},
 			"times": [
-				7
+				6
 			],
 			"allTests": [
 				{
@@ -4474,10 +4474,10 @@
 			]
 		},
 		{
-			"id": "cefca22c-a810-45f0-80c0-556f0edfa239",
+			"id": "1ffca29e-61e0-4c51-97d3-371a45439329",
 			"name": "Stock línea no entera",
-			"url": "http://localhost/Inventory/backend/stock/101",
-			"time": 9,
+			"url": "http://localhost/Inventory/backend/stock/105",
+			"time": 7,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -4507,7 +4507,7 @@
 				}
 			},
 			"times": [
-				9
+				7
 			],
 			"allTests": [
 				{
@@ -4519,10 +4519,10 @@
 			]
 		},
 		{
-			"id": "49fb57fa-00dc-40af-9f8e-7e666b3d60a2",
+			"id": "a57c44f3-c60c-4e8e-b9b3-f05cbc287e12",
 			"name": "Stock PATCH vacío",
-			"url": "http://localhost/Inventory/backend/stock/101",
-			"time": 8,
+			"url": "http://localhost/Inventory/backend/stock/105",
+			"time": 7,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -4552,7 +4552,7 @@
 				}
 			},
 			"times": [
-				8
+				7
 			],
 			"allTests": [
 				{
@@ -4564,10 +4564,10 @@
 			]
 		},
 		{
-			"id": "294fd69a-4259-48c6-9650-ec5f1f246714",
+			"id": "e5b4e1e5-b7eb-44ee-9f2c-22abee5e7ec8",
 			"name": "Stock alta incompleta",
 			"url": "http://localhost/Inventory/backend/stock",
-			"time": 7,
+			"time": 8,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -4597,7 +4597,7 @@
 				}
 			},
 			"times": [
-				7
+				8
 			],
 			"allTests": [
 				{
@@ -4609,10 +4609,10 @@
 			]
 		},
 		{
-			"id": "96485966-f9f6-458d-b7f6-c77c79a273fd",
+			"id": "a3979b21-c829-45ab-b7c1-243c4ac08257",
 			"name": "Asignar s1 al usuario a",
 			"url": "http://localhost/Inventory/backend/subscriptions",
-			"time": 18,
+			"time": 15,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -4642,7 +4642,7 @@
 				}
 			},
 			"times": [
-				18
+				15
 			],
 			"allTests": [
 				{
@@ -4654,10 +4654,10 @@
 			]
 		},
 		{
-			"id": "1fc75096-e872-455b-a03c-b7c7144035d1",
+			"id": "f0b654d9-2864-4f51-84aa-14781024d061",
 			"name": "Asignar s2 al usuario a",
 			"url": "http://localhost/Inventory/backend/subscriptions",
-			"time": 11,
+			"time": 13,
 			"responseCode": {
 				"code": 201,
 				"name": "Created"
@@ -4687,7 +4687,7 @@
 				}
 			},
 			"times": [
-				11
+				13
 			],
 			"allTests": [
 				{
@@ -4699,7 +4699,7 @@
 			]
 		},
 		{
-			"id": "966edc94-1c82-4da4-9c8b-8f0f1ec63779",
+			"id": "16e3beec-fdef-473a-b57e-b667899722d4",
 			"name": "Equipo no puede tener otro usuario",
 			"url": "http://localhost/Inventory/backend/subscriptions",
 			"time": 7,
@@ -4744,10 +4744,10 @@
 			]
 		},
 		{
-			"id": "a96af58a-38d9-4e8d-809a-fbc8c0407fd3",
+			"id": "d535e288-1825-471e-bc6e-11dbd4b67d75",
 			"name": "Opciones excluyen equipos asignados",
 			"url": "http://localhost/Inventory/backend/subscriptions/options",
-			"time": 7,
+			"time": 6,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -4777,7 +4777,7 @@
 				}
 			},
 			"times": [
-				7
+				6
 			],
 			"allTests": [
 				{
@@ -4789,10 +4789,10 @@
 			]
 		},
 		{
-			"id": "0065c9ac-690f-448b-9f06-05ffdd7c77c6",
+			"id": "127519ec-b047-474f-b75c-5ab1a4a5f2af",
 			"name": "Perfil muestra ambos equipos",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 8,
+			"time": 9,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -4822,7 +4822,7 @@
 				}
 			},
 			"times": [
-				8
+				9
 			],
 			"allTests": [
 				{
@@ -4834,10 +4834,10 @@
 			]
 		},
 		{
-			"id": "79f5654b-b5f5-46e8-8928-790018ef769f",
+			"id": "dc1c2529-e756-43a5-8e2e-fd488bf51c22",
 			"name": "Buscar asignaciones",
-			"url": "http://localhost/Inventory/backend/subscriptions/qa_a_mu4cbyfa27y",
-			"time": 8,
+			"url": "http://localhost/Inventory/backend/subscriptions/qa_a_mu4jnsewk26",
+			"time": 6,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -4867,7 +4867,7 @@
 				}
 			},
 			"times": [
-				8
+				6
 			],
 			"allTests": [
 				{
@@ -4879,7 +4879,7 @@
 			]
 		},
 		{
-			"id": "b625d013-c2ad-4f05-9997-56eb98dd544f",
+			"id": "d56abf0d-df2e-4c7e-93eb-f944d0ea718e",
 			"name": "Asignación usuario inválido",
 			"url": "http://localhost/Inventory/backend/subscriptions",
 			"time": 6,
@@ -4924,10 +4924,10 @@
 			]
 		},
 		{
-			"id": "e7fda0f8-5ed0-4d30-a855-705b737669bf",
+			"id": "227638ea-5f26-4e03-95ce-7a5252367217",
 			"name": "Asignación equipo inexistente",
 			"url": "http://localhost/Inventory/backend/subscriptions",
-			"time": 8,
+			"time": 7,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -4957,7 +4957,7 @@
 				}
 			},
 			"times": [
-				8
+				7
 			],
 			"allTests": [
 				{
@@ -4969,7 +4969,7 @@
 			]
 		},
 		{
-			"id": "61e0ef85-60ed-48ee-afa8-3e2896ea9746",
+			"id": "c5772aab-776b-4d4c-a84e-7c684bd2e84a",
 			"name": "Bulk delete IDs inválidos",
 			"url": "http://localhost/Inventory/backend/subscriptions",
 			"time": 7,
@@ -5014,10 +5014,10 @@
 			]
 		},
 		{
-			"id": "29f5e3ac-ddba-473c-8ffd-7dd6d6c840a0",
+			"id": "5689887b-f335-48b3-b340-666afce21e55",
 			"name": "Bulk delete atómico: incluye ID inexistente",
 			"url": "http://localhost/Inventory/backend/subscriptions",
-			"time": 12,
+			"time": 8,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -5047,7 +5047,7 @@
 				}
 			},
 			"times": [
-				12
+				8
 			],
 			"allTests": [
 				{
@@ -5059,10 +5059,10 @@
 			]
 		},
 		{
-			"id": "26d55af9-10c2-463d-860a-1205a2694a68",
+			"id": "ad5ba7ac-1a9b-4d9b-980f-f048cff36f66",
 			"name": "No se borró la asignación válida",
-			"url": "http://localhost/Inventory/backend/subscriptions/qa_a_mu4cbyfa27y",
-			"time": 8,
+			"url": "http://localhost/Inventory/backend/subscriptions/qa_a_mu4jnsewk26",
+			"time": 10,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -5092,7 +5092,7 @@
 				}
 			},
 			"times": [
-				8
+				10
 			],
 			"allTests": [
 				{
@@ -5104,10 +5104,10 @@
 			]
 		},
 		{
-			"id": "26a33729-8f39-4ed7-82cc-13315073d10b",
+			"id": "a4175e29-5c23-43c3-bfd7-08a7c60ceb76",
 			"name": "Foto requerida /profile/photo",
 			"url": "http://localhost/Inventory/backend/profile/photo",
-			"time": 8,
+			"time": 6,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -5137,7 +5137,7 @@
 				}
 			},
 			"times": [
-				8
+				6
 			],
 			"allTests": [
 				{
@@ -5149,7 +5149,7 @@
 			]
 		},
 		{
-			"id": "7d2b9f1d-b6a8-4f2a-8046-b10f99c47e2e",
+			"id": "9e9b3665-cd4c-4865-a47f-fce397f8134a",
 			"name": "Foto requerida /users/photo",
 			"url": "http://localhost/Inventory/backend/users/photo",
 			"time": 7,
@@ -5194,7 +5194,7 @@
 			]
 		},
 		{
-			"id": "07986463-5be1-4890-b588-35aa921485c9",
+			"id": "9e16081f-6ea3-4f3f-bd64-14a93d96e9ff",
 			"name": "Foto requerida /stock/photo",
 			"url": "http://localhost/Inventory/backend/stock/photo",
 			"time": 8,
@@ -5239,10 +5239,10 @@
 			]
 		},
 		{
-			"id": "e27b17f4-7803-4586-96be-f2106ad1bd99",
+			"id": "94eacc2a-865c-49af-9c2e-531b918c8224",
 			"name": "Eliminar foto de usuario inexistente",
-			"url": "http://localhost/Inventory/backend/users/51/photo",
-			"time": 6,
+			"url": "http://localhost/Inventory/backend/users/60/photo",
+			"time": 7,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -5272,7 +5272,7 @@
 				}
 			},
 			"times": [
-				6
+				7
 			],
 			"allTests": [
 				{
@@ -5284,10 +5284,10 @@
 			]
 		},
 		{
-			"id": "783c8a62-2ac0-40f6-9fc1-1e97c930281c",
+			"id": "100c3c29-16a1-4b9c-8113-f00e9bb36dba",
 			"name": "Eliminar foto vacía stock es idempotente",
-			"url": "http://localhost/Inventory/backend/stock/101/photo",
-			"time": 7,
+			"url": "http://localhost/Inventory/backend/stock/105/photo",
+			"time": 9,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -5312,7 +5312,7 @@
 				}
 			},
 			"times": [
-				7
+				9
 			],
 			"allTests": [
 				{
@@ -5323,10 +5323,10 @@
 			]
 		},
 		{
-			"id": "8fd5b7a8-4975-4eb5-bdb7-c9614171fe2f",
+			"id": "3b8af730-d0c8-4e73-ade3-96a2f0cdbe77",
 			"name": "Subir invalid a /profile/photo",
 			"url": "http://localhost/Inventory/backend/profile/photo",
-			"time": 129,
+			"time": 8,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -5356,7 +5356,7 @@
 				}
 			},
 			"times": [
-				129
+				8
 			],
 			"allTests": [
 				{
@@ -5368,10 +5368,10 @@
 			]
 		},
 		{
-			"id": "f6da29d0-e966-4a73-85df-5bab32b05208",
+			"id": "3561b842-dab4-4104-93de-bc90a1eb4501",
 			"name": "Subir large a /profile/photo",
 			"url": "http://localhost/Inventory/backend/profile/photo",
-			"time": 42,
+			"time": 27,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -5401,7 +5401,7 @@
 				}
 			},
 			"times": [
-				42
+				27
 			],
 			"allTests": [
 				{
@@ -5413,10 +5413,10 @@
 			]
 		},
 		{
-			"id": "e2cb6f6a-3977-4fe1-b9f4-685df8fb04a9",
+			"id": "ce534560-1faf-4981-85f8-57c584d0c01b",
 			"name": "Subir png a /profile/photo",
 			"url": "http://localhost/Inventory/backend/profile/photo",
-			"time": 21,
+			"time": 16,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -5446,7 +5446,7 @@
 				}
 			},
 			"times": [
-				21
+				16
 			],
 			"allTests": [
 				{
@@ -5458,10 +5458,10 @@
 			]
 		},
 		{
-			"id": "e76f0d39-d023-4899-94c3-068972b32570",
+			"id": "f9ec0f72-26da-4f9c-8341-0947630a4a8d",
 			"name": "Subir invalid a /users/photo",
 			"url": "http://localhost/Inventory/backend/users/photo",
-			"time": 11,
+			"time": 12,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -5491,7 +5491,7 @@
 				}
 			},
 			"times": [
-				11
+				12
 			],
 			"allTests": [
 				{
@@ -5503,10 +5503,10 @@
 			]
 		},
 		{
-			"id": "52a61b5a-f90d-413d-b354-f59e78161c35",
+			"id": "d1e64d1b-ea94-4915-991b-2f291af6ecdf",
 			"name": "Subir large a /users/photo",
 			"url": "http://localhost/Inventory/backend/users/photo",
-			"time": 38,
+			"time": 32,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -5536,7 +5536,7 @@
 				}
 			},
 			"times": [
-				38
+				32
 			],
 			"allTests": [
 				{
@@ -5548,7 +5548,7 @@
 			]
 		},
 		{
-			"id": "2d82c421-13f0-46f7-8a0c-cb764da9e3b0",
+			"id": "d5b5d811-de6f-4857-bc02-c9ec0696e754",
 			"name": "Subir png a /users/photo",
 			"url": "http://localhost/Inventory/backend/users/photo",
 			"time": 16,
@@ -5593,7 +5593,7 @@
 			]
 		},
 		{
-			"id": "7ac1b0c6-1156-428e-a69c-84dc8b9b94bc",
+			"id": "972dbf51-95b6-4e48-b514-9c7b90345450",
 			"name": "Subir invalid a /stock/photo",
 			"url": "http://localhost/Inventory/backend/stock/photo",
 			"time": 9,
@@ -5638,10 +5638,10 @@
 			]
 		},
 		{
-			"id": "aaa66d14-d6a9-46f3-97ab-18f84dce4fdc",
+			"id": "e2da2e5b-7dcc-4e51-9008-a7d910481882",
 			"name": "Subir large a /stock/photo",
 			"url": "http://localhost/Inventory/backend/stock/photo",
-			"time": 24,
+			"time": 32,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -5671,7 +5671,7 @@
 				}
 			},
 			"times": [
-				24
+				32
 			],
 			"allTests": [
 				{
@@ -5683,10 +5683,10 @@
 			]
 		},
 		{
-			"id": "f1c97d3b-0fe8-4136-990a-f3832e51c6f8",
+			"id": "3c3d12e2-fed5-454c-a6aa-ecd479be9b6a",
 			"name": "Subir png a /stock/photo",
 			"url": "http://localhost/Inventory/backend/stock/photo",
-			"time": 20,
+			"time": 14,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -5716,7 +5716,7 @@
 				}
 			},
 			"times": [
-				20
+				14
 			],
 			"allTests": [
 				{
@@ -5728,10 +5728,10 @@
 			]
 		},
 		{
-			"id": "1ea003a0-3cb3-4caa-92f4-574fa5c5c45d",
+			"id": "85524060-7a44-4457-904e-302292513076",
 			"name": "Confirmar foto propia persistida",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 7,
+			"time": 6,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -5761,7 +5761,7 @@
 				}
 			},
 			"times": [
-				7
+				6
 			],
 			"allTests": [
 				{
@@ -5773,10 +5773,10 @@
 			]
 		},
 		{
-			"id": "3c97b7cb-fb29-42b4-a287-fdb646a2b6da",
+			"id": "16c0e2d0-be42-465e-86e6-4b49d7d468ee",
 			"name": "Confirmar foto stock persistida",
-			"url": "http://localhost/Inventory/backend/stock/101",
-			"time": 8,
+			"url": "http://localhost/Inventory/backend/stock/105",
+			"time": 6,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -5806,7 +5806,7 @@
 				}
 			},
 			"times": [
-				8
+				6
 			],
 			"allTests": [
 				{
@@ -5818,10 +5818,10 @@
 			]
 		},
 		{
-			"id": "72da1ba1-a989-453e-8a27-1b86cd9ed12a",
+			"id": "13620b87-6b3e-4761-930f-d1f3c25a72ab",
 			"name": "Eliminar foto usuario",
-			"url": "http://localhost/Inventory/backend/users/52/photo",
-			"time": 17,
+			"url": "http://localhost/Inventory/backend/users/61/photo",
+			"time": 13,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -5846,7 +5846,7 @@
 				}
 			},
 			"times": [
-				17
+				13
 			],
 			"allTests": [
 				{
@@ -5857,9 +5857,9 @@
 			]
 		},
 		{
-			"id": "3a0a480e-8c53-4166-9600-880038f0fd72",
+			"id": "5970100a-d57e-4eed-80be-52422e8c5f0d",
 			"name": "Confirmar eliminación foto usuario",
-			"url": "http://localhost/Inventory/backend/users/52",
+			"url": "http://localhost/Inventory/backend/users/61",
 			"time": 7,
 			"responseCode": {
 				"code": 200,
@@ -5902,9 +5902,9 @@
 			]
 		},
 		{
-			"id": "962702dd-9942-4005-b6a2-81faba06ce09",
+			"id": "12aa79f3-8ec0-4bd2-8b09-56f8a4dd8182",
 			"name": "Eliminar foto stock",
-			"url": "http://localhost/Inventory/backend/stock/101/photo",
+			"url": "http://localhost/Inventory/backend/stock/105/photo",
 			"time": 14,
 			"responseCode": {
 				"code": 200,
@@ -5941,10 +5941,10 @@
 			]
 		},
 		{
-			"id": "903b5c44-4e20-4182-b1ed-5f797e60c279",
+			"id": "83310650-dcef-41a1-92de-a97310b64633",
 			"name": "Confirmar eliminación foto stock",
-			"url": "http://localhost/Inventory/backend/stock/101",
-			"time": 7,
+			"url": "http://localhost/Inventory/backend/stock/105",
+			"time": 8,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -5974,7 +5974,7 @@
 				}
 			},
 			"times": [
-				7
+				8
 			],
 			"allTests": [
 				{
@@ -5986,8 +5986,314 @@
 			]
 		},
 		{
-			"id": "57ad5673-fa04-46da-946f-2b0b0fa07217",
+			"id": "68c31fc3-6dbf-4ed9-9b86-e14cad43323d",
 			"name": "Login B antes de cambiar rol",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 122,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				122
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true
+				}
+			]
+		},
+		{
+			"id": "f9f11a56-75bb-41a9-badc-00e1e31e8181",
+			"name": "Cambiar rol B a audit",
+			"url": "http://localhost/Inventory/backend/users/61",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "258b4654-6691-4d0f-9e05-3023b15dfcac",
+			"name": "JWT previo rechazado después de cambiar rol",
+			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 7,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código SESSION_REVOKED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código SESSION_REVOKED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código SESSION_REVOKED": true
+				}
+			]
+		},
+		{
+			"id": "44a0926e-660f-4ff5-b4f8-b6343cecd616",
+			"name": "Restaurar rol B",
+			"url": "http://localhost/Inventory/backend/users/61",
+			"time": 12,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "3cbd5c5f-5b07-42c7-9541-a7c78689ea83",
+			"name": "JWT sigue revocado al restaurar rol (verifica trigger)",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 6,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código SESSION_REVOKED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código SESSION_REVOKED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código SESSION_REVOKED": true
+				}
+			]
+		},
+		{
+			"id": "708a5ba2-7f60-4d25-bace-1dd14669e649",
+			"name": "Nuevo login B válido",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 114,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				114
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true
+				}
+			]
+		},
+		{
+			"id": "8e21d40d-f609-47be-bd79-20f57a69c274",
+			"name": "Login usuario que se eliminará",
 			"url": "http://localhost/Inventory/backend/login",
 			"time": 111,
 			"responseCode": {
@@ -6055,316 +6361,10 @@
 			]
 		},
 		{
-			"id": "38910140-da8f-46c3-8d92-3baa4f3a29b0",
-			"name": "Cambiar rol B a audit",
-			"url": "http://localhost/Inventory/backend/users/52",
-			"time": 15,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"HTTP 200": true,
-				"Respuesta JSON": true,
-				"Contrato success": true
-			},
-			"testPassFailCounts": {
-				"HTTP 200": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				15
-			],
-			"allTests": [
-				{
-					"HTTP 200": true,
-					"Respuesta JSON": true,
-					"Contrato success": true
-				}
-			]
-		},
-		{
-			"id": "3bbc1578-43cf-4898-8f11-cffa305a0440",
-			"name": "JWT previo rechazado después de cambiar rol",
-			"url": "http://localhost/Inventory/backend/checkStatus",
-			"time": 6,
-			"responseCode": {
-				"code": 401,
-				"name": "Unauthorized"
-			},
-			"tests": {
-				"HTTP 401": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código SESSION_REVOKED": true
-			},
-			"testPassFailCounts": {
-				"HTTP 401": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código SESSION_REVOKED": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				6
-			],
-			"allTests": [
-				{
-					"HTTP 401": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código SESSION_REVOKED": true
-				}
-			]
-		},
-		{
-			"id": "f2ec5aed-bd7d-46eb-a56c-37350496bd9b",
-			"name": "Restaurar rol B",
-			"url": "http://localhost/Inventory/backend/users/52",
-			"time": 11,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"HTTP 200": true,
-				"Respuesta JSON": true,
-				"Contrato success": true
-			},
-			"testPassFailCounts": {
-				"HTTP 200": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				11
-			],
-			"allTests": [
-				{
-					"HTTP 200": true,
-					"Respuesta JSON": true,
-					"Contrato success": true
-				}
-			]
-		},
-		{
-			"id": "c28e2656-748a-450f-a029-d27b27eb67e8",
-			"name": "JWT sigue revocado al restaurar rol (verifica trigger)",
-			"url": "http://localhost/Inventory/backend/login",
-			"time": 7,
-			"responseCode": {
-				"code": 401,
-				"name": "Unauthorized"
-			},
-			"tests": {
-				"HTTP 401": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código SESSION_REVOKED": true
-			},
-			"testPassFailCounts": {
-				"HTTP 401": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código SESSION_REVOKED": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				7
-			],
-			"allTests": [
-				{
-					"HTTP 401": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código SESSION_REVOKED": true
-				}
-			]
-		},
-		{
-			"id": "1e73a671-5fec-4c04-8035-6f736fe6294d",
-			"name": "Nuevo login B válido",
-			"url": "http://localhost/Inventory/backend/login",
-			"time": 77,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"HTTP 200": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"JWT con tres segmentos": true,
-				"SID de sesión": true,
-				"Duración de 12 horas": true,
-				"Token recién emitido": true,
-				"Rol esperado": true
-			},
-			"testPassFailCounts": {
-				"HTTP 200": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"JWT con tres segmentos": {
-					"pass": 1,
-					"fail": 0
-				},
-				"SID de sesión": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Duración de 12 horas": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Token recién emitido": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Rol esperado": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				77
-			],
-			"allTests": [
-				{
-					"HTTP 200": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"JWT con tres segmentos": true,
-					"SID de sesión": true,
-					"Duración de 12 horas": true,
-					"Token recién emitido": true,
-					"Rol esperado": true
-				}
-			]
-		},
-		{
-			"id": "68f4170c-3202-45ea-9038-d1d7414c030a",
-			"name": "Login usuario que se eliminará",
-			"url": "http://localhost/Inventory/backend/login",
-			"time": 80,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"HTTP 200": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"JWT con tres segmentos": true,
-				"SID de sesión": true,
-				"Duración de 12 horas": true,
-				"Token recién emitido": true,
-				"Rol esperado": true
-			},
-			"testPassFailCounts": {
-				"HTTP 200": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"JWT con tres segmentos": {
-					"pass": 1,
-					"fail": 0
-				},
-				"SID de sesión": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Duración de 12 horas": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Token recién emitido": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Rol esperado": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				80
-			],
-			"allTests": [
-				{
-					"HTTP 200": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"JWT con tres segmentos": true,
-					"SID de sesión": true,
-					"Duración de 12 horas": true,
-					"Token recién emitido": true,
-					"Rol esperado": true
-				}
-			]
-		},
-		{
-			"id": "2459a480-edec-4e76-a020-62400fdc7849",
+			"id": "c6e7b185-fdbb-4838-90ca-a122cb045173",
 			"name": "Eliminar únicamente usuario QA deleted",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 16,
+			"time": 17,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -6389,7 +6389,7 @@
 				}
 			},
 			"times": [
-				16
+				17
 			],
 			"allTests": [
 				{
@@ -6400,10 +6400,10 @@
 			]
 		},
 		{
-			"id": "e2038cd8-93c4-4401-b6f3-487f4301ae5b",
+			"id": "0779be0b-7acc-4050-967d-a4a07ff64da7",
 			"name": "Usuario eliminado no puede usar JWT",
 			"url": "http://localhost/Inventory/backend/profile",
-			"time": 7,
+			"time": 12,
 			"responseCode": {
 				"code": 401,
 				"name": "Unauthorized"
@@ -6433,7 +6433,7 @@
 				}
 			},
 			"times": [
-				7
+				12
 			],
 			"allTests": [
 				{
@@ -6445,10 +6445,10 @@
 			]
 		},
 		{
-			"id": "c55987ec-05a0-4545-a954-51277b0a60a4",
+			"id": "1f46930a-3b70-485a-9a73-7108f1ec235a",
 			"name": "Usuario eliminado no puede renovar",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 6,
+			"time": 8,
 			"responseCode": {
 				"code": 401,
 				"name": "Unauthorized"
@@ -6478,7 +6478,7 @@
 				}
 			},
 			"times": [
-				6
+				8
 			],
 			"allTests": [
 				{
@@ -6490,157 +6490,22 @@
 			]
 		},
 		{
-			"id": "720e5e0e-d48f-4683-a626-b58604353ed9",
+			"id": "461ba172-b575-4bb3-bfbc-acac4a49e273",
 			"name": "JWT expirado GET /checkStatus",
 			"url": "http://localhost/Inventory/backend/checkStatus",
-			"time": 20,
-			"responseCode": {
-				"code": 401,
-				"name": "Unauthorized"
-			},
-			"tests": {
-				"HTTP 401": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código UNAUTHORIZED": true
-			},
-			"testPassFailCounts": {
-				"HTTP 401": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código UNAUTHORIZED": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				20
-			],
-			"allTests": [
-				{
-					"HTTP 401": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código UNAUTHORIZED": true
-				}
-			]
-		},
-		{
-			"id": "11ad2f08-faff-4eee-83e5-d329841063de",
-			"name": "JWT expirado PATCH /login",
-			"url": "http://localhost/Inventory/backend/login",
-			"time": 5,
-			"responseCode": {
-				"code": 401,
-				"name": "Unauthorized"
-			},
-			"tests": {
-				"HTTP 401": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código UNAUTHORIZED": true
-			},
-			"testPassFailCounts": {
-				"HTTP 401": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código UNAUTHORIZED": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				5
-			],
-			"allTests": [
-				{
-					"HTTP 401": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código UNAUTHORIZED": true
-				}
-			]
-		},
-		{
-			"id": "68185ef4-03d7-495a-a295-71e19052650e",
-			"name": "users DELETE lista vacía",
-			"url": "http://localhost/Inventory/backend/users",
-			"time": 6,
-			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
-			},
-			"tests": {
-				"HTTP 400": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código INVALID_REQUEST": true
-			},
-			"testPassFailCounts": {
-				"HTTP 400": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código INVALID_REQUEST": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				6
-			],
-			"allTests": [
-				{
-					"HTTP 400": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código INVALID_REQUEST": true
-				}
-			]
-		},
-		{
-			"id": "3c0983ea-d34f-4600-b0bc-1e177562fac0",
-			"name": "stock DELETE lista vacía",
-			"url": "http://localhost/Inventory/backend/stock",
 			"time": 7,
 			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
+				"code": 401,
+				"name": "Unauthorized"
 			},
 			"tests": {
-				"HTTP 400": true,
+				"HTTP 401": true,
 				"Respuesta JSON": true,
 				"Contrato success": true,
-				"Código INVALID_REQUEST": true
+				"Código UNAUTHORIZED": true
 			},
 			"testPassFailCounts": {
-				"HTTP 400": {
+				"HTTP 401": {
 					"pass": 1,
 					"fail": 0
 				},
@@ -6652,7 +6517,7 @@
 					"pass": 1,
 					"fail": 0
 				},
-				"Código INVALID_REQUEST": {
+				"Código UNAUTHORIZED": {
 					"pass": 1,
 					"fail": 0
 				}
@@ -6662,18 +6527,63 @@
 			],
 			"allTests": [
 				{
-					"HTTP 400": true,
+					"HTTP 401": true,
 					"Respuesta JSON": true,
 					"Contrato success": true,
-					"Código INVALID_REQUEST": true
+					"Código UNAUTHORIZED": true
 				}
 			]
 		},
 		{
-			"id": "08c03297-4dde-44bb-bd26-fa14cc003b69",
-			"name": "subscriptions DELETE lista vacía",
-			"url": "http://localhost/Inventory/backend/subscriptions",
-			"time": 6,
+			"id": "3bc984e9-1f75-43fa-93f0-b346c8b714d0",
+			"name": "JWT expirado PATCH /login",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 7,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "fdfa29ba-0a44-4576-9c47-fe58f4fa92a6",
+			"name": "users DELETE lista vacía",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 8,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -6703,7 +6613,7 @@
 				}
 			},
 			"times": [
-				6
+				8
 			],
 			"allTests": [
 				{
@@ -6715,10 +6625,100 @@
 			]
 		},
 		{
-			"id": "bcd23ec2-8610-4dab-bb00-d3a39199c9dd",
+			"id": "f0617073-47bd-45a2-818e-38ab938396e1",
+			"name": "stock DELETE lista vacía",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 12,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_REQUEST": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_REQUEST": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_REQUEST": true
+				}
+			]
+		},
+		{
+			"id": "6e92ce1f-bd7a-4062-837d-33c4de314b44",
+			"name": "subscriptions DELETE lista vacía",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 9,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_REQUEST": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_REQUEST": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_REQUEST": true
+				}
+			]
+		},
+		{
+			"id": "c21f0908-2fab-4e8e-a4ce-32a33d5c454f",
 			"name": "Ruta inexistente",
 			"url": "http://localhost/Inventory/backend/qa-endpoint-inexistente",
-			"time": 10,
+			"time": 6,
 			"responseCode": {
 				"code": 404,
 				"name": "Not Found"
@@ -6748,7 +6748,7 @@
 				}
 			},
 			"times": [
-				10
+				6
 			],
 			"allTests": [
 				{
@@ -6760,10 +6760,10 @@
 			]
 		},
 		{
-			"id": "12b536eb-7f5b-4be2-a76f-7468b8bc2f92",
+			"id": "13793f07-b59a-4dd8-8fb5-e5c4b0647ba4",
 			"name": "Alta debe rechazar Rol 99",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 6,
+			"time": 13,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -6788,7 +6788,7 @@
 				}
 			},
 			"times": [
-				6
+				13
 			],
 			"allTests": [
 				{
@@ -6799,47 +6799,8 @@
 			]
 		},
 		{
-			"id": "d1732952-5929-49ea-83d4-b7574b73a648",
+			"id": "4c146fba-8629-45d0-9fa2-0b3be2f50204",
 			"name": "Alta debe rechazar Password de 3 caracteres",
-			"url": "http://localhost/Inventory/backend/users",
-			"time": 7,
-			"responseCode": {
-				"code": 400,
-				"name": "Bad Request"
-			},
-			"tests": {
-				"HTTP 400": true,
-				"Respuesta JSON": true,
-				"Contrato success": true
-			},
-			"testPassFailCounts": {
-				"HTTP 400": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				7
-			],
-			"allTests": [
-				{
-					"HTTP 400": true,
-					"Respuesta JSON": true,
-					"Contrato success": true
-				}
-			]
-		},
-		{
-			"id": "c6999b63-7d84-49e8-a0f1-d80921533955",
-			"name": "Alta debe rechazar Username demasiado largo",
 			"url": "http://localhost/Inventory/backend/users",
 			"time": 12,
 			"responseCode": {
@@ -6877,10 +6838,10 @@
 			]
 		},
 		{
-			"id": "93cf555d-662a-4305-b0ec-f2a05f41780d",
-			"name": "PATCH debe rechazar username demasiado largo",
-			"url": "http://localhost/Inventory/backend/users/52",
-			"time": 10,
+			"id": "4a14d9d1-d96d-4bcd-86f9-e75c23591b3f",
+			"name": "Alta debe rechazar Username demasiado largo",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 13,
 			"responseCode": {
 				"code": 400,
 				"name": "Bad Request"
@@ -6905,7 +6866,7 @@
 				}
 			},
 			"times": [
-				10
+				13
 			],
 			"allTests": [
 				{
@@ -6916,10 +6877,49 @@
 			]
 		},
 		{
-			"id": "19589f75-629b-47d3-8853-6dddc70caf4a",
+			"id": "a8ce5568-300e-4fc2-bc3f-a3209ae24c59",
+			"name": "PATCH debe rechazar username demasiado largo",
+			"url": "http://localhost/Inventory/backend/users/61",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "3f271232-aeca-4b36-91ab-82c661f5272d",
 			"name": "Restaurar B después de validación",
-			"url": "http://localhost/Inventory/backend/users/52",
-			"time": 9,
+			"url": "http://localhost/Inventory/backend/users/61",
+			"time": 8,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -6944,7 +6944,7 @@
 				}
 			},
 			"times": [
-				9
+				8
 			],
 			"allTests": [
 				{
@@ -6955,54 +6955,9 @@
 			]
 		},
 		{
-			"id": "57d30ab0-f7b0-40e1-81e8-cbdf448efd01",
+			"id": "23c70d7c-00a5-4d42-a607-9e263481b203",
 			"name": "Editor no puede foto stock POST",
 			"url": "http://localhost/Inventory/backend/stock/photo",
-			"time": 6,
-			"responseCode": {
-				"code": 403,
-				"name": "Forbidden"
-			},
-			"tests": {
-				"HTTP 403": true,
-				"Respuesta JSON": true,
-				"Contrato success": true,
-				"Código FORBIDDEN": true
-			},
-			"testPassFailCounts": {
-				"HTTP 403": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Código FORBIDDEN": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				6
-			],
-			"allTests": [
-				{
-					"HTTP 403": true,
-					"Respuesta JSON": true,
-					"Contrato success": true,
-					"Código FORBIDDEN": true
-				}
-			]
-		},
-		{
-			"id": "b8f0a49d-0535-4c5d-b683-478740db022a",
-			"name": "Editor no puede foto stock DELETE",
-			"url": "http://localhost/Inventory/backend/stock/101/photo",
 			"time": 8,
 			"responseCode": {
 				"code": 403,
@@ -7045,10 +7000,490 @@
 			]
 		},
 		{
-			"id": "a299d884-9976-458b-a355-51f5da9846f6",
+			"id": "ee947602-d9d3-4db9-9054-69140bf0e519",
+			"name": "Editor no puede foto stock DELETE",
+			"url": "http://localhost/Inventory/backend/stock/105/photo",
+			"time": 16,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "ce28efce-5892-4e33-a18e-dbe1cc064124",
+			"name": "POST users normaliza username y email a minúsculas",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 123,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"HTTP 201": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"ID positivo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ID positivo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				123
+			],
+			"allTests": [
+				{
+					"HTTP 201": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"ID positivo": true
+				}
+			]
+		},
+		{
+			"id": "938b2351-040c-495a-b01e-e67da09c4cd4",
+			"name": "GET confirma normalización del POST",
+			"url": "http://localhost/Inventory/backend/users/64",
+			"time": 9,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Username persistido en minúsculas": true,
+				"Email persistido en minúsculas": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Username persistido en minúsculas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Email persistido en minúsculas": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Username persistido en minúsculas": true,
+					"Email persistido en minúsculas": true
+				}
+			]
+		},
+		{
+			"id": "ddbdc8d7-5716-49bf-8553-7ea2a2ae4882",
+			"name": "PATCH rechaza email ocupado con distinta capitalización",
+			"url": "http://localhost/Inventory/backend/users/64",
+			"time": 6,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código EMAIL_ALREADY_EXISTS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código EMAIL_ALREADY_EXISTS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código EMAIL_ALREADY_EXISTS": true
+				}
+			]
+		},
+		{
+			"id": "55185560-858b-41c7-8dde-7a1193e8adaa",
+			"name": "PATCH users normaliza username y email a minúsculas",
+			"url": "http://localhost/Inventory/backend/users/64",
+			"time": 13,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"PATCH informa username actualizado": true,
+				"PATCH informa email actualizado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"PATCH informa username actualizado": {
+					"pass": 1,
+					"fail": 0
+				},
+				"PATCH informa email actualizado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"PATCH informa username actualizado": true,
+					"PATCH informa email actualizado": true
+				}
+			]
+		},
+		{
+			"id": "64d007de-a4aa-4ed2-8db0-bd187164a442",
+			"name": "GET confirma normalización del PATCH",
+			"url": "http://localhost/Inventory/backend/users/64",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Username PATCH persistido en minúsculas": true,
+				"Email PATCH persistido en minúsculas": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Username PATCH persistido en minúsculas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Email PATCH persistido en minúsculas": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Username PATCH persistido en minúsculas": true,
+					"Email PATCH persistido en minúsculas": true
+				}
+			]
+		},
+		{
+			"id": "7d3c66f2-5918-4057-a617-05ff4705ef95",
+			"name": "Búsqueda de username en mayúsculas funciona con NOCASE",
+			"url": "http://localhost/Inventory/backend/users/QAP_MU4JNSEWK26",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Búsqueda NOCASE encuentra el usuario": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Búsqueda NOCASE encuentra el usuario": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Búsqueda NOCASE encuentra el usuario": true
+				}
+			]
+		},
+		{
+			"id": "85c440cb-2c90-4ddd-813c-d3fb2cd0f964",
+			"name": "Login acepta email en mayúsculas",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 129,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT emitido": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT emitido": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				129
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT emitido": true
+				}
+			]
+		},
+		{
+			"id": "02aa097c-6dc9-4b3b-b723-79bd304f6615",
+			"name": "PATCH profile normaliza email a minúsculas",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 14,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Profile devuelve email normalizado": true,
+				"Profile informa email actualizado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Profile devuelve email normalizado": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Profile informa email actualizado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Profile devuelve email normalizado": true,
+					"Profile informa email actualizado": true
+				}
+			]
+		},
+		{
+			"id": "7cbf50d4-4098-42de-9e96-ce37527484c9",
+			"name": "GET profile confirma email persistido en minúsculas",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Email de profile persistido en minúsculas": true,
+				"Profile corresponde al usuario QA": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Email de profile persistido en minúsculas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Profile corresponde al usuario QA": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Email de profile persistido en minúsculas": true,
+					"Profile corresponde al usuario QA": true
+				}
+			]
+		},
+		{
+			"id": "c35947fc-3471-4210-a091-04418944d0c4",
 			"name": "Reautenticar administrador para limpieza",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 73,
+			"time": 131,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -7098,7 +7533,7 @@
 				}
 			},
 			"times": [
-				73
+				131
 			],
 			"allTests": [
 				{
@@ -7114,10 +7549,10 @@
 			]
 		},
 		{
-			"id": "cf0e7ce3-69ca-4495-a379-e5652c775f2f",
+			"id": "a9e5cfd3-8461-4a6c-a0ea-55971289badb",
 			"name": "Limpiar subscriptions QA",
 			"url": "http://localhost/Inventory/backend/subscriptions",
-			"time": 14,
+			"time": 12,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -7142,7 +7577,7 @@
 				}
 			},
 			"times": [
-				14
+				12
 			],
 			"allTests": [
 				{
@@ -7153,7 +7588,7 @@
 			]
 		},
 		{
-			"id": "f2c2f130-54d5-4de1-a3d0-b9ca8055b62b",
+			"id": "b52336e8-e0f2-4c6d-b628-44d6cabbf844",
 			"name": "Limpiar stock QA",
 			"url": "http://localhost/Inventory/backend/stock",
 			"time": 14,
@@ -7192,10 +7627,10 @@
 			]
 		},
 		{
-			"id": "5cd9f100-742f-4046-b2a5-e92ca42c34e0",
+			"id": "f61e5f89-f2a3-40b6-a14f-9e60a80204f0",
 			"name": "Limpiar users QA",
 			"url": "http://localhost/Inventory/backend/users",
-			"time": 19,
+			"time": 13,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -7220,7 +7655,7 @@
 				}
 			},
 			"times": [
-				19
+				13
 			],
 			"allTests": [
 				{
@@ -7231,86 +7666,8 @@
 			]
 		},
 		{
-			"id": "a31f6b60-5762-40eb-82e5-ca107c7189b1",
+			"id": "fd0de765-3bed-4c15-bc53-483424918c1f",
 			"name": "Cerrar sesión a2_jwt",
-			"url": "http://localhost/Inventory/backend/login",
-			"time": 6,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"HTTP 200": true,
-				"Respuesta JSON": true,
-				"Contrato success": true
-			},
-			"testPassFailCounts": {
-				"HTTP 200": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				6
-			],
-			"allTests": [
-				{
-					"HTTP 200": true,
-					"Respuesta JSON": true,
-					"Contrato success": true
-				}
-			]
-		},
-		{
-			"id": "1dc1dc35-13ee-4177-a17e-cfd3f81e39f4",
-			"name": "Cerrar sesión audit_jwt",
-			"url": "http://localhost/Inventory/backend/login",
-			"time": 6,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"HTTP 200": true,
-				"Respuesta JSON": true,
-				"Contrato success": true
-			},
-			"testPassFailCounts": {
-				"HTTP 200": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Respuesta JSON": {
-					"pass": 1,
-					"fail": 0
-				},
-				"Contrato success": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				6
-			],
-			"allTests": [
-				{
-					"HTTP 200": true,
-					"Respuesta JSON": true,
-					"Contrato success": true
-				}
-			]
-		},
-		{
-			"id": "f6d284ba-ee8f-4aa0-8e4b-e39842f29cf7",
-			"name": "Cerrar sesión password_jwt",
 			"url": "http://localhost/Inventory/backend/login",
 			"time": 7,
 			"responseCode": {
@@ -7348,8 +7705,8 @@
 			]
 		},
 		{
-			"id": "b3559b64-a137-4998-9ee1-109a9ecac47a",
-			"name": "Cerrar sesión b2_jwt",
+			"id": "d3e1054a-65a1-4fc4-8aa8-ad13d88f1473",
+			"name": "Cerrar sesión audit_jwt",
 			"url": "http://localhost/Inventory/backend/login",
 			"time": 8,
 			"responseCode": {
@@ -7387,10 +7744,10 @@
 			]
 		},
 		{
-			"id": "4c0a6787-2673-4fe6-9dcb-a294950a360e",
-			"name": "Cerrar sesión original_admin_jwt",
+			"id": "38837ccd-3e99-4e5e-b37b-2cc42f4806c6",
+			"name": "Cerrar sesión password_jwt",
 			"url": "http://localhost/Inventory/backend/login",
-			"time": 15,
+			"time": 6,
 			"responseCode": {
 				"code": 200,
 				"name": "OK"
@@ -7415,7 +7772,7 @@
 				}
 			},
 			"times": [
-				15
+				6
 			],
 			"allTests": [
 				{
@@ -7426,7 +7783,85 @@
 			]
 		},
 		{
-			"id": "99cf4151-af50-47c8-9b2d-b6e763197df3",
+			"id": "086e766d-596d-4757-8d98-6f3d7b8a003f",
+			"name": "Cerrar sesión b2_jwt",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "acd69ece-f163-495e-b335-183fcccd19e0",
+			"name": "Cerrar sesión original_admin_jwt",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "3f36948c-0fc1-4397-bd2a-bc2202ff153f",
 			"name": "Cerrar sesión admin_jwt",
 			"url": "http://localhost/Inventory/backend/login",
 			"time": 14,
@@ -7466,771 +7901,807 @@
 		}
 	],
 	"count": 1,
-	"totalTime": 3008,
+	"totalTime": 3716,
 	"collection": {
 		"requests": [
 			{
-				"id": "220cdf9f-d779-44f8-aa08-7d17da888e33",
+				"id": "9ab03d11-7433-4115-af9a-0544ead73897",
 				"method": "POST"
 			},
 			{
-				"id": "d3642a07-5a03-4ca8-9924-04c1b5431a51",
+				"id": "dabc705b-9160-4344-88ae-d3de9860d8f0",
 				"method": "GET"
 			},
 			{
-				"id": "9fcfb271-bb07-4479-9976-c7567d659f05",
+				"id": "b0b9a70c-7cdf-46ae-b154-d59d95ee8412",
 				"method": "POST"
 			},
 			{
-				"id": "2c1264f0-7ff8-4bc1-afec-69462d701aad",
+				"id": "1ffd7214-a84b-4215-acd2-4c01432c77f3",
 				"method": "POST"
 			},
 			{
-				"id": "363c01a4-2fc5-4d7c-b26d-cef7d8ea3ba7",
+				"id": "07afda98-04f2-4622-b80a-981a54541808",
 				"method": "POST"
 			},
 			{
-				"id": "f27950d1-bd48-45d8-a9fe-0aed10737805",
+				"id": "81091516-6d61-443e-9fec-0f4b471d9779",
 				"method": "POST"
 			},
 			{
-				"id": "29d95392-9a25-490d-bf8b-7f32a992dbe0",
+				"id": "24931481-1d40-45fc-aaa1-5eaab64d17ee",
 				"method": "POST"
 			},
 			{
-				"id": "f4f33bda-fcee-452b-afad-ef3a528cbdb8",
+				"id": "b996b0ee-b846-4d6c-bb8c-acb33cb59d6a",
 				"method": "POST"
 			},
 			{
-				"id": "4efb93d6-53f2-4b4d-8936-6ff7fe490155",
+				"id": "87f5e151-514b-41ef-9efa-68906608b3cc",
 				"method": "POST"
 			},
 			{
-				"id": "e023b1a1-c531-42d6-a405-fd4fb343413f",
+				"id": "115f3e6b-c1a0-44a1-b4cf-3e5999336771",
 				"method": "POST"
 			},
 			{
-				"id": "d2ee5c14-66e4-415d-a434-82356d4b1297",
+				"id": "c3b71008-8fd3-48a9-ba29-b24cc5c87be9",
 				"method": "POST"
 			},
 			{
-				"id": "532db23e-60b4-4148-8d07-59583ca62738",
+				"id": "3eb41a63-0ad9-4c07-b93d-de5ccdb2ebda",
 				"method": "POST"
 			},
 			{
-				"id": "2c55ea70-0eb3-4ac7-9512-0d8280e73dfd",
+				"id": "dd346cbc-c039-4851-ab43-42893b38ab26",
 				"method": "POST"
 			},
 			{
-				"id": "f30ada22-b340-4e6a-a046-d73951db3978",
+				"id": "c6c1addb-4216-449f-a5d6-9e719aac3c7d",
 				"method": "POST"
 			},
 			{
-				"id": "83b45cc2-2f5c-4240-a3db-cf5f6115c95c",
+				"id": "02ed9e50-bf96-4e60-a52d-08d50d7ae6ab",
 				"method": "POST"
 			},
 			{
-				"id": "aea6d8fe-abc4-4e42-b39e-091ab7e83af4",
+				"id": "a81be3d7-af42-4646-ac83-fc21d428e077",
 				"method": "GET"
 			},
 			{
-				"id": "aa8f8338-5c92-4059-8445-867c957c8f3d",
+				"id": "5040086d-9fab-4541-8c52-496d1dd948f7",
 				"method": "GET"
 			},
 			{
-				"id": "a105e20c-be06-46bb-a462-381dff5a49bf",
+				"id": "9f5fec46-3344-45ec-ab44-55efe59faff0",
 				"method": "GET"
 			},
 			{
-				"id": "a6d469b7-4126-4403-8bea-311f567299b6",
+				"id": "bf128b26-5ae1-4089-a9a1-f682f910ac39",
 				"method": "PATCH"
 			},
 			{
-				"id": "c1554f36-505b-4241-94af-56fb131ca79c",
+				"id": "432bccf5-9bb4-46d3-9b82-293208f3ddf9",
 				"method": "PATCH"
 			},
 			{
-				"id": "1c11a727-30e9-4ae7-bac9-7db746218560",
+				"id": "412af6d9-c8d5-41d0-929c-3eb0a40f2573",
 				"method": "GET"
 			},
 			{
-				"id": "c577711f-75bf-4da7-8995-1a28d7b59fcb",
+				"id": "26609dd6-3b32-4aa6-a072-409e08140b68",
 				"method": "PATCH"
 			},
 			{
-				"id": "834edb6c-0337-458f-bb94-b550e319d971",
+				"id": "2fa726c2-62e6-49c6-aac1-7dd7775b313a",
 				"method": "PATCH"
 			},
 			{
-				"id": "1874fa64-6274-439e-ad73-7c3e84a52f40",
+				"id": "0542fbdf-d5c7-4e94-9055-0dcb4c338fe9",
 				"method": "PATCH"
 			},
 			{
-				"id": "7b6b8d0a-5a93-4b24-9563-f8a67e2e1f72",
+				"id": "49530551-928f-4f18-a542-418b82b4f50d",
 				"method": "PATCH"
 			},
 			{
-				"id": "255159e7-4f28-4dc8-ad47-4af399441da6",
+				"id": "3022778f-7915-4466-b168-39c57f20465b",
 				"method": "PATCH"
 			},
 			{
-				"id": "2f9a92d8-c573-48ea-8cba-93966f5be893",
+				"id": "30d1f355-92dd-4f9f-adb2-94e818dc49cd",
 				"method": "PATCH"
 			},
 			{
-				"id": "a6de0fc0-bf83-42d7-82f0-9e1cdf7c875d",
+				"id": "1f7902cc-4b4a-466d-a44c-4e799241a9d7",
 				"method": "PATCH"
 			},
 			{
-				"id": "443aa3df-cf43-4a9e-841d-a086fb1a1c77",
+				"id": "977fbabf-472c-4f3c-9aff-0268fc297d68",
 				"method": "PATCH"
 			},
 			{
-				"id": "eb564439-3cff-4248-9e41-b9524ed3f92a",
+				"id": "55bf2294-fce3-4437-8d8e-5f9efebcada0",
 				"method": "POST"
 			},
 			{
-				"id": "340d7813-7cc1-4bde-b80e-c6715323c03d",
+				"id": "6ab75ebe-77cd-4d54-89f4-fc79cac6504b",
 				"method": "POST"
 			},
 			{
-				"id": "993c6596-048a-4e8d-9be3-dc89e2d1825f",
+				"id": "5c9ee82b-1ffd-4a61-a276-974b20832ffc",
 				"method": "PATCH"
 			},
 			{
-				"id": "c53d0f47-2f68-467a-a927-2ce32599713b",
+				"id": "39cbcb04-15cf-4ac0-84e4-d4bbe32182a6",
 				"method": "GET"
 			},
 			{
-				"id": "f8a8f0d5-dedc-47e0-8283-797f9f19be9b",
+				"id": "8bfd374a-4fbc-4b85-a09d-efa5f26787e7",
 				"method": "DELETE"
 			},
 			{
-				"id": "f6c04062-8d9a-425b-8751-b07fdbed26c1",
+				"id": "6ac51421-ac1a-4ac9-8a18-55fea377c971",
 				"method": "GET"
 			},
 			{
-				"id": "4bba9f77-d1aa-40e8-b084-8b3945c0ba62",
+				"id": "9c236bc2-f813-438a-9a51-6a21ec425aeb",
 				"method": "GET"
 			},
 			{
-				"id": "dbe1cc5e-9a4e-430a-9f55-0aa532398675",
+				"id": "3432a1ac-c6b7-42d6-ba96-a8d05b4e1673",
 				"method": "PATCH"
 			},
 			{
-				"id": "e1bd7e3e-b7b5-4b28-b7cf-1e4d27b34b76",
+				"id": "0239ac56-a6ee-44a5-bead-674a4fff3bcc",
 				"method": "DELETE"
 			},
 			{
-				"id": "0223f9f2-3af0-47b4-92f7-3e6ba624bc32",
+				"id": "6d3d9803-6bab-4045-82f1-28e7be7b6323",
 				"method": "GET"
 			},
 			{
-				"id": "e8392465-07ae-4ffb-a95f-6776b6fb70cc",
+				"id": "e7a39e2a-2706-43a7-a3e4-337d1a9d8da9",
 				"method": "GET"
 			},
 			{
-				"id": "4ebf4795-127d-47c6-b223-0cea1a304320",
+				"id": "046a90ac-fbeb-4337-831e-344420c5c62b",
 				"method": "GET"
 			},
 			{
-				"id": "14a1689c-4798-44f9-bb08-59d0b89f2e10",
+				"id": "fa3e1449-e278-4d14-93f2-9fd37964379b",
 				"method": "GET"
 			},
 			{
-				"id": "dad7fd5a-f169-4adf-9cac-95a455713a80",
+				"id": "3f155497-fe70-440d-9cae-361e304289ae",
 				"method": "GET"
 			},
 			{
-				"id": "f8f063c8-fa7d-44f9-9463-79dbe6bef44b",
+				"id": "462c7066-dcda-4f21-827a-2521ba7705f4",
 				"method": "GET"
 			},
 			{
-				"id": "fd7f1be9-cab6-47c3-979f-891d3618293f",
+				"id": "3ae18d12-e3c9-4694-aeb3-5c5768286fb0",
 				"method": "PATCH"
 			},
 			{
-				"id": "bb17e106-8606-4ade-8081-28925c4297b8",
+				"id": "c34fcbc3-8195-4290-94df-3440b872f0e1",
 				"method": "DELETE"
 			},
 			{
-				"id": "397b1925-47a9-46eb-9524-9a98e323823f",
+				"id": "1db0ef7b-272b-4409-b834-2d4301da5cdf",
 				"method": "GET"
 			},
 			{
-				"id": "c4181ce4-5336-4997-ab41-244f8cb74d87",
+				"id": "249d6b5c-c195-44d8-9188-b87755738a33",
 				"method": "GET"
 			},
 			{
-				"id": "8d840d2c-0cb0-430b-a0fc-b6900fcab2ce",
+				"id": "13efb9f1-9560-46be-bf98-66febcc17ef3",
 				"method": "GET"
 			},
 			{
-				"id": "39443e56-e900-41f9-926d-e98a9efcada1",
+				"id": "15dabbb6-f19d-43e4-aa49-403d793d40ff",
 				"method": "PATCH"
 			},
 			{
-				"id": "250ff5fa-0ca9-44f8-be35-24048d5640a9",
+				"id": "129fac77-d026-41a2-9e3c-6ba82619c584",
 				"method": "PATCH"
 			},
 			{
-				"id": "4f191007-a86c-4895-ad1b-dd74a1ac7d33",
+				"id": "5b5cb32f-6f9d-476b-8b6b-7a4164c4e7a0",
 				"method": "PATCH"
 			},
 			{
-				"id": "3a429a5b-862c-416d-a4c7-01b1d7a51fe2",
+				"id": "a5a03c1c-5b2d-4a1b-9c54-8d045cf7277d",
 				"method": "PATCH"
 			},
 			{
-				"id": "70d9a525-3b0e-42bd-8f48-cfc8cf663cc8",
+				"id": "977067a0-87b5-4417-b528-7e688267bbeb",
 				"method": "PATCH"
 			},
 			{
-				"id": "fa98fe9f-d6d2-4c87-ad49-5378520fc151",
+				"id": "ca6f72b9-3e2b-46cf-a81d-a610789f12a5",
 				"method": "PATCH"
 			},
 			{
-				"id": "d1609713-8bc0-4054-9c8f-e9ef2f44ac60",
+				"id": "c1df6a44-8245-434d-ad54-8e1a08bf0d91",
 				"method": "PATCH"
 			},
 			{
-				"id": "42bb86bc-a644-49dc-a833-d51fb6c48c54",
+				"id": "5d383e89-8430-4dc1-9e6a-7eec125f81ec",
 				"method": "PATCH"
 			},
 			{
-				"id": "2a89f32e-3ea7-4b31-8140-4cc3977be42d",
+				"id": "1b64fb47-eb70-4394-8be6-d5e29b634cce",
 				"method": "GET"
 			},
 			{
-				"id": "3382705d-ba50-4cdf-819d-3079e58eaabe",
+				"id": "3f246cc5-1032-436d-a209-d80395affefe",
 				"method": "PATCH"
 			},
 			{
-				"id": "4b533438-9d15-40e4-ae61-754ab7d438e7",
+				"id": "390e2a25-2e36-4a99-8624-30e1945ba72d",
 				"method": "PATCH"
 			},
 			{
-				"id": "a48c4251-1782-4acd-b933-1f6bfde98cad",
+				"id": "d74adf5e-e2bd-49cb-b122-8b77e59a372d",
 				"method": "PATCH"
 			},
 			{
-				"id": "9f4bf1d6-1c0a-4917-bfc6-768676adf95d",
+				"id": "1acae1e9-4c21-4bf4-9abf-657eb7441677",
 				"method": "PATCH"
 			},
 			{
-				"id": "d4bc3b85-fdeb-49ec-a12c-541a29509093",
+				"id": "009a1371-1d4e-4782-b63f-a241a07f58d9",
 				"method": "PATCH"
 			},
 			{
-				"id": "d4a57704-9cbc-4b1f-8fed-6b1357edc854",
+				"id": "2dee89b8-3e98-461e-9fb0-eb5245b35b38",
 				"method": "POST"
 			},
 			{
-				"id": "901afbfd-3779-43a0-9ad1-0e422626ea5f",
+				"id": "57caeafe-a7ac-4df5-b803-b75d391f8bef",
 				"method": "POST"
 			},
 			{
-				"id": "14ccb274-977e-498e-a937-0c21f19eab7e",
+				"id": "7ef33f83-9e8e-48cd-ae89-d76e3a253b50",
 				"method": "PATCH"
 			},
 			{
-				"id": "0b4e5541-9ddc-407a-bf28-99e7b8ae1697",
+				"id": "0b552370-1f6c-4577-8658-ed9e30bc99e0",
 				"method": "POST"
 			},
 			{
-				"id": "2faeac80-9d82-4ac0-ae15-f685bd78939a",
+				"id": "39428937-83a2-4843-b440-f910739bfbc3",
 				"method": "GET"
 			},
 			{
-				"id": "03235514-c5e9-4c23-bae8-317056e70fc7",
+				"id": "bfd9ee48-e20b-47ec-a8c3-251351ce8003",
 				"method": "POST"
 			},
 			{
-				"id": "9f001ab5-cbfc-4a35-a3fd-242dec7214f9",
+				"id": "bdd2c349-db72-4fa0-9d80-f0d61ecf23fa",
 				"method": "PATCH"
 			},
 			{
-				"id": "222c584d-93bf-465b-9a58-90d7c5ab2b6c",
+				"id": "75d021c0-75d9-4313-a6e8-7e6367e7f281",
 				"method": "DELETE"
 			},
 			{
-				"id": "9222980e-4490-4df7-8d3b-e24dc65ec34a",
+				"id": "5f03c61e-acbb-4148-bb8b-010c6e256463",
 				"method": "POST"
 			},
 			{
-				"id": "c2e74f71-267b-4f43-b74f-83ac26979904",
+				"id": "d5facbc9-9b36-4c2d-9dd0-4372b43dc005",
 				"method": "DELETE"
 			},
 			{
-				"id": "0fbb6840-386c-4d92-b74a-6fbe8f602191",
+				"id": "30cfdc07-c074-462d-9954-b5d8a2813445",
 				"method": "GET"
 			},
 			{
-				"id": "b4a11896-40bd-4aae-bb29-7916f1a100af",
+				"id": "2fe73745-fd4d-44b8-b53d-21c9de1170d4",
 				"method": "POST"
 			},
 			{
-				"id": "fe4264a1-c1f5-4f8c-8f72-b0ce694a0dd1",
+				"id": "7f8d0fb6-5860-4a94-9945-b97900764a1a",
 				"method": "PATCH"
 			},
 			{
-				"id": "5feab46a-25d9-479e-a108-511560c3beba",
+				"id": "a16f68ad-7a12-4949-9ce7-091e5306ad5e",
 				"method": "DELETE"
 			},
 			{
-				"id": "0170ee1b-75b3-4f9d-a18f-339583e06cfa",
+				"id": "7618639b-1e2f-4b8a-a12b-11060a9b9742",
 				"method": "POST"
 			},
 			{
-				"id": "36ff0969-3098-4423-93ff-b372832b2269",
+				"id": "49c9b9d5-411e-4f2d-ba4f-a4c381bb68ab",
 				"method": "DELETE"
 			},
 			{
-				"id": "b7daa948-2d75-447a-86bc-26d56ad5d486",
+				"id": "3d1a4def-c55d-4225-bc53-5b17f56dc71d",
 				"method": "GET"
 			},
 			{
-				"id": "b1f16993-a2d7-4a5c-b10d-7f73afb3e1b4",
+				"id": "e0b283c9-26bc-4bdd-8ddb-118da007aede",
 				"method": "POST"
 			},
 			{
-				"id": "27a6814c-74df-4e95-9232-5ef97bcac2fd",
+				"id": "cd4a74a2-1afc-4b61-928b-5501b531cf3f",
 				"method": "PATCH"
 			},
 			{
-				"id": "c4a5b7ad-1415-41a1-aada-90f59291c72d",
+				"id": "e15c3711-b850-4498-b50d-d1e3ae8bf8fb",
 				"method": "DELETE"
 			},
 			{
-				"id": "23769530-7783-402e-8519-54b9d4cd0571",
+				"id": "0b84f32f-fdbb-4258-b53f-af47b8cdf691",
 				"method": "GET"
 			},
 			{
-				"id": "7bb949b0-57ac-4bc1-98a0-e8c7aa6437a1",
+				"id": "294ae056-5be1-4430-b5bb-0f82269ccf2a",
 				"method": "GET"
 			},
 			{
-				"id": "62f56f05-a4a3-4199-b5c5-930f45de24ef",
+				"id": "281f5d20-53d4-4e11-a50e-055aaace0bdc",
 				"method": "GET"
 			},
 			{
-				"id": "ffc2b77a-09f4-4251-a2d6-a5526b1c6fd5",
+				"id": "a38efb1a-6677-42e4-b8a8-e327a0f0a01f",
 				"method": "POST"
 			},
 			{
-				"id": "5d031b09-52bd-4918-af08-4143e700a741",
+				"id": "993e9413-1c10-4452-9f16-309b259aa93d",
 				"method": "POST"
 			},
 			{
-				"id": "9d4fa6cf-7e3e-469b-a874-b1d982502851",
+				"id": "083e56cd-94a7-435d-9adc-b5d8ce236948",
 				"method": "GET"
 			},
 			{
-				"id": "2453a013-fa84-4146-9118-782334d7f423",
+				"id": "66567c1b-bc00-4a55-a4e2-9d115d65a58a",
 				"method": "GET"
 			},
 			{
-				"id": "d1ed9e00-425f-4827-992f-397a9b920748",
+				"id": "b7bc3fdd-5f6a-4cfe-a98d-8d9c3fdc6c50",
 				"method": "POST"
 			},
 			{
-				"id": "8828dfd0-c3fb-4e6d-b378-399bc2c4db45",
+				"id": "fb77cac3-4d5c-4335-82ca-5b236d187988",
 				"method": "PATCH"
 			},
 			{
-				"id": "b20fb008-a61d-4c00-bd43-389874f2fbd1",
+				"id": "311ddcb6-4b1a-4141-bcd0-f5abfd4c5636",
 				"method": "POST"
 			},
 			{
-				"id": "0fc47076-25f1-45dd-b06e-9131b95f5ad2",
+				"id": "99eb418a-c155-4a26-8f17-38af83b3bfb2",
 				"method": "PATCH"
 			},
 			{
-				"id": "b69756aa-13ca-4ca7-a215-ebc90500f7db",
+				"id": "80a5fc68-f45e-413c-b73a-c0c186afb605",
 				"method": "PATCH"
 			},
 			{
-				"id": "6cf548f2-9cfa-41ab-a470-c438352e2931",
+				"id": "77f20ea6-110d-4dd8-b788-d791a31df5f2",
 				"method": "GET"
 			},
 			{
-				"id": "6012b974-8980-4a8f-ad02-eb7567268b2c",
+				"id": "4fce5d3c-bb83-4b1b-a5b0-0f82296a1c5b",
 				"method": "PATCH"
 			},
 			{
-				"id": "cefca22c-a810-45f0-80c0-556f0edfa239",
+				"id": "1ffca29e-61e0-4c51-97d3-371a45439329",
 				"method": "PATCH"
 			},
 			{
-				"id": "49fb57fa-00dc-40af-9f8e-7e666b3d60a2",
+				"id": "a57c44f3-c60c-4e8e-b9b3-f05cbc287e12",
 				"method": "PATCH"
 			},
 			{
-				"id": "294fd69a-4259-48c6-9650-ec5f1f246714",
+				"id": "e5b4e1e5-b7eb-44ee-9f2c-22abee5e7ec8",
 				"method": "POST"
 			},
 			{
-				"id": "96485966-f9f6-458d-b7f6-c77c79a273fd",
+				"id": "a3979b21-c829-45ab-b7c1-243c4ac08257",
 				"method": "POST"
 			},
 			{
-				"id": "1fc75096-e872-455b-a03c-b7c7144035d1",
+				"id": "f0b654d9-2864-4f51-84aa-14781024d061",
 				"method": "POST"
 			},
 			{
-				"id": "966edc94-1c82-4da4-9c8b-8f0f1ec63779",
+				"id": "16e3beec-fdef-473a-b57e-b667899722d4",
 				"method": "POST"
 			},
 			{
-				"id": "a96af58a-38d9-4e8d-809a-fbc8c0407fd3",
+				"id": "d535e288-1825-471e-bc6e-11dbd4b67d75",
 				"method": "GET"
 			},
 			{
-				"id": "0065c9ac-690f-448b-9f06-05ffdd7c77c6",
+				"id": "127519ec-b047-474f-b75c-5ab1a4a5f2af",
 				"method": "GET"
 			},
 			{
-				"id": "79f5654b-b5f5-46e8-8928-790018ef769f",
+				"id": "dc1c2529-e756-43a5-8e2e-fd488bf51c22",
 				"method": "GET"
 			},
 			{
-				"id": "b625d013-c2ad-4f05-9997-56eb98dd544f",
+				"id": "d56abf0d-df2e-4c7e-93eb-f944d0ea718e",
 				"method": "POST"
 			},
 			{
-				"id": "e7fda0f8-5ed0-4d30-a855-705b737669bf",
+				"id": "227638ea-5f26-4e03-95ce-7a5252367217",
 				"method": "POST"
 			},
 			{
-				"id": "61e0ef85-60ed-48ee-afa8-3e2896ea9746",
+				"id": "c5772aab-776b-4d4c-a84e-7c684bd2e84a",
 				"method": "DELETE"
 			},
 			{
-				"id": "29f5e3ac-ddba-473c-8ffd-7dd6d6c840a0",
+				"id": "5689887b-f335-48b3-b340-666afce21e55",
 				"method": "DELETE"
 			},
 			{
-				"id": "26d55af9-10c2-463d-860a-1205a2694a68",
+				"id": "ad5ba7ac-1a9b-4d9b-980f-f048cff36f66",
 				"method": "GET"
 			},
 			{
-				"id": "26a33729-8f39-4ed7-82cc-13315073d10b",
+				"id": "a4175e29-5c23-43c3-bfd7-08a7c60ceb76",
 				"method": "POST"
 			},
 			{
-				"id": "7d2b9f1d-b6a8-4f2a-8046-b10f99c47e2e",
+				"id": "9e9b3665-cd4c-4865-a47f-fce397f8134a",
 				"method": "POST"
 			},
 			{
-				"id": "07986463-5be1-4890-b588-35aa921485c9",
+				"id": "9e16081f-6ea3-4f3f-bd64-14a93d96e9ff",
 				"method": "POST"
 			},
 			{
-				"id": "e27b17f4-7803-4586-96be-f2106ad1bd99",
+				"id": "94eacc2a-865c-49af-9c2e-531b918c8224",
 				"method": "DELETE"
 			},
 			{
-				"id": "783c8a62-2ac0-40f6-9fc1-1e97c930281c",
+				"id": "100c3c29-16a1-4b9c-8113-f00e9bb36dba",
 				"method": "DELETE"
 			},
 			{
-				"id": "8fd5b7a8-4975-4eb5-bdb7-c9614171fe2f",
+				"id": "3b8af730-d0c8-4e73-ade3-96a2f0cdbe77",
 				"method": "POST"
 			},
 			{
-				"id": "f6da29d0-e966-4a73-85df-5bab32b05208",
+				"id": "3561b842-dab4-4104-93de-bc90a1eb4501",
 				"method": "POST"
 			},
 			{
-				"id": "e2cb6f6a-3977-4fe1-b9f4-685df8fb04a9",
+				"id": "ce534560-1faf-4981-85f8-57c584d0c01b",
 				"method": "POST"
 			},
 			{
-				"id": "e76f0d39-d023-4899-94c3-068972b32570",
+				"id": "f9ec0f72-26da-4f9c-8341-0947630a4a8d",
 				"method": "POST"
 			},
 			{
-				"id": "52a61b5a-f90d-413d-b354-f59e78161c35",
+				"id": "d1e64d1b-ea94-4915-991b-2f291af6ecdf",
 				"method": "POST"
 			},
 			{
-				"id": "2d82c421-13f0-46f7-8a0c-cb764da9e3b0",
+				"id": "d5b5d811-de6f-4857-bc02-c9ec0696e754",
 				"method": "POST"
 			},
 			{
-				"id": "7ac1b0c6-1156-428e-a69c-84dc8b9b94bc",
+				"id": "972dbf51-95b6-4e48-b514-9c7b90345450",
 				"method": "POST"
 			},
 			{
-				"id": "aaa66d14-d6a9-46f3-97ab-18f84dce4fdc",
+				"id": "e2da2e5b-7dcc-4e51-9008-a7d910481882",
 				"method": "POST"
 			},
 			{
-				"id": "f1c97d3b-0fe8-4136-990a-f3832e51c6f8",
+				"id": "3c3d12e2-fed5-454c-a6aa-ecd479be9b6a",
 				"method": "POST"
 			},
 			{
-				"id": "1ea003a0-3cb3-4caa-92f4-574fa5c5c45d",
+				"id": "85524060-7a44-4457-904e-302292513076",
 				"method": "GET"
 			},
 			{
-				"id": "3c97b7cb-fb29-42b4-a287-fdb646a2b6da",
+				"id": "16c0e2d0-be42-465e-86e6-4b49d7d468ee",
 				"method": "GET"
 			},
 			{
-				"id": "72da1ba1-a989-453e-8a27-1b86cd9ed12a",
+				"id": "13620b87-6b3e-4761-930f-d1f3c25a72ab",
 				"method": "DELETE"
 			},
 			{
-				"id": "3a0a480e-8c53-4166-9600-880038f0fd72",
+				"id": "5970100a-d57e-4eed-80be-52422e8c5f0d",
 				"method": "GET"
 			},
 			{
-				"id": "962702dd-9942-4005-b6a2-81faba06ce09",
+				"id": "12aa79f3-8ec0-4bd2-8b09-56f8a4dd8182",
 				"method": "DELETE"
 			},
 			{
-				"id": "903b5c44-4e20-4182-b1ed-5f797e60c279",
+				"id": "83310650-dcef-41a1-92de-a97310b64633",
 				"method": "GET"
 			},
 			{
-				"id": "57ad5673-fa04-46da-946f-2b0b0fa07217",
+				"id": "68c31fc3-6dbf-4ed9-9b86-e14cad43323d",
 				"method": "POST"
 			},
 			{
-				"id": "38910140-da8f-46c3-8d92-3baa4f3a29b0",
+				"id": "f9f11a56-75bb-41a9-badc-00e1e31e8181",
 				"method": "PATCH"
 			},
 			{
-				"id": "3bbc1578-43cf-4898-8f11-cffa305a0440",
+				"id": "258b4654-6691-4d0f-9e05-3023b15dfcac",
 				"method": "GET"
 			},
 			{
-				"id": "f2ec5aed-bd7d-46eb-a56c-37350496bd9b",
+				"id": "44a0926e-660f-4ff5-b4f8-b6343cecd616",
 				"method": "PATCH"
 			},
 			{
-				"id": "c28e2656-748a-450f-a029-d27b27eb67e8",
+				"id": "3cbd5c5f-5b07-42c7-9541-a7c78689ea83",
 				"method": "PATCH"
 			},
 			{
-				"id": "1e73a671-5fec-4c04-8035-6f736fe6294d",
+				"id": "708a5ba2-7f60-4d25-bace-1dd14669e649",
 				"method": "POST"
 			},
 			{
-				"id": "68f4170c-3202-45ea-9038-d1d7414c030a",
+				"id": "8e21d40d-f609-47be-bd79-20f57a69c274",
 				"method": "POST"
 			},
 			{
-				"id": "2459a480-edec-4e76-a020-62400fdc7849",
+				"id": "c6e7b185-fdbb-4838-90ca-a122cb045173",
 				"method": "DELETE"
 			},
 			{
-				"id": "e2038cd8-93c4-4401-b6f3-487f4301ae5b",
+				"id": "0779be0b-7acc-4050-967d-a4a07ff64da7",
 				"method": "GET"
 			},
 			{
-				"id": "c55987ec-05a0-4545-a954-51277b0a60a4",
+				"id": "1f46930a-3b70-485a-9a73-7108f1ec235a",
 				"method": "PATCH"
 			},
 			{
-				"id": "720e5e0e-d48f-4683-a626-b58604353ed9",
+				"id": "461ba172-b575-4bb3-bfbc-acac4a49e273",
 				"method": "GET"
 			},
 			{
-				"id": "11ad2f08-faff-4eee-83e5-d329841063de",
+				"id": "3bc984e9-1f75-43fa-93f0-b346c8b714d0",
 				"method": "PATCH"
 			},
 			{
-				"id": "68185ef4-03d7-495a-a295-71e19052650e",
+				"id": "fdfa29ba-0a44-4576-9c47-fe58f4fa92a6",
 				"method": "DELETE"
 			},
 			{
-				"id": "3c0983ea-d34f-4600-b0bc-1e177562fac0",
+				"id": "f0617073-47bd-45a2-818e-38ab938396e1",
 				"method": "DELETE"
 			},
 			{
-				"id": "08c03297-4dde-44bb-bd26-fa14cc003b69",
+				"id": "6e92ce1f-bd7a-4062-837d-33c4de314b44",
 				"method": "DELETE"
 			},
 			{
-				"id": "bcd23ec2-8610-4dab-bb00-d3a39199c9dd",
+				"id": "c21f0908-2fab-4e8e-a4ce-32a33d5c454f",
 				"method": "GET"
 			},
 			{
-				"id": "12b536eb-7f5b-4be2-a76f-7468b8bc2f92",
+				"id": "13793f07-b59a-4dd8-8fb5-e5c4b0647ba4",
 				"method": "POST"
 			},
 			{
-				"id": "d1732952-5929-49ea-83d4-b7574b73a648",
+				"id": "4c146fba-8629-45d0-9fa2-0b3be2f50204",
 				"method": "POST"
 			},
 			{
-				"id": "c6999b63-7d84-49e8-a0f1-d80921533955",
+				"id": "4a14d9d1-d96d-4bcd-86f9-e75c23591b3f",
 				"method": "POST"
 			},
 			{
-				"id": "93cf555d-662a-4305-b0ec-f2a05f41780d",
+				"id": "a8ce5568-300e-4fc2-bc3f-a3209ae24c59",
 				"method": "PATCH"
 			},
 			{
-				"id": "19589f75-629b-47d3-8853-6dddc70caf4a",
+				"id": "3f271232-aeca-4b36-91ab-82c661f5272d",
 				"method": "PATCH"
 			},
 			{
-				"id": "57d30ab0-f7b0-40e1-81e8-cbdf448efd01",
+				"id": "23c70d7c-00a5-4d42-a607-9e263481b203",
 				"method": "POST"
 			},
 			{
-				"id": "b8f0a49d-0535-4c5d-b683-478740db022a",
+				"id": "ee947602-d9d3-4db9-9054-69140bf0e519",
 				"method": "DELETE"
 			},
 			{
-				"id": "a299d884-9976-458b-a355-51f5da9846f6",
+				"id": "ce28efce-5892-4e33-a18e-dbe1cc064124",
 				"method": "POST"
 			},
 			{
-				"id": "cf0e7ce3-69ca-4495-a379-e5652c775f2f",
-				"method": "DELETE"
-			},
-			{
-				"id": "f2c2f130-54d5-4de1-a3d0-b9ca8055b62b",
-				"method": "DELETE"
-			},
-			{
-				"id": "5cd9f100-742f-4046-b2a5-e92ca42c34e0",
-				"method": "DELETE"
-			},
-			{
-				"id": "a31f6b60-5762-40eb-82e5-ca107c7189b1",
-				"method": "DELETE"
-			},
-			{
-				"id": "1dc1dc35-13ee-4177-a17e-cfd3f81e39f4",
-				"method": "DELETE"
-			},
-			{
-				"id": "f6d284ba-ee8f-4aa0-8e4b-e39842f29cf7",
-				"method": "DELETE"
-			},
-			{
-				"id": "b3559b64-a137-4998-9ee1-109a9ecac47a",
-				"method": "DELETE"
-			},
-			{
-				"id": "4c0a6787-2673-4fe6-9dcb-a294950a360e",
-				"method": "DELETE"
-			},
-			{
-				"id": "99cf4151-af50-47c8-9b2d-b6e763197df3",
-				"method": "DELETE"
-			},
-			{
-				"id": "8e17e99c-0b25-4f39-b079-de891fcd42b3",
-				"method": "POST"
-			},
-			{
-				"id": "8654a013-c048-4fea-8c2b-40a1264532aa",
-				"method": "POST"
-			},
-			{
-				"id": "1d1faf10-db0c-40cc-b9c2-cb6049b93847",
+				"id": "938b2351-040c-495a-b01e-e67da09c4cd4",
 				"method": "GET"
 			},
 			{
-				"id": "7bd170eb-d00a-471f-806a-411545409e36",
-				"method": "GET"
-			},
-			{
-				"id": "4cf23f11-060a-411e-9b98-0cc34e0d81fa",
-				"method": "GET"
-			},
-			{
-				"id": "d9b5f763-e32f-4658-a201-c27d49ba9077",
-				"method": "GET"
-			},
-			{
-				"id": "18347de9-43b0-46ad-a016-a15327c4c100",
-				"method": "POST"
-			},
-			{
-				"id": "aeb9dc90-5c47-4289-973d-805becaf7646",
+				"id": "ddbdc8d7-5716-49bf-8553-7ea2a2ae4882",
 				"method": "PATCH"
 			},
 			{
-				"id": "ed372c61-a98c-4ee3-9e2d-0c87fbecac12",
-				"method": "DELETE"
-			},
-			{
-				"id": "e794ea6f-9af9-4e53-885b-a08dc5f6dedc",
-				"method": "POST"
-			},
-			{
-				"id": "f748fe0f-0b87-492c-a57d-f9a5e748ef15",
-				"method": "DELETE"
-			},
-			{
-				"id": "0a7294c5-3cb8-4aa6-aa86-23da42cdf93e",
-				"method": "GET"
-			},
-			{
-				"id": "55286b1b-7760-47cb-ad65-da5a44f93be7",
-				"method": "GET"
-			},
-			{
-				"id": "ae329abf-69ea-4fc0-8452-47c47d6116ab",
-				"method": "GET"
-			},
-			{
-				"id": "54bdca34-6bcc-45d0-a00a-c3119dc70e28",
-				"method": "POST"
-			},
-			{
-				"id": "83a5283c-6a19-443c-a132-0397cea31f33",
+				"id": "55185560-858b-41c7-8dde-7a1193e8adaa",
 				"method": "PATCH"
 			},
 			{
-				"id": "9279551e-910a-4111-95bb-6be80ee2750b",
-				"method": "DELETE"
+				"id": "64d007de-a4aa-4ed2-8db0-bd187164a442",
+				"method": "GET"
 			},
 			{
-				"id": "1fe3c1eb-a91a-48f7-9bf8-a46d1cd21507",
+				"id": "7d3c66f2-5918-4057-a617-05ff4705ef95",
+				"method": "GET"
+			},
+			{
+				"id": "85c440cb-2c90-4ddd-813c-d3fb2cd0f964",
 				"method": "POST"
 			},
 			{
-				"id": "d0835280-5685-4fb7-965b-488c1bccfed1",
-				"method": "DELETE"
-			},
-			{
-				"id": "ec412aee-dfc7-48cc-8450-7a047128bc40",
-				"method": "GET"
-			},
-			{
-				"id": "1e39a0fb-a7e0-4a3c-9058-4169faef61ef",
-				"method": "GET"
-			},
-			{
-				"id": "9bee2228-cd35-4258-8452-7ef8cb0d6cd2",
-				"method": "DELETE"
-			},
-			{
-				"id": "0d826cbb-3adb-4a14-8855-9032a23ed941",
-				"method": "POST"
-			},
-			{
-				"id": "4595cc24-dd4f-439e-8b45-8928d53c998d",
-				"method": "GET"
-			},
-			{
-				"id": "511d2438-d88e-47fe-a6ec-ce209482fb63",
-				"method": "GET"
-			},
-			{
-				"id": "40a01103-1a21-43ca-969c-05ac7425740e",
+				"id": "02aa097c-6dc9-4b3b-b723-79bd304f6615",
 				"method": "PATCH"
 			},
 			{
-				"id": "b75775bb-99dc-478f-9e69-ea05dc6c2156",
+				"id": "7cbf50d4-4098-42de-9e96-ce37527484c9",
+				"method": "GET"
+			},
+			{
+				"id": "c35947fc-3471-4210-a091-04418944d0c4",
+				"method": "POST"
+			},
+			{
+				"id": "a9e5cfd3-8461-4a6c-a0ea-55971289badb",
+				"method": "DELETE"
+			},
+			{
+				"id": "b52336e8-e0f2-4c6d-b628-44d6cabbf844",
+				"method": "DELETE"
+			},
+			{
+				"id": "f61e5f89-f2a3-40b6-a14f-9e60a80204f0",
+				"method": "DELETE"
+			},
+			{
+				"id": "fd0de765-3bed-4c15-bc53-483424918c1f",
+				"method": "DELETE"
+			},
+			{
+				"id": "d3e1054a-65a1-4fc4-8aa8-ad13d88f1473",
+				"method": "DELETE"
+			},
+			{
+				"id": "38837ccd-3e99-4e5e-b37b-2cc42f4806c6",
+				"method": "DELETE"
+			},
+			{
+				"id": "086e766d-596d-4757-8d98-6f3d7b8a003f",
+				"method": "DELETE"
+			},
+			{
+				"id": "acd69ece-f163-495e-b335-183fcccd19e0",
+				"method": "DELETE"
+			},
+			{
+				"id": "3f36948c-0fc1-4397-bd2a-bc2202ff153f",
+				"method": "DELETE"
+			},
+			{
+				"id": "f49649fe-99c0-4d18-894c-72bcdf14518d",
+				"method": "POST"
+			},
+			{
+				"id": "3bfda2e9-2401-42d6-aa9b-6ae5f9dd8418",
+				"method": "POST"
+			},
+			{
+				"id": "71e7a70b-6e53-40e3-add8-3330b392b48b",
+				"method": "GET"
+			},
+			{
+				"id": "3aa08e75-ccc7-49af-83d4-84c49ce30ccc",
+				"method": "GET"
+			},
+			{
+				"id": "3df08cd8-beea-4ba3-a2e0-b88838185c49",
+				"method": "GET"
+			},
+			{
+				"id": "8b6c7499-977c-4299-8bf8-61d933d99939",
+				"method": "GET"
+			},
+			{
+				"id": "8a885a7b-cd97-44fe-a757-34f2381504b5",
+				"method": "POST"
+			},
+			{
+				"id": "32417395-c1b7-41a6-b147-53dc78d9e933",
+				"method": "PATCH"
+			},
+			{
+				"id": "edc4e93b-a14a-46ec-9c10-e9c972a836fa",
+				"method": "DELETE"
+			},
+			{
+				"id": "8212d33f-c0d0-4828-b91d-b03fadae411d",
+				"method": "POST"
+			},
+			{
+				"id": "6668b62e-cdca-4c14-9889-2f2b417b3bee",
+				"method": "DELETE"
+			},
+			{
+				"id": "76be343d-6b9d-4a38-ac6a-6173d0a09793",
+				"method": "GET"
+			},
+			{
+				"id": "aa319537-3daa-4877-a386-005fda3a06cd",
+				"method": "GET"
+			},
+			{
+				"id": "49f3d8a1-549a-44fd-8972-a6cf083237ee",
+				"method": "GET"
+			},
+			{
+				"id": "da529572-3178-4f1b-bbf3-841d247b6792",
+				"method": "POST"
+			},
+			{
+				"id": "4fc94aaf-20a0-44f5-86d3-c9cbee3bfb89",
+				"method": "PATCH"
+			},
+			{
+				"id": "c6af3f9f-92d3-4afc-80a8-bb205e2cab73",
+				"method": "DELETE"
+			},
+			{
+				"id": "1357dc81-cb2c-4533-9f87-e022148fce52",
+				"method": "POST"
+			},
+			{
+				"id": "44a26e7d-6579-463a-8ce3-d2f52402a9ca",
+				"method": "DELETE"
+			},
+			{
+				"id": "9be07bc6-085b-49e1-83cc-2cb94746f375",
+				"method": "GET"
+			},
+			{
+				"id": "9b8b89a8-e448-4966-ba55-16f97bfcd966",
+				"method": "GET"
+			},
+			{
+				"id": "197aa9c9-18d1-48ef-8ec9-4d6a3bd3a237",
+				"method": "DELETE"
+			},
+			{
+				"id": "b004a7d4-f7ba-46af-87c0-9e065fdc0eaa",
+				"method": "POST"
+			},
+			{
+				"id": "50e934af-2132-4cdb-9811-d95bf53601cc",
+				"method": "GET"
+			},
+			{
+				"id": "2de066cf-c81b-4e54-a858-ebf2e9a0f342",
+				"method": "GET"
+			},
+			{
+				"id": "f6a58f83-5412-4ebe-accd-96f9282f7892",
+				"method": "PATCH"
+			},
+			{
+				"id": "98a34198-0254-426f-957a-a64b4cc5c9ea",
 				"method": "POST"
 			}
 		]

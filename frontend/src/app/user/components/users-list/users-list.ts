@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { UsersService } from '../../services/users.service';
 import { User } from '../../interfaces/users.interface';
+import { UserRolePipe } from '../../../shared/utils/user-role.pipe';
 
 @Component({
   selector: 'users-list',
-  imports: [],
+  imports: [UserRolePipe],
   templateUrl: './users-list.html',
 })
 export class UsersList {

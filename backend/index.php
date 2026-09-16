@@ -320,7 +320,7 @@ function postReset() {
 function authenticate($email, $password)
 {
     $db = initDB();
-    $sql = 'SELECT id, username, password, role FROM users WHERE email = :email';
+    $sql = 'SELECT id, username, password, role FROM users WHERE email COLLATE NOCASE = :email';
     $stmt = $db->prepare($sql);
 
     if (!$stmt) {
@@ -374,7 +374,7 @@ function postLogin()
             'error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'Invalid credentials format']], 400);
     }
 
-    $email = trim($data['email']);
+    $email = strtolower(trim($data['email']));
     $password = $data['password'];
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -758,7 +758,7 @@ function patchProfile()
                 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email address']], 400);
         }
     
-        $data['email'] = trim($data['email']);
+        $data['email'] = strtolower(trim($data['email']));
     
         if ($data['email'] === '' || strlen($data['email']) > 254 || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             outputJson([
@@ -1066,12 +1066,16 @@ function postUsers()
         }
 
         $data[$field] = trim($data[$field]);
+
         if ($data[$field] === '') {
 
             outputJson(['success' => false, 'error' => ['code' => 'INVALID_FIELD', 'message' => "Invalid value for field: $field"]], 400);
 
         }
     }
+
+    $data['username'] = strtolower($data['username']);
+    $data['email'] = strtolower($data['email']);
 
     
     if ($data['username'] === '' || strlen($data['username']) > 20 || strlen($data['username']) < 3) {
@@ -1421,7 +1425,7 @@ function patchUsersById($id)
             outputJson(['success' => false, 'error' => ['code' => 'INVALID_USERNAME', 'message' => 'Invalid username']], 400);
         }
 
-        $data['username'] = trim($data['username']);
+        $data['username'] = strtolower(trim($data['username']));
         
 
         if ($data['username'] === '' || strlen($data['username']) > 20 || strlen($data['username']) < 3) {
@@ -1440,7 +1444,7 @@ function patchUsersById($id)
                 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email address']], 400);
         }
     
-        $data['email'] = trim($data['email']);
+        $data['email'] = strtolower(trim($data['email']));
     
         if ($data['email'] === '' || strlen($data['email']) > 254 || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             outputJson([

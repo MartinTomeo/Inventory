@@ -6,14 +6,18 @@
 
         <div class="flex flex-col items-center gap-3">
           <div class="avatar">
-            <div
-              class="w-24 overflow-hidden rounded-lg ring ring-primary ring-offset-2 ring-offset-base-100"
-            >
+            <div class="w-24 overflow-hidden rounded-lg ring ring-primary ring-offset-2 ring-offset-base-100">
+            @if (imageUrl(); as image) {
               <img
-                [src]="imageUrl()"
-                alt="User photo"
+                [src]="image"
+                alt="Stock photo"
                 class="h-full w-full object-cover"
               />
+            } @else {
+              <div class="flex h-full w-full items-center justify-center bg-base-200 text-center text-xs">
+                No image
+              </div>
+            }
             </div>
           </div>
 
@@ -33,14 +37,14 @@
 
             <button
               type="button"
-              class="btn btn-outline btn-sm"
+              class="btn btn-outline btn-xs"
               (click)="photoInput.click()"
             >
               Upload Image
             </button>
 
             @if (selectedPhoto()) {
-              <span class="text-sm text-base-content/70">
+              <span class="max-w-64 truncate text-xs text-base-content/70">
                 {{ selectedPhoto()!.name }}
               </span>
             }

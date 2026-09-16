@@ -59,7 +59,7 @@
                 (change)="toggleSubscription(subscription.id, $any($event.target).checked)"
               />
             </td>
-            <td>{{ subscription.username }}</td>
+            <td>{{ subscription.username |userName}}</td>
             <td>{{ subscription.email }}</td>
             <td>{{ subscription.imei }}</td>
             <td>{{ subscription.model }}</td>
@@ -89,21 +89,28 @@
                 <div class="flex flex-col items-center justify-center gap-8 p-6 sm:flex-row">
                   <section class="flex min-w-40 flex-col items-center gap-3">
                     <span class="font-semibold">User Image</span>
-
-                    <div class="avatar">
-                      <div
-                        class="h-28 w-28 overflow-hidden rounded-xl ring ring-primary ring-offset-2 ring-offset-base-100"
-                      >
-                        <img
-                          [src]="userImageUrl(subscription)"
-                          [alt]="'Photo of ' + subscription.username"
-                          class="h-full w-full object-cover"
-                        />
+                    @if (stockImageUrl(subscription); as imageUrl) {
+                      <div class="avatar">
+                        <div
+                          class="h-28 w-28 overflow-hidden rounded-xl ring ring-secondary ring-offset-2 ring-offset-base-100"
+                        >
+                          <img
+                            [src]="imageUrl"
+                            [alt]="subscription.brand + ' ' + subscription.model"
+                            class="h-full w-full object-cover"
+                          />
+                        </div>
                       </div>
-                    </div>
-
+                    }
+                    @else {
+                      <div
+                        class="flex h-28 w-28 items-center justify-center rounded-xl bg-base-300 text-center text-sm text-base-content/60 ring ring-secondary ring-offset-2 ring-offset-base-100"
+                      >
+                        No image
+                      </div>
+                    }
                     <span class="text-sm text-base-content/70">
-                      {{ subscription.username }}
+                      {{ subscription.username |userName}}
                     </span>
                   </section>
 

@@ -11,9 +11,7 @@ import { StockService } from '../../services/stock.service';
   selector: 'stock-form',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './stock-form.html',
-  host: {
-    class: 'block h-full',
-  },
+  host: {class: 'block h-full',},
 })
 export class StockForm {
   private fb = inject(FormBuilder);
