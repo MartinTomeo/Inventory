@@ -1,0 +1,8238 @@
+{
+	"id": "29188a30-8069-4b75-98ee-180bc5f88725",
+	"name": "PHP SQLite JWT API",
+	"timestamp": "2026-09-16T16:54:34.056Z",
+	"collection_id": "29901853-5a9f3c3b-7a17-495f-984d-c8caad631a68",
+	"folder_id": 0,
+	"environment_id": "29901853-5b6fa555-0086-4fc6-bf6b-c7df441bb470",
+	"totalPass": 668,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-09-16T16:54:17.658Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "220cdf9f-d779-44f8-aa08-7d17da888e33",
+			"name": "Login administrador e inicializar ejecución",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 96,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				96
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true
+				}
+			]
+		},
+		{
+			"id": "d3642a07-5a03-4ca8-9924-04c1b5431a51",
+			"name": "CheckStatus administrador sin contraseña expuesta",
+			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 9,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Usuario administrador": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Usuario administrador": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Usuario administrador": true
+				}
+			]
+		},
+		{
+			"id": "9fcfb271-bb07-4479-9976-c7567d659f05",
+			"name": "Credenciales incompletas",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código MISSING_CREDENTIALS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código MISSING_CREDENTIALS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código MISSING_CREDENTIALS": true
+				}
+			]
+		},
+		{
+			"id": "2c1264f0-7ff8-4bc1-afec-69462d701aad",
+			"name": "Email inválido",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_EMAIL": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_EMAIL": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_EMAIL": true
+				}
+			]
+		},
+		{
+			"id": "363c01a4-2fc5-4d7c-b26d-cef7d8ea3ba7",
+			"name": "Tipos inválidos",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_CREDENTIALS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_CREDENTIALS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_CREDENTIALS": true
+				}
+			]
+		},
+		{
+			"id": "f27950d1-bd48-45d8-a9fe-0aed10737805",
+			"name": "Contraseña incorrecta",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 66,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_CREDENTIALS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_CREDENTIALS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				66
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_CREDENTIALS": true
+				}
+			]
+		},
+		{
+			"id": "29d95392-9a25-490d-bf8b-7f32a992dbe0",
+			"name": "Intento SQL en login",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 5,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_EMAIL": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_EMAIL": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_EMAIL": true
+				}
+			]
+		},
+		{
+			"id": "f4f33bda-fcee-452b-afad-ef3a528cbdb8",
+			"name": "JSON malformado",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_REQUEST": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_REQUEST": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_REQUEST": true
+				}
+			]
+		},
+		{
+			"id": "4efb93d6-53f2-4b4d-8936-6ff7fe490155",
+			"name": "Crear usuario a",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 82,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"HTTP 201": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"ID positivo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ID positivo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				82
+			],
+			"allTests": [
+				{
+					"HTTP 201": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"ID positivo": true
+				}
+			]
+		},
+		{
+			"id": "e023b1a1-c531-42d6-a405-fd4fb343413f",
+			"name": "Crear usuario b",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 125,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"HTTP 201": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"ID positivo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ID positivo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				125
+			],
+			"allTests": [
+				{
+					"HTTP 201": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"ID positivo": true
+				}
+			]
+		},
+		{
+			"id": "d2ee5c14-66e4-415d-a434-82356d4b1297",
+			"name": "Crear usuario audit",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 80,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"HTTP 201": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"ID positivo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ID positivo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				80
+			],
+			"allTests": [
+				{
+					"HTTP 201": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"ID positivo": true
+				}
+			]
+		},
+		{
+			"id": "532db23e-60b4-4148-8d07-59583ca62738",
+			"name": "Crear usuario deleted",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 79,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"HTTP 201": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"ID positivo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ID positivo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				79
+			],
+			"allTests": [
+				{
+					"HTTP 201": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"ID positivo": true
+				}
+			]
+		},
+		{
+			"id": "2c55ea70-0eb3-4ac7-9512-0d8280e73dfd",
+			"name": "Username ocupado sin distinguir mayúsculas",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 7,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código USERNAME_ALREADY_EXISTS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código USERNAME_ALREADY_EXISTS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código USERNAME_ALREADY_EXISTS": true
+				}
+			]
+		},
+		{
+			"id": "f30ada22-b340-4e6a-a046-d73951db3978",
+			"name": "Email ocupado sin distinguir mayúsculas",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 8,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código EMAIL_ALREADY_EXISTS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código EMAIL_ALREADY_EXISTS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código EMAIL_ALREADY_EXISTS": true
+				}
+			]
+		},
+		{
+			"id": "83b45cc2-2f5c-4240-a3db-cf5f6115c95c",
+			"name": "Alta sin email",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código MISSING_REQUIRED_FIELD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código MISSING_REQUIRED_FIELD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código MISSING_REQUIRED_FIELD": true
+				}
+			]
+		},
+		{
+			"id": "aea6d8fe-abc4-4e42-b39e-091ab7e83af4",
+			"name": "Listado sin hashes",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 9,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Usuarios seguros": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Usuarios seguros": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Usuarios seguros": true
+				}
+			]
+		},
+		{
+			"id": "aa8f8338-5c92-4059-8445-867c957c8f3d",
+			"name": "Usuario creado por ID",
+			"url": "http://localhost/Inventory/backend/users/51",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Usuario correcto": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Usuario correcto": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Usuario correcto": true
+				}
+			]
+		},
+		{
+			"id": "a105e20c-be06-46bb-a462-381dff5a49bf",
+			"name": "Búsqueda por nombre",
+			"url": "http://localhost/Inventory/backend/users/qa_a_mu4cbyfa27y",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Contiene usuario QA": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contiene usuario QA": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Contiene usuario QA": true
+				}
+			]
+		},
+		{
+			"id": "a6d469b7-4126-4403-8bea-311f567299b6",
+			"name": "Editar sin modificar valores no genera conflicto",
+			"url": "http://localhost/Inventory/backend/users/51",
+			"time": 11,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Sin cambios": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Sin cambios": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				11
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Sin cambios": true
+				}
+			]
+		},
+		{
+			"id": "c1554f36-505b-4241-94af-56fb131ca79c",
+			"name": "Administrador puede cambiar username",
+			"url": "http://localhost/Inventory/backend/users/51",
+			"time": 13,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Username actualizado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Username actualizado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Username actualizado": true
+				}
+			]
+		},
+		{
+			"id": "1c11a727-30e9-4ae7-bac9-7db746218560",
+			"name": "Verificar cambio de username",
+			"url": "http://localhost/Inventory/backend/users/51",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Cambio persistido": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Cambio persistido": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Cambio persistido": true
+				}
+			]
+		},
+		{
+			"id": "c577711f-75bf-4da7-8995-1a28d7b59fcb",
+			"name": "Restaurar username QA",
+			"url": "http://localhost/Inventory/backend/users/51",
+			"time": 14,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "834edb6c-0337-458f-bb94-b550e319d971",
+			"name": "PATCH rechaza username ocupado",
+			"url": "http://localhost/Inventory/backend/users/52",
+			"time": 7,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código USERNAME_ALREADY_EXISTS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código USERNAME_ALREADY_EXISTS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código USERNAME_ALREADY_EXISTS": true
+				}
+			]
+		},
+		{
+			"id": "1874fa64-6274-439e-ad73-7c3e84a52f40",
+			"name": "PATCH rechaza email ocupado",
+			"url": "http://localhost/Inventory/backend/users/52",
+			"time": 7,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código EMAIL_ALREADY_EXISTS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código EMAIL_ALREADY_EXISTS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código EMAIL_ALREADY_EXISTS": true
+				}
+			]
+		},
+		{
+			"id": "7b6b8d0a-5a93-4b24-9563-f8a67e2e1f72",
+			"name": "Users Sin campos",
+			"url": "http://localhost/Inventory/backend/users/51",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código NO_FIELDS_TO_UPDATE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código NO_FIELDS_TO_UPDATE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código NO_FIELDS_TO_UPDATE": true
+				}
+			]
+		},
+		{
+			"id": "255159e7-4f28-4dc8-ad47-4af399441da6",
+			"name": "Users Campo desconocido",
+			"url": "http://localhost/Inventory/backend/users/51",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_FIELD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_FIELD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_FIELD": true
+				}
+			]
+		},
+		{
+			"id": "2f9a92d8-c573-48ea-8cba-93966f5be893",
+			"name": "Users Rol inválido",
+			"url": "http://localhost/Inventory/backend/users/51",
+			"time": 9,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_ROLE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_ROLE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_ROLE": true
+				}
+			]
+		},
+		{
+			"id": "a6de0fc0-bf83-42d7-82f0-9e1cdf7c875d",
+			"name": "Users Password corta",
+			"url": "http://localhost/Inventory/backend/users/51",
+			"time": 13,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_PASSWORD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_PASSWORD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_PASSWORD": true
+				}
+			]
+		},
+		{
+			"id": "443aa3df-cf43-4a9e-841d-a086fb1a1c77",
+			"name": "Users Email inválido",
+			"url": "http://localhost/Inventory/backend/users/51",
+			"time": 10,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_EMAIL": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_EMAIL": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_EMAIL": true
+				}
+			]
+		},
+		{
+			"id": "eb564439-3cff-4248-9e41-b9524ed3f92a",
+			"name": "Login sesión A",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 90,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				90
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true
+				}
+			]
+		},
+		{
+			"id": "340d7813-7cc1-4bde-b80e-c6715323c03d",
+			"name": "Login sesión B del mismo usuario",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 80,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true,
+				"SID distinto": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID distinto": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				80
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true,
+					"SID distinto": true
+				}
+			]
+		},
+		{
+			"id": "993c6596-048a-4e8d-9be3-dc89e2d1825f",
+			"name": "Renovar A — conservar SID y volver a 12 horas",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 13,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true,
+				"SID conservado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID conservado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true,
+					"SID conservado": true
+				}
+			]
+		},
+		{
+			"id": "c53d0f47-2f68-467a-a927-2ce32599713b",
+			"name": "Token anterior aún pertenece a sesión activa",
+			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "f8a8f0d5-dedc-47e0-8283-797f9f19be9b",
+			"name": "Logout A",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "f6c04062-8d9a-425b-8751-b07fdbed26c1",
+			"name": "Revocada GET /checkStatus a_jwt",
+			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 8,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código SESSION_REVOKED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código SESSION_REVOKED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código SESSION_REVOKED": true
+				}
+			]
+		},
+		{
+			"id": "4bba9f77-d1aa-40e8-b084-8b3945c0ba62",
+			"name": "Revocada GET /profile old_jwt",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 8,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código SESSION_REVOKED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código SESSION_REVOKED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código SESSION_REVOKED": true
+				}
+			]
+		},
+		{
+			"id": "dbe1cc5e-9a4e-430a-9f55-0aa532398675",
+			"name": "Revocada PATCH /login a_jwt",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 10,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código SESSION_REVOKED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código SESSION_REVOKED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código SESSION_REVOKED": true
+				}
+			]
+		},
+		{
+			"id": "e1bd7e3e-b7b5-4b28-b7cf-1e4d27b34b76",
+			"name": "Logout repetido idempotente",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 9,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "0223f9f2-3af0-47b4-92f7-3e6ba624bc32",
+			"name": "Sesión B sigue activa",
+			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Mismo usuario": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Mismo usuario": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Mismo usuario": true
+				}
+			]
+		},
+		{
+			"id": "e8392465-07ae-4ffb-a95f-6776b6fb70cc",
+			"name": "Sin token /checkStatus",
+			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 6,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "4ebf4795-127d-47c6-b223-0cea1a304320",
+			"name": "Sin token /profile",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 5,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "14a1689c-4798-44f9-bb08-59d0b89f2e10",
+			"name": "Sin token /users",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 6,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "dad7fd5a-f169-4adf-9cac-95a455713a80",
+			"name": "Sin token /stock",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 6,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "f8f063c8-fa7d-44f9-9463-79dbe6bef44b",
+			"name": "Sin token /subscriptions",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 5,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "fd7f1be9-cab6-47c3-979f-891d3618293f",
+			"name": "Sin token PATCH login",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 6,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "bb17e106-8606-4ade-8081-28925c4297b8",
+			"name": "Sin token DELETE login",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 6,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "397b1925-47a9-46eb-9524-9a98e323823f",
+			"name": "Firma alterada",
+			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 36,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				36
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "c4181ce4-5336-4997-ab41-244f8cb74d87",
+			"name": "Bearer malformado",
+			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 5,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "8d840d2c-0cb0-430b-a0fc-b6900fcab2ce",
+			"name": "Perfil propio y sin contraseña",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Contrato perfil": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato perfil": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Contrato perfil": true
+				}
+			]
+		},
+		{
+			"id": "39443e56-e900-41f9-926d-e98a9efcada1",
+			"name": "Perfil rechaza username",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_FIELD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_FIELD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_FIELD": true
+				}
+			]
+		},
+		{
+			"id": "250ff5fa-0ca9-44f8-be35-24048d5640a9",
+			"name": "Perfil rechaza role",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_FIELD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_FIELD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_FIELD": true
+				}
+			]
+		},
+		{
+			"id": "4f191007-a86c-4895-ad1b-dd74a1ac7d33",
+			"name": "Perfil rechaza id",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 14,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_FIELD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_FIELD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_FIELD": true
+				}
+			]
+		},
+		{
+			"id": "3a429a5b-862c-416d-a4c7-01b1d7a51fe2",
+			"name": "Perfil rechaza user_id",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_FIELD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_FIELD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_FIELD": true
+				}
+			]
+		},
+		{
+			"id": "70d9a525-3b0e-42bd-8f48-cfc8cf663cc8",
+			"name": "Perfil rechaza user_image",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_FIELD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_FIELD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_FIELD": true
+				}
+			]
+		},
+		{
+			"id": "fa98fe9f-d6d2-4c87-ad49-5378520fc151",
+			"name": "Perfil email duplicado NOCASE",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 11,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código EMAIL_ALREADY_EXISTS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código EMAIL_ALREADY_EXISTS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				11
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código EMAIL_ALREADY_EXISTS": true
+				}
+			]
+		},
+		{
+			"id": "d1609713-8bc0-4054-9c8f-e9ef2f44ac60",
+			"name": "Perfil conservar email propio",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 14,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "42bb86bc-a644-49dc-a833-d51fb6c48c54",
+			"name": "Perfil cambiar email",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 15,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Email actualizado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Email actualizado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				15
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Email actualizado": true
+				}
+			]
+		},
+		{
+			"id": "2a89f32e-3ea7-4b31-8140-4cc3977be42d",
+			"name": "Otro usuario permanece intacto",
+			"url": "http://localhost/Inventory/backend/users/52",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Aislamiento": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Aislamiento": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Aislamiento": true
+				}
+			]
+		},
+		{
+			"id": "3382705d-ba50-4cdf-819d-3079e58eaabe",
+			"name": "Restaurar email propio",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 12,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "4b533438-9d15-40e4-ae61-754ab7d438e7",
+			"name": "Perfil Vacío",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código NO_FIELDS_TO_UPDATE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código NO_FIELDS_TO_UPDATE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código NO_FIELDS_TO_UPDATE": true
+				}
+			]
+		},
+		{
+			"id": "a48c4251-1782-4acd-b933-1f6bfde98cad",
+			"name": "Perfil Email inválido",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_EMAIL": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_EMAIL": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_EMAIL": true
+				}
+			]
+		},
+		{
+			"id": "9f4bf1d6-1c0a-4917-bfc6-768676adf95d",
+			"name": "Perfil Password corta",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_PASSWORD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_PASSWORD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_PASSWORD": true
+				}
+			]
+		},
+		{
+			"id": "d4bc3b85-fdeb-49ec-a12c-541a29509093",
+			"name": "Cambiar password propia",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 102,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				102
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "d4a57704-9cbc-4b1f-8fed-6b1357edc854",
+			"name": "Password anterior rechazada",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 72,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_CREDENTIALS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_CREDENTIALS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				72
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_CREDENTIALS": true
+				}
+			]
+		},
+		{
+			"id": "901afbfd-3779-43a0-9ad1-0e422626ea5f",
+			"name": "Password nueva funciona",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 81,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				81
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true
+				}
+			]
+		},
+		{
+			"id": "14ccb274-977e-498e-a937-0c21f19eab7e",
+			"name": "Restaurar password QA",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 90,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				90
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "0b4e5541-9ddc-407a-bf28-99e7b8ae1697",
+			"name": "Login audit",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 93,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				93
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true
+				}
+			]
+		},
+		{
+			"id": "2faeac80-9d82-4ac0-ae15-f685bd78939a",
+			"name": "a2_jwt no puede GET /users",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "03235514-c5e9-4c23-bae8-317056e70fc7",
+			"name": "a2_jwt no puede POST /users",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 7,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "9f001ab5-cbfc-4a35-a3fd-242dec7214f9",
+			"name": "a2_jwt no puede PATCH /users/{{qa_b_id}}",
+			"url": "http://localhost/Inventory/backend/users/52",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "222c584d-93bf-465b-9a58-90d7c5ab2b6c",
+			"name": "a2_jwt no puede DELETE /users",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "9222980e-4490-4df7-8d3b-e24dc65ec34a",
+			"name": "a2_jwt no puede POST /users/photo",
+			"url": "http://localhost/Inventory/backend/users/photo",
+			"time": 7,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "c2e74f71-267b-4f43-b74f-83ac26979904",
+			"name": "a2_jwt no puede DELETE /users/{{qa_b_id}}/photo",
+			"url": "http://localhost/Inventory/backend/users/52/photo",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "0fbb6840-386c-4d92-b74a-6fbe8f602191",
+			"name": "audit_jwt no puede GET /users",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "b4a11896-40bd-4aae-bb29-7916f1a100af",
+			"name": "audit_jwt no puede POST /users",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 7,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "fe4264a1-c1f5-4f8c-8f72-b0ce694a0dd1",
+			"name": "audit_jwt no puede PATCH /users/{{qa_b_id}}",
+			"url": "http://localhost/Inventory/backend/users/52",
+			"time": 8,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "5feab46a-25d9-479e-a108-511560c3beba",
+			"name": "audit_jwt no puede DELETE /users",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "0170ee1b-75b3-4f9d-a18f-339583e06cfa",
+			"name": "audit_jwt no puede POST /users/photo",
+			"url": "http://localhost/Inventory/backend/users/photo",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "36ff0969-3098-4423-93ff-b372832b2269",
+			"name": "audit_jwt no puede DELETE /users/{{qa_b_id}}/photo",
+			"url": "http://localhost/Inventory/backend/users/52/photo",
+			"time": 8,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "b7daa948-2d75-447a-86bc-26d56ad5d486",
+			"name": "Editor sin permiso stock GET",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 7,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "b1f16993-a2d7-4a5c-b10d-7f73afb3e1b4",
+			"name": "Editor sin permiso stock POST",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "27a6814c-74df-4e95-9232-5ef97bcac2fd",
+			"name": "Editor sin permiso stock PATCH",
+			"url": "http://localhost/Inventory/backend/stock/1",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "c4a5b7ad-1415-41a1-aada-90f59291c72d",
+			"name": "Editor sin permiso stock DELETE",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 7,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "23769530-7783-402e-8519-54b9d4cd0571",
+			"name": "Audit puede leer stock",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 10,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "7bb949b0-57ac-4bc1-98a0-e8c7aa6437a1",
+			"name": "a2_jwt puede consultar opciones",
+			"url": "http://localhost/Inventory/backend/subscriptions/options",
+			"time": 9,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Opciones tipadas": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Opciones tipadas": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Opciones tipadas": true
+				}
+			]
+		},
+		{
+			"id": "62f56f05-a4a3-4199-b5c5-930f45de24ef",
+			"name": "audit_jwt puede consultar opciones",
+			"url": "http://localhost/Inventory/backend/subscriptions/options",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Opciones tipadas": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Opciones tipadas": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Opciones tipadas": true
+				}
+			]
+		},
+		{
+			"id": "ffc2b77a-09f4-4251-a2d6-a5526b1c6fd5",
+			"name": "Crear equipo s1",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 17,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"HTTP 201": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"ID positivo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ID positivo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"HTTP 201": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"ID positivo": true
+				}
+			]
+		},
+		{
+			"id": "5d031b09-52bd-4918-af08-4143e700a741",
+			"name": "Crear equipo s2",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 15,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"HTTP 201": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"ID positivo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ID positivo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				15
+			],
+			"allTests": [
+				{
+					"HTTP 201": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"ID positivo": true
+				}
+			]
+		},
+		{
+			"id": "9d4fa6cf-7e3e-469b-a874-b1d982502851",
+			"name": "Equipo por ID",
+			"url": "http://localhost/Inventory/backend/stock/101",
+			"time": 9,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Equipo correcto": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Equipo correcto": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Equipo correcto": true
+				}
+			]
+		},
+		{
+			"id": "2453a013-fa84-4146-9118-782334d7f423",
+			"name": "Buscar línea",
+			"url": "http://localhost/Inventory/backend/stock/line/1877658118",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Incluye equipo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Incluye equipo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Incluye equipo": true
+				}
+			]
+		},
+		{
+			"id": "d1ed9e00-425f-4827-992f-397a9b920748",
+			"name": "Alta stock duplicado imei",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 8,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código IMEI_ALREADY_EXISTS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código IMEI_ALREADY_EXISTS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código IMEI_ALREADY_EXISTS": true
+				}
+			]
+		},
+		{
+			"id": "8828dfd0-c3fb-4e6d-b378-399bc2c4db45",
+			"name": "PATCH stock duplicado imei",
+			"url": "http://localhost/Inventory/backend/stock/102",
+			"time": 8,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código IMEI_ALREADY_EXISTS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código IMEI_ALREADY_EXISTS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código IMEI_ALREADY_EXISTS": true
+				}
+			]
+		},
+		{
+			"id": "b20fb008-a61d-4c00-bd43-389874f2fbd1",
+			"name": "Alta stock duplicado line",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 8,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código LINE_ALREADY_EXISTS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código LINE_ALREADY_EXISTS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código LINE_ALREADY_EXISTS": true
+				}
+			]
+		},
+		{
+			"id": "0fc47076-25f1-45dd-b06e-9131b95f5ad2",
+			"name": "PATCH stock duplicado line",
+			"url": "http://localhost/Inventory/backend/stock/102",
+			"time": 7,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código LINE_ALREADY_EXISTS": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código LINE_ALREADY_EXISTS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código LINE_ALREADY_EXISTS": true
+				}
+			]
+		},
+		{
+			"id": "b69756aa-13ca-4ca7-a215-ebc90500f7db",
+			"name": "Actualizar stock",
+			"url": "http://localhost/Inventory/backend/stock/101",
+			"time": 12,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "6cf548f2-9cfa-41ab-a470-c438352e2931",
+			"name": "Verificar modelo persistido",
+			"url": "http://localhost/Inventory/backend/stock/101",
+			"time": 10,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Modelo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Modelo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Modelo": true
+				}
+			]
+		},
+		{
+			"id": "6012b974-8980-4a8f-ad02-eb7567268b2c",
+			"name": "Stock campo no permitido",
+			"url": "http://localhost/Inventory/backend/stock/101",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_FIELD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_FIELD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_FIELD": true
+				}
+			]
+		},
+		{
+			"id": "cefca22c-a810-45f0-80c0-556f0edfa239",
+			"name": "Stock línea no entera",
+			"url": "http://localhost/Inventory/backend/stock/101",
+			"time": 9,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_LINE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_LINE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_LINE": true
+				}
+			]
+		},
+		{
+			"id": "49fb57fa-00dc-40af-9f8e-7e666b3d60a2",
+			"name": "Stock PATCH vacío",
+			"url": "http://localhost/Inventory/backend/stock/101",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código NO_FIELDS_TO_UPDATE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código NO_FIELDS_TO_UPDATE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código NO_FIELDS_TO_UPDATE": true
+				}
+			]
+		},
+		{
+			"id": "294fd69a-4259-48c6-9650-ec5f1f246714",
+			"name": "Stock alta incompleta",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código MISSING_REQUIRED_FIELD": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código MISSING_REQUIRED_FIELD": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código MISSING_REQUIRED_FIELD": true
+				}
+			]
+		},
+		{
+			"id": "96485966-f9f6-458d-b7f6-c77c79a273fd",
+			"name": "Asignar s1 al usuario a",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 18,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"HTTP 201": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"ID positivo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ID positivo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"HTTP 201": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"ID positivo": true
+				}
+			]
+		},
+		{
+			"id": "1fc75096-e872-455b-a03c-b7c7144035d1",
+			"name": "Asignar s2 al usuario a",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 11,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"HTTP 201": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"ID positivo": true
+			},
+			"testPassFailCounts": {
+				"HTTP 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ID positivo": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				11
+			],
+			"allTests": [
+				{
+					"HTTP 201": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"ID positivo": true
+				}
+			]
+		},
+		{
+			"id": "966edc94-1c82-4da4-9c8b-8f0f1ec63779",
+			"name": "Equipo no puede tener otro usuario",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 7,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"HTTP 409": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código STOCK_ALREADY_ASSIGNED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 409": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código STOCK_ALREADY_ASSIGNED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 409": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código STOCK_ALREADY_ASSIGNED": true
+				}
+			]
+		},
+		{
+			"id": "a96af58a-38d9-4e8d-809a-fbc8c0407fd3",
+			"name": "Opciones excluyen equipos asignados",
+			"url": "http://localhost/Inventory/backend/subscriptions/options",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"No disponibles": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"No disponibles": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"No disponibles": true
+				}
+			]
+		},
+		{
+			"id": "0065c9ac-690f-448b-9f06-05ffdd7c77c6",
+			"name": "Perfil muestra ambos equipos",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Equipos propios": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Equipos propios": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Equipos propios": true
+				}
+			]
+		},
+		{
+			"id": "79f5654b-b5f5-46e8-8928-790018ef769f",
+			"name": "Buscar asignaciones",
+			"url": "http://localhost/Inventory/backend/subscriptions/qa_a_mu4cbyfa27y",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Asignaciones QA": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Asignaciones QA": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Asignaciones QA": true
+				}
+			]
+		},
+		{
+			"id": "b625d013-c2ad-4f05-9997-56eb98dd544f",
+			"name": "Asignación usuario inválido",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_USER_ID": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_USER_ID": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_USER_ID": true
+				}
+			]
+		},
+		{
+			"id": "e7fda0f8-5ed0-4d30-a855-705b737669bf",
+			"name": "Asignación equipo inexistente",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"HTTP 404": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código STOCK_NOT_FOUND": true
+			},
+			"testPassFailCounts": {
+				"HTTP 404": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código STOCK_NOT_FOUND": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 404": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código STOCK_NOT_FOUND": true
+				}
+			]
+		},
+		{
+			"id": "61e0ef85-60ed-48ee-afa8-3e2896ea9746",
+			"name": "Bulk delete IDs inválidos",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_SUBSCRIPTION_ID": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_SUBSCRIPTION_ID": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_SUBSCRIPTION_ID": true
+				}
+			]
+		},
+		{
+			"id": "29f5e3ac-ddba-473c-8ffd-7dd6d6c840a0",
+			"name": "Bulk delete atómico: incluye ID inexistente",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 12,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"HTTP 404": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código SUBSCRIPTION_NOT_FOUND": true
+			},
+			"testPassFailCounts": {
+				"HTTP 404": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código SUBSCRIPTION_NOT_FOUND": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"HTTP 404": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código SUBSCRIPTION_NOT_FOUND": true
+				}
+			]
+		},
+		{
+			"id": "26d55af9-10c2-463d-860a-1205a2694a68",
+			"name": "No se borró la asignación válida",
+			"url": "http://localhost/Inventory/backend/subscriptions/qa_a_mu4cbyfa27y",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Rollback": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rollback": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Rollback": true
+				}
+			]
+		},
+		{
+			"id": "26a33729-8f39-4ed7-82cc-13315073d10b",
+			"name": "Foto requerida /profile/photo",
+			"url": "http://localhost/Inventory/backend/profile/photo",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código PHOTO_REQUIRED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código PHOTO_REQUIRED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código PHOTO_REQUIRED": true
+				}
+			]
+		},
+		{
+			"id": "7d2b9f1d-b6a8-4f2a-8046-b10f99c47e2e",
+			"name": "Foto requerida /users/photo",
+			"url": "http://localhost/Inventory/backend/users/photo",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código PHOTO_REQUIRED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código PHOTO_REQUIRED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código PHOTO_REQUIRED": true
+				}
+			]
+		},
+		{
+			"id": "07986463-5be1-4890-b588-35aa921485c9",
+			"name": "Foto requerida /stock/photo",
+			"url": "http://localhost/Inventory/backend/stock/photo",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código PHOTO_REQUIRED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código PHOTO_REQUIRED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código PHOTO_REQUIRED": true
+				}
+			]
+		},
+		{
+			"id": "e27b17f4-7803-4586-96be-f2106ad1bd99",
+			"name": "Eliminar foto de usuario inexistente",
+			"url": "http://localhost/Inventory/backend/users/51/photo",
+			"time": 6,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"HTTP 404": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código PHOTO_NOT_FOUND": true
+			},
+			"testPassFailCounts": {
+				"HTTP 404": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código PHOTO_NOT_FOUND": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 404": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código PHOTO_NOT_FOUND": true
+				}
+			]
+		},
+		{
+			"id": "783c8a62-2ac0-40f6-9fc1-1e97c930281c",
+			"name": "Eliminar foto vacía stock es idempotente",
+			"url": "http://localhost/Inventory/backend/stock/101/photo",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "8fd5b7a8-4975-4eb5-bdb7-c9614171fe2f",
+			"name": "Subir invalid a /profile/photo",
+			"url": "http://localhost/Inventory/backend/profile/photo",
+			"time": 129,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_IMAGE_TYPE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_IMAGE_TYPE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				129
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_IMAGE_TYPE": true
+				}
+			]
+		},
+		{
+			"id": "f6da29d0-e966-4a73-85df-5bab32b05208",
+			"name": "Subir large a /profile/photo",
+			"url": "http://localhost/Inventory/backend/profile/photo",
+			"time": 42,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FILE_TOO_LARGE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FILE_TOO_LARGE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				42
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FILE_TOO_LARGE": true
+				}
+			]
+		},
+		{
+			"id": "e2cb6f6a-3977-4fe1-b9f4-685df8fb04a9",
+			"name": "Subir png a /profile/photo",
+			"url": "http://localhost/Inventory/backend/profile/photo",
+			"time": 21,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Nombre de imagen generado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Nombre de imagen generado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				21
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Nombre de imagen generado": true
+				}
+			]
+		},
+		{
+			"id": "e76f0d39-d023-4899-94c3-068972b32570",
+			"name": "Subir invalid a /users/photo",
+			"url": "http://localhost/Inventory/backend/users/photo",
+			"time": 11,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_IMAGE_TYPE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_IMAGE_TYPE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				11
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_IMAGE_TYPE": true
+				}
+			]
+		},
+		{
+			"id": "52a61b5a-f90d-413d-b354-f59e78161c35",
+			"name": "Subir large a /users/photo",
+			"url": "http://localhost/Inventory/backend/users/photo",
+			"time": 38,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FILE_TOO_LARGE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FILE_TOO_LARGE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				38
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FILE_TOO_LARGE": true
+				}
+			]
+		},
+		{
+			"id": "2d82c421-13f0-46f7-8a0c-cb764da9e3b0",
+			"name": "Subir png a /users/photo",
+			"url": "http://localhost/Inventory/backend/users/photo",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Nombre de imagen generado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Nombre de imagen generado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Nombre de imagen generado": true
+				}
+			]
+		},
+		{
+			"id": "7ac1b0c6-1156-428e-a69c-84dc8b9b94bc",
+			"name": "Subir invalid a /stock/photo",
+			"url": "http://localhost/Inventory/backend/stock/photo",
+			"time": 9,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_IMAGE_TYPE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_IMAGE_TYPE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_IMAGE_TYPE": true
+				}
+			]
+		},
+		{
+			"id": "aaa66d14-d6a9-46f3-97ab-18f84dce4fdc",
+			"name": "Subir large a /stock/photo",
+			"url": "http://localhost/Inventory/backend/stock/photo",
+			"time": 24,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FILE_TOO_LARGE": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FILE_TOO_LARGE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				24
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FILE_TOO_LARGE": true
+				}
+			]
+		},
+		{
+			"id": "f1c97d3b-0fe8-4136-990a-f3832e51c6f8",
+			"name": "Subir png a /stock/photo",
+			"url": "http://localhost/Inventory/backend/stock/photo",
+			"time": 20,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Nombre de imagen generado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Nombre de imagen generado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				20
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Nombre de imagen generado": true
+				}
+			]
+		},
+		{
+			"id": "1ea003a0-3cb3-4caa-92f4-574fa5c5c45d",
+			"name": "Confirmar foto propia persistida",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Foto guardada": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Foto guardada": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Foto guardada": true
+				}
+			]
+		},
+		{
+			"id": "3c97b7cb-fb29-42b4-a287-fdb646a2b6da",
+			"name": "Confirmar foto stock persistida",
+			"url": "http://localhost/Inventory/backend/stock/101",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Foto guardada": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Foto guardada": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Foto guardada": true
+				}
+			]
+		},
+		{
+			"id": "72da1ba1-a989-453e-8a27-1b86cd9ed12a",
+			"name": "Eliminar foto usuario",
+			"url": "http://localhost/Inventory/backend/users/52/photo",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "3a0a480e-8c53-4166-9600-880038f0fd72",
+			"name": "Confirmar eliminación foto usuario",
+			"url": "http://localhost/Inventory/backend/users/52",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Foto nula": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Foto nula": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Foto nula": true
+				}
+			]
+		},
+		{
+			"id": "962702dd-9942-4005-b6a2-81faba06ce09",
+			"name": "Eliminar foto stock",
+			"url": "http://localhost/Inventory/backend/stock/101/photo",
+			"time": 14,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "903b5c44-4e20-4182-b1ed-5f797e60c279",
+			"name": "Confirmar eliminación foto stock",
+			"url": "http://localhost/Inventory/backend/stock/101",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Foto nula": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Foto nula": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Foto nula": true
+				}
+			]
+		},
+		{
+			"id": "57ad5673-fa04-46da-946f-2b0b0fa07217",
+			"name": "Login B antes de cambiar rol",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 111,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				111
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true
+				}
+			]
+		},
+		{
+			"id": "38910140-da8f-46c3-8d92-3baa4f3a29b0",
+			"name": "Cambiar rol B a audit",
+			"url": "http://localhost/Inventory/backend/users/52",
+			"time": 15,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				15
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "3bbc1578-43cf-4898-8f11-cffa305a0440",
+			"name": "JWT previo rechazado después de cambiar rol",
+			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 6,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código SESSION_REVOKED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código SESSION_REVOKED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código SESSION_REVOKED": true
+				}
+			]
+		},
+		{
+			"id": "f2ec5aed-bd7d-46eb-a56c-37350496bd9b",
+			"name": "Restaurar rol B",
+			"url": "http://localhost/Inventory/backend/users/52",
+			"time": 11,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				11
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "c28e2656-748a-450f-a029-d27b27eb67e8",
+			"name": "JWT sigue revocado al restaurar rol (verifica trigger)",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 7,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código SESSION_REVOKED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código SESSION_REVOKED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código SESSION_REVOKED": true
+				}
+			]
+		},
+		{
+			"id": "1e73a671-5fec-4c04-8035-6f736fe6294d",
+			"name": "Nuevo login B válido",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 77,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				77
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true
+				}
+			]
+		},
+		{
+			"id": "68f4170c-3202-45ea-9038-d1d7414c030a",
+			"name": "Login usuario que se eliminará",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 80,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				80
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true
+				}
+			]
+		},
+		{
+			"id": "2459a480-edec-4e76-a020-62400fdc7849",
+			"name": "Eliminar únicamente usuario QA deleted",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "e2038cd8-93c4-4401-b6f3-487f4301ae5b",
+			"name": "Usuario eliminado no puede usar JWT",
+			"url": "http://localhost/Inventory/backend/profile",
+			"time": 7,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código SESSION_REVOKED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código SESSION_REVOKED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código SESSION_REVOKED": true
+				}
+			]
+		},
+		{
+			"id": "c55987ec-05a0-4545-a954-51277b0a60a4",
+			"name": "Usuario eliminado no puede renovar",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 6,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código SESSION_REVOKED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código SESSION_REVOKED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código SESSION_REVOKED": true
+				}
+			]
+		},
+		{
+			"id": "720e5e0e-d48f-4683-a626-b58604353ed9",
+			"name": "JWT expirado GET /checkStatus",
+			"url": "http://localhost/Inventory/backend/checkStatus",
+			"time": 20,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				20
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "11ad2f08-faff-4eee-83e5-d329841063de",
+			"name": "JWT expirado PATCH /login",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 5,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"HTTP 401": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código UNAUTHORIZED": true
+			},
+			"testPassFailCounts": {
+				"HTTP 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código UNAUTHORIZED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"HTTP 401": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código UNAUTHORIZED": true
+				}
+			]
+		},
+		{
+			"id": "68185ef4-03d7-495a-a295-71e19052650e",
+			"name": "users DELETE lista vacía",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_REQUEST": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_REQUEST": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_REQUEST": true
+				}
+			]
+		},
+		{
+			"id": "3c0983ea-d34f-4600-b0bc-1e177562fac0",
+			"name": "stock DELETE lista vacía",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_REQUEST": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_REQUEST": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_REQUEST": true
+				}
+			]
+		},
+		{
+			"id": "08c03297-4dde-44bb-bd26-fa14cc003b69",
+			"name": "subscriptions DELETE lista vacía",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código INVALID_REQUEST": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código INVALID_REQUEST": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código INVALID_REQUEST": true
+				}
+			]
+		},
+		{
+			"id": "bcd23ec2-8610-4dab-bb00-d3a39199c9dd",
+			"name": "Ruta inexistente",
+			"url": "http://localhost/Inventory/backend/qa-endpoint-inexistente",
+			"time": 10,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"HTTP 404": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código ENDPOINT_NOT_FOUND": true
+			},
+			"testPassFailCounts": {
+				"HTTP 404": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código ENDPOINT_NOT_FOUND": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"HTTP 404": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código ENDPOINT_NOT_FOUND": true
+				}
+			]
+		},
+		{
+			"id": "12b536eb-7f5b-4be2-a76f-7468b8bc2f92",
+			"name": "Alta debe rechazar Rol 99",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "d1732952-5929-49ea-83d4-b7574b73a648",
+			"name": "Alta debe rechazar Password de 3 caracteres",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "c6999b63-7d84-49e8-a0f1-d80921533955",
+			"name": "Alta debe rechazar Username demasiado largo",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 12,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "93cf555d-662a-4305-b0ec-f2a05f41780d",
+			"name": "PATCH debe rechazar username demasiado largo",
+			"url": "http://localhost/Inventory/backend/users/52",
+			"time": 10,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"HTTP 400": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"HTTP 400": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "19589f75-629b-47d3-8853-6dddc70caf4a",
+			"name": "Restaurar B después de validación",
+			"url": "http://localhost/Inventory/backend/users/52",
+			"time": 9,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "57d30ab0-f7b0-40e1-81e8-cbdf448efd01",
+			"name": "Editor no puede foto stock POST",
+			"url": "http://localhost/Inventory/backend/stock/photo",
+			"time": 6,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "b8f0a49d-0535-4c5d-b683-478740db022a",
+			"name": "Editor no puede foto stock DELETE",
+			"url": "http://localhost/Inventory/backend/stock/101/photo",
+			"time": 8,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"HTTP 403": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"Código FORBIDDEN": true
+			},
+			"testPassFailCounts": {
+				"HTTP 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Código FORBIDDEN": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 403": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"Código FORBIDDEN": true
+				}
+			]
+		},
+		{
+			"id": "a299d884-9976-458b-a355-51f5da9846f6",
+			"name": "Reautenticar administrador para limpieza",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 73,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true,
+				"JWT con tres segmentos": true,
+				"SID de sesión": true,
+				"Duración de 12 horas": true,
+				"Token recién emitido": true,
+				"Rol esperado": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				},
+				"JWT con tres segmentos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SID de sesión": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Duración de 12 horas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token recién emitido": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Rol esperado": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				73
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true,
+					"JWT con tres segmentos": true,
+					"SID de sesión": true,
+					"Duración de 12 horas": true,
+					"Token recién emitido": true,
+					"Rol esperado": true
+				}
+			]
+		},
+		{
+			"id": "cf0e7ce3-69ca-4495-a379-e5652c775f2f",
+			"name": "Limpiar subscriptions QA",
+			"url": "http://localhost/Inventory/backend/subscriptions",
+			"time": 14,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "f2c2f130-54d5-4de1-a3d0-b9ca8055b62b",
+			"name": "Limpiar stock QA",
+			"url": "http://localhost/Inventory/backend/stock",
+			"time": 14,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "5cd9f100-742f-4046-b2a5-e92ca42c34e0",
+			"name": "Limpiar users QA",
+			"url": "http://localhost/Inventory/backend/users",
+			"time": 19,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				19
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "a31f6b60-5762-40eb-82e5-ca107c7189b1",
+			"name": "Cerrar sesión a2_jwt",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "1dc1dc35-13ee-4177-a17e-cfd3f81e39f4",
+			"name": "Cerrar sesión audit_jwt",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "f6d284ba-ee8f-4aa0-8e4b-e39842f29cf7",
+			"name": "Cerrar sesión password_jwt",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "b3559b64-a137-4998-9ee1-109a9ecac47a",
+			"name": "Cerrar sesión b2_jwt",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "4c0a6787-2673-4fe6-9dcb-a294950a360e",
+			"name": "Cerrar sesión original_admin_jwt",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 15,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				15
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		},
+		{
+			"id": "99cf4151-af50-47c8-9b2d-b6e763197df3",
+			"name": "Cerrar sesión admin_jwt",
+			"url": "http://localhost/Inventory/backend/login",
+			"time": 14,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"HTTP 200": true,
+				"Respuesta JSON": true,
+				"Contrato success": true
+			},
+			"testPassFailCounts": {
+				"HTTP 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Respuesta JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Contrato success": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"HTTP 200": true,
+					"Respuesta JSON": true,
+					"Contrato success": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 3008,
+	"collection": {
+		"requests": [
+			{
+				"id": "220cdf9f-d779-44f8-aa08-7d17da888e33",
+				"method": "POST"
+			},
+			{
+				"id": "d3642a07-5a03-4ca8-9924-04c1b5431a51",
+				"method": "GET"
+			},
+			{
+				"id": "9fcfb271-bb07-4479-9976-c7567d659f05",
+				"method": "POST"
+			},
+			{
+				"id": "2c1264f0-7ff8-4bc1-afec-69462d701aad",
+				"method": "POST"
+			},
+			{
+				"id": "363c01a4-2fc5-4d7c-b26d-cef7d8ea3ba7",
+				"method": "POST"
+			},
+			{
+				"id": "f27950d1-bd48-45d8-a9fe-0aed10737805",
+				"method": "POST"
+			},
+			{
+				"id": "29d95392-9a25-490d-bf8b-7f32a992dbe0",
+				"method": "POST"
+			},
+			{
+				"id": "f4f33bda-fcee-452b-afad-ef3a528cbdb8",
+				"method": "POST"
+			},
+			{
+				"id": "4efb93d6-53f2-4b4d-8936-6ff7fe490155",
+				"method": "POST"
+			},
+			{
+				"id": "e023b1a1-c531-42d6-a405-fd4fb343413f",
+				"method": "POST"
+			},
+			{
+				"id": "d2ee5c14-66e4-415d-a434-82356d4b1297",
+				"method": "POST"
+			},
+			{
+				"id": "532db23e-60b4-4148-8d07-59583ca62738",
+				"method": "POST"
+			},
+			{
+				"id": "2c55ea70-0eb3-4ac7-9512-0d8280e73dfd",
+				"method": "POST"
+			},
+			{
+				"id": "f30ada22-b340-4e6a-a046-d73951db3978",
+				"method": "POST"
+			},
+			{
+				"id": "83b45cc2-2f5c-4240-a3db-cf5f6115c95c",
+				"method": "POST"
+			},
+			{
+				"id": "aea6d8fe-abc4-4e42-b39e-091ab7e83af4",
+				"method": "GET"
+			},
+			{
+				"id": "aa8f8338-5c92-4059-8445-867c957c8f3d",
+				"method": "GET"
+			},
+			{
+				"id": "a105e20c-be06-46bb-a462-381dff5a49bf",
+				"method": "GET"
+			},
+			{
+				"id": "a6d469b7-4126-4403-8bea-311f567299b6",
+				"method": "PATCH"
+			},
+			{
+				"id": "c1554f36-505b-4241-94af-56fb131ca79c",
+				"method": "PATCH"
+			},
+			{
+				"id": "1c11a727-30e9-4ae7-bac9-7db746218560",
+				"method": "GET"
+			},
+			{
+				"id": "c577711f-75bf-4da7-8995-1a28d7b59fcb",
+				"method": "PATCH"
+			},
+			{
+				"id": "834edb6c-0337-458f-bb94-b550e319d971",
+				"method": "PATCH"
+			},
+			{
+				"id": "1874fa64-6274-439e-ad73-7c3e84a52f40",
+				"method": "PATCH"
+			},
+			{
+				"id": "7b6b8d0a-5a93-4b24-9563-f8a67e2e1f72",
+				"method": "PATCH"
+			},
+			{
+				"id": "255159e7-4f28-4dc8-ad47-4af399441da6",
+				"method": "PATCH"
+			},
+			{
+				"id": "2f9a92d8-c573-48ea-8cba-93966f5be893",
+				"method": "PATCH"
+			},
+			{
+				"id": "a6de0fc0-bf83-42d7-82f0-9e1cdf7c875d",
+				"method": "PATCH"
+			},
+			{
+				"id": "443aa3df-cf43-4a9e-841d-a086fb1a1c77",
+				"method": "PATCH"
+			},
+			{
+				"id": "eb564439-3cff-4248-9e41-b9524ed3f92a",
+				"method": "POST"
+			},
+			{
+				"id": "340d7813-7cc1-4bde-b80e-c6715323c03d",
+				"method": "POST"
+			},
+			{
+				"id": "993c6596-048a-4e8d-9be3-dc89e2d1825f",
+				"method": "PATCH"
+			},
+			{
+				"id": "c53d0f47-2f68-467a-a927-2ce32599713b",
+				"method": "GET"
+			},
+			{
+				"id": "f8a8f0d5-dedc-47e0-8283-797f9f19be9b",
+				"method": "DELETE"
+			},
+			{
+				"id": "f6c04062-8d9a-425b-8751-b07fdbed26c1",
+				"method": "GET"
+			},
+			{
+				"id": "4bba9f77-d1aa-40e8-b084-8b3945c0ba62",
+				"method": "GET"
+			},
+			{
+				"id": "dbe1cc5e-9a4e-430a-9f55-0aa532398675",
+				"method": "PATCH"
+			},
+			{
+				"id": "e1bd7e3e-b7b5-4b28-b7cf-1e4d27b34b76",
+				"method": "DELETE"
+			},
+			{
+				"id": "0223f9f2-3af0-47b4-92f7-3e6ba624bc32",
+				"method": "GET"
+			},
+			{
+				"id": "e8392465-07ae-4ffb-a95f-6776b6fb70cc",
+				"method": "GET"
+			},
+			{
+				"id": "4ebf4795-127d-47c6-b223-0cea1a304320",
+				"method": "GET"
+			},
+			{
+				"id": "14a1689c-4798-44f9-bb08-59d0b89f2e10",
+				"method": "GET"
+			},
+			{
+				"id": "dad7fd5a-f169-4adf-9cac-95a455713a80",
+				"method": "GET"
+			},
+			{
+				"id": "f8f063c8-fa7d-44f9-9463-79dbe6bef44b",
+				"method": "GET"
+			},
+			{
+				"id": "fd7f1be9-cab6-47c3-979f-891d3618293f",
+				"method": "PATCH"
+			},
+			{
+				"id": "bb17e106-8606-4ade-8081-28925c4297b8",
+				"method": "DELETE"
+			},
+			{
+				"id": "397b1925-47a9-46eb-9524-9a98e323823f",
+				"method": "GET"
+			},
+			{
+				"id": "c4181ce4-5336-4997-ab41-244f8cb74d87",
+				"method": "GET"
+			},
+			{
+				"id": "8d840d2c-0cb0-430b-a0fc-b6900fcab2ce",
+				"method": "GET"
+			},
+			{
+				"id": "39443e56-e900-41f9-926d-e98a9efcada1",
+				"method": "PATCH"
+			},
+			{
+				"id": "250ff5fa-0ca9-44f8-be35-24048d5640a9",
+				"method": "PATCH"
+			},
+			{
+				"id": "4f191007-a86c-4895-ad1b-dd74a1ac7d33",
+				"method": "PATCH"
+			},
+			{
+				"id": "3a429a5b-862c-416d-a4c7-01b1d7a51fe2",
+				"method": "PATCH"
+			},
+			{
+				"id": "70d9a525-3b0e-42bd-8f48-cfc8cf663cc8",
+				"method": "PATCH"
+			},
+			{
+				"id": "fa98fe9f-d6d2-4c87-ad49-5378520fc151",
+				"method": "PATCH"
+			},
+			{
+				"id": "d1609713-8bc0-4054-9c8f-e9ef2f44ac60",
+				"method": "PATCH"
+			},
+			{
+				"id": "42bb86bc-a644-49dc-a833-d51fb6c48c54",
+				"method": "PATCH"
+			},
+			{
+				"id": "2a89f32e-3ea7-4b31-8140-4cc3977be42d",
+				"method": "GET"
+			},
+			{
+				"id": "3382705d-ba50-4cdf-819d-3079e58eaabe",
+				"method": "PATCH"
+			},
+			{
+				"id": "4b533438-9d15-40e4-ae61-754ab7d438e7",
+				"method": "PATCH"
+			},
+			{
+				"id": "a48c4251-1782-4acd-b933-1f6bfde98cad",
+				"method": "PATCH"
+			},
+			{
+				"id": "9f4bf1d6-1c0a-4917-bfc6-768676adf95d",
+				"method": "PATCH"
+			},
+			{
+				"id": "d4bc3b85-fdeb-49ec-a12c-541a29509093",
+				"method": "PATCH"
+			},
+			{
+				"id": "d4a57704-9cbc-4b1f-8fed-6b1357edc854",
+				"method": "POST"
+			},
+			{
+				"id": "901afbfd-3779-43a0-9ad1-0e422626ea5f",
+				"method": "POST"
+			},
+			{
+				"id": "14ccb274-977e-498e-a937-0c21f19eab7e",
+				"method": "PATCH"
+			},
+			{
+				"id": "0b4e5541-9ddc-407a-bf28-99e7b8ae1697",
+				"method": "POST"
+			},
+			{
+				"id": "2faeac80-9d82-4ac0-ae15-f685bd78939a",
+				"method": "GET"
+			},
+			{
+				"id": "03235514-c5e9-4c23-bae8-317056e70fc7",
+				"method": "POST"
+			},
+			{
+				"id": "9f001ab5-cbfc-4a35-a3fd-242dec7214f9",
+				"method": "PATCH"
+			},
+			{
+				"id": "222c584d-93bf-465b-9a58-90d7c5ab2b6c",
+				"method": "DELETE"
+			},
+			{
+				"id": "9222980e-4490-4df7-8d3b-e24dc65ec34a",
+				"method": "POST"
+			},
+			{
+				"id": "c2e74f71-267b-4f43-b74f-83ac26979904",
+				"method": "DELETE"
+			},
+			{
+				"id": "0fbb6840-386c-4d92-b74a-6fbe8f602191",
+				"method": "GET"
+			},
+			{
+				"id": "b4a11896-40bd-4aae-bb29-7916f1a100af",
+				"method": "POST"
+			},
+			{
+				"id": "fe4264a1-c1f5-4f8c-8f72-b0ce694a0dd1",
+				"method": "PATCH"
+			},
+			{
+				"id": "5feab46a-25d9-479e-a108-511560c3beba",
+				"method": "DELETE"
+			},
+			{
+				"id": "0170ee1b-75b3-4f9d-a18f-339583e06cfa",
+				"method": "POST"
+			},
+			{
+				"id": "36ff0969-3098-4423-93ff-b372832b2269",
+				"method": "DELETE"
+			},
+			{
+				"id": "b7daa948-2d75-447a-86bc-26d56ad5d486",
+				"method": "GET"
+			},
+			{
+				"id": "b1f16993-a2d7-4a5c-b10d-7f73afb3e1b4",
+				"method": "POST"
+			},
+			{
+				"id": "27a6814c-74df-4e95-9232-5ef97bcac2fd",
+				"method": "PATCH"
+			},
+			{
+				"id": "c4a5b7ad-1415-41a1-aada-90f59291c72d",
+				"method": "DELETE"
+			},
+			{
+				"id": "23769530-7783-402e-8519-54b9d4cd0571",
+				"method": "GET"
+			},
+			{
+				"id": "7bb949b0-57ac-4bc1-98a0-e8c7aa6437a1",
+				"method": "GET"
+			},
+			{
+				"id": "62f56f05-a4a3-4199-b5c5-930f45de24ef",
+				"method": "GET"
+			},
+			{
+				"id": "ffc2b77a-09f4-4251-a2d6-a5526b1c6fd5",
+				"method": "POST"
+			},
+			{
+				"id": "5d031b09-52bd-4918-af08-4143e700a741",
+				"method": "POST"
+			},
+			{
+				"id": "9d4fa6cf-7e3e-469b-a874-b1d982502851",
+				"method": "GET"
+			},
+			{
+				"id": "2453a013-fa84-4146-9118-782334d7f423",
+				"method": "GET"
+			},
+			{
+				"id": "d1ed9e00-425f-4827-992f-397a9b920748",
+				"method": "POST"
+			},
+			{
+				"id": "8828dfd0-c3fb-4e6d-b378-399bc2c4db45",
+				"method": "PATCH"
+			},
+			{
+				"id": "b20fb008-a61d-4c00-bd43-389874f2fbd1",
+				"method": "POST"
+			},
+			{
+				"id": "0fc47076-25f1-45dd-b06e-9131b95f5ad2",
+				"method": "PATCH"
+			},
+			{
+				"id": "b69756aa-13ca-4ca7-a215-ebc90500f7db",
+				"method": "PATCH"
+			},
+			{
+				"id": "6cf548f2-9cfa-41ab-a470-c438352e2931",
+				"method": "GET"
+			},
+			{
+				"id": "6012b974-8980-4a8f-ad02-eb7567268b2c",
+				"method": "PATCH"
+			},
+			{
+				"id": "cefca22c-a810-45f0-80c0-556f0edfa239",
+				"method": "PATCH"
+			},
+			{
+				"id": "49fb57fa-00dc-40af-9f8e-7e666b3d60a2",
+				"method": "PATCH"
+			},
+			{
+				"id": "294fd69a-4259-48c6-9650-ec5f1f246714",
+				"method": "POST"
+			},
+			{
+				"id": "96485966-f9f6-458d-b7f6-c77c79a273fd",
+				"method": "POST"
+			},
+			{
+				"id": "1fc75096-e872-455b-a03c-b7c7144035d1",
+				"method": "POST"
+			},
+			{
+				"id": "966edc94-1c82-4da4-9c8b-8f0f1ec63779",
+				"method": "POST"
+			},
+			{
+				"id": "a96af58a-38d9-4e8d-809a-fbc8c0407fd3",
+				"method": "GET"
+			},
+			{
+				"id": "0065c9ac-690f-448b-9f06-05ffdd7c77c6",
+				"method": "GET"
+			},
+			{
+				"id": "79f5654b-b5f5-46e8-8928-790018ef769f",
+				"method": "GET"
+			},
+			{
+				"id": "b625d013-c2ad-4f05-9997-56eb98dd544f",
+				"method": "POST"
+			},
+			{
+				"id": "e7fda0f8-5ed0-4d30-a855-705b737669bf",
+				"method": "POST"
+			},
+			{
+				"id": "61e0ef85-60ed-48ee-afa8-3e2896ea9746",
+				"method": "DELETE"
+			},
+			{
+				"id": "29f5e3ac-ddba-473c-8ffd-7dd6d6c840a0",
+				"method": "DELETE"
+			},
+			{
+				"id": "26d55af9-10c2-463d-860a-1205a2694a68",
+				"method": "GET"
+			},
+			{
+				"id": "26a33729-8f39-4ed7-82cc-13315073d10b",
+				"method": "POST"
+			},
+			{
+				"id": "7d2b9f1d-b6a8-4f2a-8046-b10f99c47e2e",
+				"method": "POST"
+			},
+			{
+				"id": "07986463-5be1-4890-b588-35aa921485c9",
+				"method": "POST"
+			},
+			{
+				"id": "e27b17f4-7803-4586-96be-f2106ad1bd99",
+				"method": "DELETE"
+			},
+			{
+				"id": "783c8a62-2ac0-40f6-9fc1-1e97c930281c",
+				"method": "DELETE"
+			},
+			{
+				"id": "8fd5b7a8-4975-4eb5-bdb7-c9614171fe2f",
+				"method": "POST"
+			},
+			{
+				"id": "f6da29d0-e966-4a73-85df-5bab32b05208",
+				"method": "POST"
+			},
+			{
+				"id": "e2cb6f6a-3977-4fe1-b9f4-685df8fb04a9",
+				"method": "POST"
+			},
+			{
+				"id": "e76f0d39-d023-4899-94c3-068972b32570",
+				"method": "POST"
+			},
+			{
+				"id": "52a61b5a-f90d-413d-b354-f59e78161c35",
+				"method": "POST"
+			},
+			{
+				"id": "2d82c421-13f0-46f7-8a0c-cb764da9e3b0",
+				"method": "POST"
+			},
+			{
+				"id": "7ac1b0c6-1156-428e-a69c-84dc8b9b94bc",
+				"method": "POST"
+			},
+			{
+				"id": "aaa66d14-d6a9-46f3-97ab-18f84dce4fdc",
+				"method": "POST"
+			},
+			{
+				"id": "f1c97d3b-0fe8-4136-990a-f3832e51c6f8",
+				"method": "POST"
+			},
+			{
+				"id": "1ea003a0-3cb3-4caa-92f4-574fa5c5c45d",
+				"method": "GET"
+			},
+			{
+				"id": "3c97b7cb-fb29-42b4-a287-fdb646a2b6da",
+				"method": "GET"
+			},
+			{
+				"id": "72da1ba1-a989-453e-8a27-1b86cd9ed12a",
+				"method": "DELETE"
+			},
+			{
+				"id": "3a0a480e-8c53-4166-9600-880038f0fd72",
+				"method": "GET"
+			},
+			{
+				"id": "962702dd-9942-4005-b6a2-81faba06ce09",
+				"method": "DELETE"
+			},
+			{
+				"id": "903b5c44-4e20-4182-b1ed-5f797e60c279",
+				"method": "GET"
+			},
+			{
+				"id": "57ad5673-fa04-46da-946f-2b0b0fa07217",
+				"method": "POST"
+			},
+			{
+				"id": "38910140-da8f-46c3-8d92-3baa4f3a29b0",
+				"method": "PATCH"
+			},
+			{
+				"id": "3bbc1578-43cf-4898-8f11-cffa305a0440",
+				"method": "GET"
+			},
+			{
+				"id": "f2ec5aed-bd7d-46eb-a56c-37350496bd9b",
+				"method": "PATCH"
+			},
+			{
+				"id": "c28e2656-748a-450f-a029-d27b27eb67e8",
+				"method": "PATCH"
+			},
+			{
+				"id": "1e73a671-5fec-4c04-8035-6f736fe6294d",
+				"method": "POST"
+			},
+			{
+				"id": "68f4170c-3202-45ea-9038-d1d7414c030a",
+				"method": "POST"
+			},
+			{
+				"id": "2459a480-edec-4e76-a020-62400fdc7849",
+				"method": "DELETE"
+			},
+			{
+				"id": "e2038cd8-93c4-4401-b6f3-487f4301ae5b",
+				"method": "GET"
+			},
+			{
+				"id": "c55987ec-05a0-4545-a954-51277b0a60a4",
+				"method": "PATCH"
+			},
+			{
+				"id": "720e5e0e-d48f-4683-a626-b58604353ed9",
+				"method": "GET"
+			},
+			{
+				"id": "11ad2f08-faff-4eee-83e5-d329841063de",
+				"method": "PATCH"
+			},
+			{
+				"id": "68185ef4-03d7-495a-a295-71e19052650e",
+				"method": "DELETE"
+			},
+			{
+				"id": "3c0983ea-d34f-4600-b0bc-1e177562fac0",
+				"method": "DELETE"
+			},
+			{
+				"id": "08c03297-4dde-44bb-bd26-fa14cc003b69",
+				"method": "DELETE"
+			},
+			{
+				"id": "bcd23ec2-8610-4dab-bb00-d3a39199c9dd",
+				"method": "GET"
+			},
+			{
+				"id": "12b536eb-7f5b-4be2-a76f-7468b8bc2f92",
+				"method": "POST"
+			},
+			{
+				"id": "d1732952-5929-49ea-83d4-b7574b73a648",
+				"method": "POST"
+			},
+			{
+				"id": "c6999b63-7d84-49e8-a0f1-d80921533955",
+				"method": "POST"
+			},
+			{
+				"id": "93cf555d-662a-4305-b0ec-f2a05f41780d",
+				"method": "PATCH"
+			},
+			{
+				"id": "19589f75-629b-47d3-8853-6dddc70caf4a",
+				"method": "PATCH"
+			},
+			{
+				"id": "57d30ab0-f7b0-40e1-81e8-cbdf448efd01",
+				"method": "POST"
+			},
+			{
+				"id": "b8f0a49d-0535-4c5d-b683-478740db022a",
+				"method": "DELETE"
+			},
+			{
+				"id": "a299d884-9976-458b-a355-51f5da9846f6",
+				"method": "POST"
+			},
+			{
+				"id": "cf0e7ce3-69ca-4495-a379-e5652c775f2f",
+				"method": "DELETE"
+			},
+			{
+				"id": "f2c2f130-54d5-4de1-a3d0-b9ca8055b62b",
+				"method": "DELETE"
+			},
+			{
+				"id": "5cd9f100-742f-4046-b2a5-e92ca42c34e0",
+				"method": "DELETE"
+			},
+			{
+				"id": "a31f6b60-5762-40eb-82e5-ca107c7189b1",
+				"method": "DELETE"
+			},
+			{
+				"id": "1dc1dc35-13ee-4177-a17e-cfd3f81e39f4",
+				"method": "DELETE"
+			},
+			{
+				"id": "f6d284ba-ee8f-4aa0-8e4b-e39842f29cf7",
+				"method": "DELETE"
+			},
+			{
+				"id": "b3559b64-a137-4998-9ee1-109a9ecac47a",
+				"method": "DELETE"
+			},
+			{
+				"id": "4c0a6787-2673-4fe6-9dcb-a294950a360e",
+				"method": "DELETE"
+			},
+			{
+				"id": "99cf4151-af50-47c8-9b2d-b6e763197df3",
+				"method": "DELETE"
+			},
+			{
+				"id": "8e17e99c-0b25-4f39-b079-de891fcd42b3",
+				"method": "POST"
+			},
+			{
+				"id": "8654a013-c048-4fea-8c2b-40a1264532aa",
+				"method": "POST"
+			},
+			{
+				"id": "1d1faf10-db0c-40cc-b9c2-cb6049b93847",
+				"method": "GET"
+			},
+			{
+				"id": "7bd170eb-d00a-471f-806a-411545409e36",
+				"method": "GET"
+			},
+			{
+				"id": "4cf23f11-060a-411e-9b98-0cc34e0d81fa",
+				"method": "GET"
+			},
+			{
+				"id": "d9b5f763-e32f-4658-a201-c27d49ba9077",
+				"method": "GET"
+			},
+			{
+				"id": "18347de9-43b0-46ad-a016-a15327c4c100",
+				"method": "POST"
+			},
+			{
+				"id": "aeb9dc90-5c47-4289-973d-805becaf7646",
+				"method": "PATCH"
+			},
+			{
+				"id": "ed372c61-a98c-4ee3-9e2d-0c87fbecac12",
+				"method": "DELETE"
+			},
+			{
+				"id": "e794ea6f-9af9-4e53-885b-a08dc5f6dedc",
+				"method": "POST"
+			},
+			{
+				"id": "f748fe0f-0b87-492c-a57d-f9a5e748ef15",
+				"method": "DELETE"
+			},
+			{
+				"id": "0a7294c5-3cb8-4aa6-aa86-23da42cdf93e",
+				"method": "GET"
+			},
+			{
+				"id": "55286b1b-7760-47cb-ad65-da5a44f93be7",
+				"method": "GET"
+			},
+			{
+				"id": "ae329abf-69ea-4fc0-8452-47c47d6116ab",
+				"method": "GET"
+			},
+			{
+				"id": "54bdca34-6bcc-45d0-a00a-c3119dc70e28",
+				"method": "POST"
+			},
+			{
+				"id": "83a5283c-6a19-443c-a132-0397cea31f33",
+				"method": "PATCH"
+			},
+			{
+				"id": "9279551e-910a-4111-95bb-6be80ee2750b",
+				"method": "DELETE"
+			},
+			{
+				"id": "1fe3c1eb-a91a-48f7-9bf8-a46d1cd21507",
+				"method": "POST"
+			},
+			{
+				"id": "d0835280-5685-4fb7-965b-488c1bccfed1",
+				"method": "DELETE"
+			},
+			{
+				"id": "ec412aee-dfc7-48cc-8450-7a047128bc40",
+				"method": "GET"
+			},
+			{
+				"id": "1e39a0fb-a7e0-4a3c-9058-4169faef61ef",
+				"method": "GET"
+			},
+			{
+				"id": "9bee2228-cd35-4258-8452-7ef8cb0d6cd2",
+				"method": "DELETE"
+			},
+			{
+				"id": "0d826cbb-3adb-4a14-8855-9032a23ed941",
+				"method": "POST"
+			},
+			{
+				"id": "4595cc24-dd4f-439e-8b45-8928d53c998d",
+				"method": "GET"
+			},
+			{
+				"id": "511d2438-d88e-47fe-a6ec-ce209482fb63",
+				"method": "GET"
+			},
+			{
+				"id": "40a01103-1a21-43ca-969c-05ac7425740e",
+				"method": "PATCH"
+			},
+			{
+				"id": "b75775bb-99dc-478f-9e69-ea05dc6c2156",
+				"method": "POST"
+			}
+		]
+	}
+}

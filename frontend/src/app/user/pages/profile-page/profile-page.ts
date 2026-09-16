@@ -41,7 +41,7 @@ export class ProfilePage implements OnInit {
   private readonly uploadsUrl = `${environment.apiUrl}/uploads`;
 
   profileForm = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email, Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9.@_%+-]+$/)]],
+    email: ['', [Validators.required, Validators.email ,Validators.maxLength(254), Validators.pattern(/^[a-zA-Z0-9.@_%+-]+$/)]],
     password: ['', [Validators.minLength(8), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z0-9.@_%+-]+$/)]]});
 
   ngOnInit(): void {

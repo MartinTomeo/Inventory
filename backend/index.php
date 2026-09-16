@@ -99,78 +99,62 @@ function outputJson($data = null, int $code = 200): never
     exit;
 }
 
-
 function saveUploadedImage($file, $uploadDir)
 {
-
     if (!isset($file) || $file['error'] === UPLOAD_ERR_NO_FILE) {
         return ['success' => false, 'code' => 'PHOTO_REQUIRED', 'message' => 'A photo is required'];
     }
 
-    if ($file['error'] !== UPLOAD_ERR_OK) {
+    if ($file['error'] === UPLOAD_ERR_INI_SIZE || $file['error'] === UPLOAD_ERR_FORM_SIZE) {
+        return ['success' => false, 'code' => 'FILE_TOO_LARGE', 'message' => 'The photo exceeds the maximum allowed size'];
+    }
 
+    if ($file['error'] !== UPLOAD_ERR_OK) {
         error_log('Image upload error: ' . $file['error']);
         return ['success' => false, 'code' => 'FILE_UPLOAD_ERROR', 'message' => 'The photo could not be uploaded'];
-
     }
 
     $tmpName = $file['tmp_name'];
 
     if (!is_uploaded_file($tmpName)) {
-
         return ['success' => false, 'code' => 'INVALID_UPLOAD', 'message' => 'Invalid uploaded file'];
-
     }
 
-
-    $maxFileSize = 5 * 1024 * 1024; // 5 MB
+    $maxFileSize = 5 * 1024 * 1024;
 
     if ($file['size'] > $maxFileSize) {
-
         return ['success' => false, 'code' => 'FILE_TOO_LARGE', 'message' => 'The photo exceeds the maximum allowed size'];
-
     }
-
 
     $mimeType = mime_content_type($tmpName);
 
-    $allowedTypes = [
+    $allowedMimeTypes = [
         'image/jpeg' => 'jpg',
         'image/png'  => 'png',
         'image/webp' => 'webp'
     ];
 
-    if (!isset($allowedTypes[$mimeType])) {
-
-        return ['success' => false, 'code' => 'INVALID_IMAGE_TYPE', 'message' => 'The uploaded file is not a supported image type'];
-
+    if (!array_key_exists($mimeType, $allowedMimeTypes)) {
+        return ['success' => false, 'code' => 'INVALID_IMAGE_TYPE', 'message' => 'Invalid image type'];
     }
-
 
     if (!is_dir($uploadDir)) {
         if (!mkdir($uploadDir, 0755, true)) {
-
-            error_log('Could not create upload directory: ' . $uploadDir);
             return ['success' => false, 'code' => 'FILE_STORAGE_ERROR', 'message' => 'Could not prepare image storage'];
-
         }
     }
 
 
-    $extension = $allowedTypes[$mimeType];
-    $fileName = bin2hex(random_bytes(16)) . '.' . $extension;
-    $destination = $uploadDir . $fileName;
-
+    $extension = $allowedMimeTypes[$mimeType];
+    $filename = bin2hex(random_bytes(16)) . '.' . $extension;
+    $destination = rtrim($uploadDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $filename;
 
     if (!move_uploaded_file($tmpName, $destination)) {
-
-        error_log('Could not move uploaded image to: ' . $destination);
-        return ['success' => false, 'code' => 'FILE_STORAGE_ERROR', 'message' => 'The photo could not be saved'];
+        return ['success' => false, 'code' => 'FILE_UPLOAD_ERROR', 'message' => 'The photo could not be saved'];
     }
 
-    return ['success' => true, 'fileName' => $fileName, 'path' => $destination];
+    return ['success' => true, 'fileName' => $filename];
 }
-
 
 function deleteImageFile(?string $fileName, string $uploadDir): void
 {
@@ -766,22 +750,30 @@ function patchProfile()
                 'error' => ['code' => 'INVALID_FIELD', 'message' => "Field '$field' cannot be modified"]], 400);
         }
     }
-
+    
     if (array_key_exists('email', $data)) {
-        if (!is_string($data['email']) || !filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL)) {
+        if (!is_string($data['email'])) {
             outputJson([
                 'success' => false,
                 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email address']], 400);
         }
-
+    
         $data['email'] = trim($data['email']);
-    }
-
-    if (array_key_exists('password', $data)) {
-        if (!is_string($data['password']) || strlen($data['password']) < 8) {
+    
+        if ($data['email'] === '' || strlen($data['email']) > 254 || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             outputJson([
                 'success' => false,
-                'error' => ['code' => 'INVALID_PASSWORD', 'message' => 'Password must contain at least 8 characters']], 400);
+                'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email address']], 400);
+        }
+    }
+    
+
+
+    if (array_key_exists('password', $data)) {
+        if (!is_string($data['password']) || strlen($data['password']) < 8 || strlen($data['password']) > 20) {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_PASSWORD', 'message' => 'Password must contain at least 8 characters and less or equal to 20']], 400);
         }
     }
 
@@ -1004,8 +996,8 @@ function getUsersById($id)
 function getUsersByName($name)
 {
     requireRole([1]); 
-    $bd=initDB();
-    $stmt = $bd->prepare("SELECT id, username, email, role, user_image, created_at FROM users WHERE username LIKE :name COLLATE NOCASE");
+    $db=initDB();
+    $stmt = $db->prepare("SELECT id, username, email, role, user_image, created_at FROM users WHERE username LIKE :name COLLATE NOCASE");
 
     if (!$stmt) {
         error_log($db->lastErrorMsg());
@@ -1030,7 +1022,9 @@ function getUsersByName($name)
     }
 
     if (!$ret) {
-        outputError(404);
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'USER_NOT_FOUND', 'message' => 'User not found']], 404);
     }
 
 
@@ -1079,14 +1073,28 @@ function postUsers()
         }
     }
 
+    
+    if ($data['username'] === '' || strlen($data['username']) > 20 || strlen($data['username']) < 3) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_USERNAME', 'message' => 'Username must be between 3 and 20 characters']], 400);
+    }
 
-    if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL) || strlen($data['email']) > 254) {
 
         outputJson(['success' => false, 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email']], 400);
 
     }
 
-    if (filter_var($data['role'], FILTER_VALIDATE_INT) === false) {
+
+    if (strlen($data['password']) < 8 || strlen($data['password']) > 20) {
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'INVALID_PASSWORD', 'message' => 'Password must contain at least 8 characters and equal or less than 20']], 400);
+    }
+
+
+    if (filter_var($data['role'], FILTER_VALIDATE_INT) === false || !in_array((int) $data['role'], [1, 2, 3], true)) {
 
         outputJson(['success' => false, 'error' => ['code' => 'INVALID_ROLE', 'message' => 'Invalid role']], 400);
 
@@ -1094,8 +1102,8 @@ function postUsers()
 
     $role = (int) $data['role'];
 
-    //TODO in email: MaxLength validator, Regex pattern validator(^[a-zA-Z0-9.@_%+-]+$)
-    //TODO in password: MinLenght MaxLength validator, Regex pattern validator (^[a-zA-Z0-9.@_%+-]+$)
+    //TODO in email: Regex pattern validator(^[a-zA-Z0-9.@_%+-]+$)
+    //TODO in password: Regex pattern validator (^[a-zA-Z0-9.@_%+-]+$)
     
     $upload = null;
 
@@ -1139,7 +1147,6 @@ function postUsers()
         }
 
         $stmt->bindValue(':username', $data['username'], SQLITE3_TEXT);
-
         $stmt->bindValue(':email', $data['email'], SQLITE3_TEXT);
         $stmt->bindValue(':password', password_hash($data['password'], PASSWORD_DEFAULT), SQLITE3_TEXT);
         $stmt->bindValue(':role', $role, SQLITE3_INTEGER);
@@ -1409,34 +1416,45 @@ function patchUsersById($id)
 
     if (array_key_exists('username', $data)) {
 
-        if (!is_string($data['username']) || trim($data['username']) === '')
+        if (!is_string($data['username']))
         {
             outputJson(['success' => false, 'error' => ['code' => 'INVALID_USERNAME', 'message' => 'Invalid username']], 400);
         }
 
         $data['username'] = trim($data['username']);
-    }
+        
 
+        if ($data['username'] === '' || strlen($data['username']) > 20 || strlen($data['username']) < 3) {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_USERNAME', 'message' => 'Username must be between 3 and 20 characters']], 400);
+        }
+
+    }
 
     if (array_key_exists('email', $data)) {
 
-        if (!is_string($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL))
-        {
-
-            outputJson(['success' => false, 'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email address']], 400);
-
+        if (!is_string($data['email'])) {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email address']], 400);
         }
-
+    
         $data['email'] = trim($data['email']);
-
+    
+        if ($data['email'] === '' || strlen($data['email']) > 254 || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            outputJson([
+                'success' => false,
+                'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email address']], 400);
+            }
     }
 
     if (array_key_exists('password', $data))
     {
 
-        if (!is_string($data['password']) ||strlen($data['password']) < 8)
+        if (!is_string($data['password']) || strlen($data['password']) < 8 || strlen($data['password']) > 20)
         {
-            outputJson(['success' => false, 'error' => ['code' => 'INVALID_PASSWORD', 'message' => 'Password must contain at least 8 characters']], 400);
+            outputJson(['success' => false, 'error' => ['code' => 'INVALID_PASSWORD', 'message' => 'Password must contain at least 8 characters and less or equal to 20']], 400);
         }
     }
 
@@ -2418,8 +2436,8 @@ function getSubscriptions() {
 
     requireRole([1,2,3]);
 
-    $bd = initDB();
-    $result = $bd->query($sql = '
+    $db = initDB();
+    $result = $db->query($sql = '
     SELECT s.id, s.user_id, s.stock_id,
         u.username, u.email, u.user_image,
         st.imei, st.model, st.brand, st.ph_provider, st.phone_image, st.line, st.line_provider
@@ -2450,6 +2468,7 @@ function getSubscriptions() {
 function getSubscriptionsByName($username)
 {
     requireRole([1, 2, 3]);
+
     $username = trim((string) $username);
     if ($username === '') {
         outputJson([

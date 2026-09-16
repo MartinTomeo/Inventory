@@ -20,7 +20,7 @@ export class LoginPage {
   fieldErrors = signal<Record<string, string | null>>({});
 
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email, Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9.@_%+-]+$/)]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(254), Validators.pattern(/^[a-zA-Z0-9.@_%+-]+$/)]],
     password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z0-9.@_%+-]+$/)]]
   });
 
