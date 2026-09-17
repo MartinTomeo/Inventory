@@ -1,29 +1,10 @@
 <?php
-header(
-    'Access-Control-Allow-Origin: http://localhost:4200'
-);
-
-header(
-    'Access-Control-Allow-Credentials: true'
-);
-
-header(
-    'Access-Control-Allow-Headers: ' .
-    'Authorization, Content-Type, Accept, Origin, ' .
-    'X-Requested-With, Access-Control-Request-Method'
-);
-
-header(
-    'Access-Control-Allow-Methods: ' .
-    'POST, GET, PATCH, DELETE, OPTIONS'
-);
-
+header('Access-Control-Allow-Origin: http://localhost:4200');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Headers: ' . 'Authorization, Content-Type, Accept, Origin, ' . 'X-Requested-With, Access-Control-Request-Method');
+header('Access-Control-Allow-Methods: ' . 'POST, GET, PATCH, DELETE, OPTIONS');
 header('Vary: Origin');
-
-date_default_timezone_set(
-    'America/Argentina/Buenos_Aires'
-);
-
+date_default_timezone_set('America/Argentina/Buenos_Aires');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
@@ -106,6 +87,7 @@ if (function_exists($nameFoo)) {
 
     outputJson(['success' => false, 'error' => ['code' => 'ENDPOINT_NOT_FOUND', 'message' => 'Endpoint not found']], 404);
 }
+
 // ----------------- FUNCIONES DE SOPORTE ------------------
 
 function getUsersUploadDir()
@@ -120,7 +102,6 @@ function getStockUploadDir()
 
 function outputJson($data = null, int $code = 200): never
 {
-
     http_response_code($code);
     header('Content-Type: application/json');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
@@ -130,29 +111,22 @@ function outputJson($data = null, int $code = 200): never
 
 function createAccessToken(int $userId): string
 {
-    $payload = [
-        'uid' => $userId,
-        'exp' => time() + JWT_EXP
-    ];
-
-    return JWT::encode(
-        $payload,
-        JWT_KEY,
-        JWT_ALG
-    );
+    $payload = [ 'uid' => $userId, 'exp' => time() + JWT_EXP ];
+    return JWT::encode($payload, JWT_KEY, JWT_ALG);
 }
 
 
 function createRefreshToken(): string
 {
-    return bin2hex(
-        random_bytes(32)
-    );
+    return bin2hex(random_bytes(32));
 }
 
 
 function saveUploadedImage($file, $uploadDir)
 {
+    
+    //Validaciones
+
     if (!isset($file) || $file['error'] === UPLOAD_ERR_NO_FILE) {
         return ['success' => false, 'code' => 'PHOTO_REQUIRED', 'message' => 'A photo is required'];
     }
@@ -196,6 +170,7 @@ function saveUploadedImage($file, $uploadDir)
         }
     }
 
+    //Aca empiezo a crear el filename y guardo el archivo en uploads
 
     $extension = $allowedMimeTypes[$mimeType];
     $filename = bin2hex(random_bytes(16)) . '.' . $extension;
@@ -225,6 +200,7 @@ function deleteImageFile(?string $fileName, string $uploadDir): void
 
 
 function findUserConflict(SQLite3 $db, ?string $username, ?string $email, ?int $excludeUserId = null): ?array {
+    
     $checks = [
         'username' => [
             'value' => $username, 'code' => 'USERNAME_ALREADY_EXISTS', 'message' => 'A user with that username already exists.'],
@@ -323,10 +299,7 @@ function findStockConflict(SQLite3 $db, ?string $imei, ?int $line, ?int $exclude
     return null;
 }
 
-function setRefreshTokenCookie(
-    string $refreshToken,
-    int $expiresAt
-): bool
+function setRefreshTokenCookie( string $refreshToken, int $expiresAt ): bool
 {
     return setcookie(
         REFRESH_COOKIE_NAME,
@@ -358,15 +331,9 @@ function clearRefreshTokenCookie(): void
 }
 
 
-function isValidRefreshToken(
-    mixed $refreshToken
-): bool
+function isValidRefreshToken( mixed $refreshToken ): bool
 {
-    return is_string($refreshToken)
-        && preg_match(
-            '/^[a-f0-9]{64}$/D',
-            $refreshToken
-        ) === 1;
+    return is_string($refreshToken) && preg_match( '/^[a-f0-9]{64}$/D', $refreshToken ) === 1;
 }
 
 // ----------------- Establecer Base de datos ------------------
@@ -437,412 +404,114 @@ function authenticate($email, $password)
         return false;
     }
 
-    return [
-        'id'       => (int) $user['id'],
-        'username' => $user['username'],
-    ];
+    return ['id' => (int) $user['id'], 'username' => $user['username']];
 }
-try {
 
-    $db = initDB();
-
-    $now = time();
-
-    // -----------------------------
-    // Access token
-    // -----------------------------
-
-    $jwt = createAccessToken(
-        (int) $logged['id']
-    );
-
-
-    // -----------------------------
-    // Refresh token
-    // -----------------------------
-
-    $refreshToken =
-        createRefreshToken();
-
-    $refreshTokenHash =
-        hash(
-            'sha256',
-            $refreshToken
-        );
-
-    $refreshExpiresAt =
-        $now + REFRESH_TOKEN_EXP;
-
-
-    // -----------------------------
-    // Eliminar tokens vencidos
-    // -----------------------------
-
-    $stmt = $db->prepare(
-        'DELETE FROM refresh_tokens
-         WHERE expires_at <= :now'
-    );
-
-    if (!$stmt) {
-
-        throw new RuntimeException(
-            'Could not prepare refresh token cleanup'
-        );
-
-    }
-
-    $stmt->bindValue(
-        ':now',
-        $now,
-        SQLITE3_INTEGER
-    );
-
-    if (!$stmt->execute()) {
-
-        throw new RuntimeException(
-            'Could not remove expired refresh tokens'
-        );
-
-    }
-
-
-    // -----------------------------
-    // Guardar refresh token
-    // -----------------------------
-
-    $stmt = $db->prepare(
-        'INSERT INTO refresh_tokens (
-            token_hash,
-            user_id,
-            expires_at
-         )
-         VALUES (
-            :token_hash,
-            :user_id,
-            :expires_at
-         )'
-    );
-
-    if (!$stmt) {
-
-        throw new RuntimeException(
-            'Could not prepare refresh token insert'
-        );
-
-    }
-
-    $stmt->bindValue(
-        ':token_hash',
-        $refreshTokenHash,
-        SQLITE3_TEXT
-    );
-
-    $stmt->bindValue(
-        ':user_id',
-        (int) $logged['id'],
-        SQLITE3_INTEGER
-    );
-
-    $stmt->bindValue(
-        ':expires_at',
-        $refreshExpiresAt,
-        SQLITE3_INTEGER
-    );
-
-    if (!$stmt->execute()) {
-
-        throw new RuntimeException(
-            'Could not save refresh token'
-        );
-
-    }
-
-
-    // -----------------------------
-    // Crear cookie HttpOnly
-    // -----------------------------
-
-    if (
-        !setRefreshTokenCookie(
-            $refreshToken,
-            $refreshExpiresAt
-        )
-    ) {
-
-        throw new RuntimeException(
-            'Could not create refresh token cookie'
-        );
-
-    }
-
-
-    // -----------------------------
-    // Response
-    // -----------------------------
-
-    outputJson([
-        'success' => true,
-        'jwt' => $jwt
-    ], 200);
-
-
-} catch (Throwable $error) {
-
-    error_log(
-        'Login error: ' .
-        $error->getMessage()
-    );
-
-    outputJson([
-        'success' => false,
-        'error' => [
-            'code' => 'INTERNAL_ERROR',
-            'message' => 'Internal server error'
-        ]
-    ], 500);
-
-}
 
 function postLogin()
 {
-    // -----------------------------------------
-    // Leer body
-    // -----------------------------------------
 
-    $data = json_decode(
-        file_get_contents('php://input'),
-        true
-    );
-
+    $data = json_decode(file_get_contents('php://input'),true);
 
     if (!is_array($data)) {
-
         outputJson([
             'success' => false,
-            'error' => [
-                'code' => 'INVALID_REQUEST',
-                'message' => 'Invalid JSON body'
-            ]
-        ], 400);
-
+            'error' => ['code' => 'INVALID_REQUEST', 'message' => 'Invalid JSON body']], 400);
     }
 
 
-    // -----------------------------------------
-    // Validar campos requeridos
-    // -----------------------------------------
-
-    if (
-        !array_key_exists('email', $data) ||
-        !array_key_exists('password', $data)
-    ) {
-
+    if (!array_key_exists('email', $data) || !array_key_exists('password', $data)) {
         outputJson([
             'success' => false,
-            'error' => [
-                'code' => 'MISSING_CREDENTIALS',
-                'message' => 'Email and password are required'
-            ]
-        ], 400);
-
+            'error' => ['code' => 'MISSING_CREDENTIALS', 'message' => 'Email and password are required']], 400);
     }
 
 
-    if (
-        !is_string($data['email']) ||
-        !is_string($data['password'])
-    ) {
-
+    if (!is_string($data['email']) || !is_string($data['password'])) {
         outputJson([
             'success' => false,
-            'error' => [
-                'code' => 'INVALID_CREDENTIALS',
-                'message' => 'Invalid credentials format'
-            ]
-        ], 400);
-
+            'error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'Invalid credentials format']], 400);
     }
 
-
-    // -----------------------------------------
-    // Normalizar datos
-    // -----------------------------------------
-
-    $email = strtolower(
-        trim($data['email'])
-    );
-
+    $email = strtolower(trim($data['email']));
     $password = $data['password'];
 
-
-    if (
-        !filter_var(
-            $email,
-            FILTER_VALIDATE_EMAIL
-        )
-    ) {
-
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         outputJson([
             'success' => false,
-            'error' => [
-                'code' => 'INVALID_EMAIL',
-                'message' => 'Invalid email'
-            ]
-        ], 400);
+            'error' => ['code' => 'INVALID_EMAIL', 'message' => 'Invalid email']], 400);
 
     }
 
-
-    // -----------------------------------------
-    // Autenticar usuario
-    // -----------------------------------------
-
-    $logged = authenticate(
-        $email,
-        $password
-    );
-
+    $logged = authenticate($email, $password);
 
     if ($logged === false) {
-
         outputJson([
             'success' => false,
-            'error' => [
-                'code' => 'INVALID_CREDENTIALS',
-                'message' => 'Invalid email or password'
-            ]
-        ], 401);
-
+            'error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'Invalid email or password']], 401);
     }
 
-
-    // -----------------------------------------
     // Crear tokens y guardar refresh token
-    // -----------------------------------------
 
     try {
 
         $db = initDB();
-
         $now = time();
 
+        $jwt = createAccessToken((int) $logged['id']);
 
-        // Access token
+        $refreshToken = createRefreshToken();
 
-        $jwt = createAccessToken(
-            (int) $logged['id']
-        );
+        $refreshTokenHash = hash('sha256', $refreshToken);
 
+        $refreshExpiresAt = $now + REFRESH_TOKEN_EXP;
 
-        // Refresh token
-
-        $refreshToken =
-            createRefreshToken();
-
-        $refreshTokenHash =
-            hash(
-                'sha256',
-                $refreshToken
-            );
-
-        $refreshExpiresAt =
-            $now + REFRESH_TOKEN_EXP;
-
-
-        // -----------------------------------------
         // Eliminar refresh tokens vencidos
-        // -----------------------------------------
 
-        $stmt = $db->prepare(
-            'DELETE FROM refresh_tokens
-             WHERE expires_at <= :now'
-        );
+        $stmt = $db->prepare('DELETE FROM refresh_tokens WHERE expires_at <= :now');
 
 
         if (!$stmt) {
-
-            throw new RuntimeException(
-                'Could not prepare refresh token cleanup'
-            );
-
+            throw new RuntimeException('Could not prepare refresh token cleanup');
         }
 
 
-        $stmt->bindValue(
-            ':now',
-            $now,
-            SQLITE3_INTEGER
-        );
-
+        $stmt->bindValue(':now', $now, SQLITE3_INTEGER);
 
         if (!$stmt->execute()) {
 
-            throw new RuntimeException(
-                'Could not remove expired refresh tokens'
-            );
+            throw new RuntimeException('Could not remove expired refresh tokens');
 
         }
 
-
-        // -----------------------------------------
         // Guardar hash del refresh token
-        // -----------------------------------------
 
         $stmt = $db->prepare(
-            'INSERT INTO refresh_tokens (
-                token_hash,
-                user_id,
-                expires_at
-             )
-             VALUES (
-                :token_hash,
-                :user_id,
-                :expires_at
-             )'
-        );
-
+            'INSERT INTO refresh_tokens (token_hash, user_id, expires_at) VALUES (:token_hash, :user_id, :expires_at)');
 
         if (!$stmt) {
-
-            throw new RuntimeException(
-                'Could not prepare refresh token insert'
-            );
-
+            throw new RuntimeException('Could not prepare refresh token insert');
         }
 
 
-        $stmt->bindValue(
-            ':token_hash',
-            $refreshTokenHash,
-            SQLITE3_TEXT
-        );
+        $stmt->bindValue(':token_hash', $refreshTokenHash, SQLITE3_TEXT);
 
-        $stmt->bindValue(
-            ':user_id',
-            (int) $logged['id'],
-            SQLITE3_INTEGER
-        );
+        $stmt->bindValue(':user_id', (int) $logged['id'], SQLITE3_INTEGER);
 
-        $stmt->bindValue(
-            ':expires_at',
-            $refreshExpiresAt,
-            SQLITE3_INTEGER
-        );
-
+        $stmt->bindValue(':expires_at', $refreshExpiresAt, SQLITE3_INTEGER);
 
         if (!$stmt->execute()) {
+            throw new RuntimeException('Could not save refresh token');
+        }
 
-            throw new RuntimeException(
-                'Could not save refresh token'
-            );
+        // Crear cookie HttpOnly
 
+        if (!setRefreshTokenCookie( $refreshToken, $refreshExpiresAt ) ){
+            throw new RuntimeException( 'Could not create refresh token cookie' ); 
         }
 
 
-        // -----------------------------------------
-        // Crear cookie HttpOnly
-        // -----------------------------------------
-
+        /*
         $cookieCreated = setcookie(
             REFRESH_COOKIE_NAME,
             $refreshToken,
@@ -864,32 +533,19 @@ function postLogin()
 
         }
 
+        */
 
-        // -----------------------------------------
-        // Respuesta
-        // -----------------------------------------
-
-        outputJson([
-            'success' => true,
-            'jwt' => $jwt
-        ], 200);
+        outputJson(['success' => true, 'jwt' => $jwt], 200);
 
 
     } catch (Throwable $error) {
 
-        error_log(
-            'Login error: ' .
-            $error->getMessage()
-        );
+        error_log('Login error: ' . $error->getMessage());
 
 
         outputJson([
             'success' => false,
-            'error' => [
-                'code' => 'INTERNAL_ERROR',
-                'message' => 'Internal server error'
-            ]
-        ], 500);
+            'error' => [ 'code' => 'INTERNAL_ERROR', 'message' => 'Internal server error' ]], 500);
 
     }
 }
@@ -898,218 +554,96 @@ function postLogin()
 
 function deleteLogin()
 {
-    $refreshToken =
-        $_COOKIE[
-            REFRESH_COOKIE_NAME
-        ] ?? null;
+    $refreshToken = $_COOKIE[ REFRESH_COOKIE_NAME ] ?? null;
 
-
-    // El navegador siempre pierde
-    // primero su refresh token.
+    // El navegador siempre pierde primero su refresh token.
     clearRefreshTokenCookie();
 
-
-    if (
-        !isValidRefreshToken(
-            $refreshToken
-        )
-    ) {
-
-        outputJson([
-            'success' => true
-        ], 200);
-
+    if (!isValidRefreshToken($refreshToken)) {
+        outputJson(['success' => true], 200);
     }
 
 
     try {
 
-        $refreshTokenHash =
-            hash(
-                'sha256',
-                $refreshToken
-            );
-
-
+        $refreshTokenHash = hash('sha256', $refreshToken);
         $db = initDB();
-
-
-        $stmt = $db->prepare(
-            'DELETE FROM refresh_tokens
-             WHERE token_hash = :token_hash'
-        );
-
+        $stmt = $db->prepare('DELETE FROM refresh_tokens WHERE token_hash = :token_hash');
 
         if (!$stmt) {
-
-            throw new RuntimeException(
-                'Could not prepare refresh token deletion'
-            );
-
+            throw new RuntimeException('Could not prepare refresh token deletion');
         }
 
-
-        $stmt->bindValue(
-            ':token_hash',
-            $refreshTokenHash,
-            SQLITE3_TEXT
-        );
-
+        $stmt->bindValue(':token_hash', $refreshTokenHash, SQLITE3_TEXT);
 
         if (!$stmt->execute()) {
-
-            throw new RuntimeException(
-                'Could not revoke refresh token'
-            );
-
+            throw new RuntimeException('Could not revoke refresh token');
         }
 
-
-        outputJson([
-            'success' => true
-        ], 200);
-
+        outputJson(['success' => true ], 200);
 
     } catch (Throwable $error) {
 
-        error_log(
-            'Logout error: ' .
-            $error->getMessage()
-        );
-
+        error_log('Logout error: ' . $error->getMessage());
 
         outputJson([
             'success' => false,
-            'error' => [
-                'code' => 'INTERNAL_ERROR',
-                'message' => 'Could not revoke refresh token'
-            ]
-        ], 500);
+            'error' => ['code' => 'INTERNAL_ERROR', 'message' => 'Could not revoke refresh token']], 500);
 
     }
 }
+
 function postRefresh()
 {
-    $refreshToken =
-        $_COOKIE[
-            REFRESH_COOKIE_NAME
-        ] ?? null;
+    $refreshToken = $_COOKIE[REFRESH_COOKIE_NAME] ?? null;
 
-
-    if (
-    !isValidRefreshToken(
-        $refreshToken
-    )
-) {
-
+    if (!isValidRefreshToken($refreshToken)) {
     clearRefreshTokenCookie();
-
     outputJson([
         'success' => false,
-        'error' => [
-            'code' => 'INVALID_REFRESH_TOKEN',
-            'message' => 'Refresh token expired or invalid'
-        ]
-    ], 401);
-}
+        'error' => ['code' => 'INVALID_REFRESH_TOKEN', 'message' => 'Refresh token expired or invalid']], 401);
+    }
 
 
-    $refreshTokenHash =
-        hash(
-            'sha256',
-            $refreshToken
-        );
+    $refreshTokenHash = hash('sha256', $refreshToken);
 
 
     $db = initDB();
 
 
-    $stmt = $db->prepare(
-        'SELECT user_id
-         FROM refresh_tokens
-         WHERE token_hash = :token_hash
-           AND expires_at > :now
-         LIMIT 1'
-    );
-
+    $stmt = $db->prepare('SELECT user_id FROM refresh_tokens WHERE token_hash = :token_hash AND expires_at > :now LIMIT 1');
 
     if (!$stmt) {
-
-        outputJson([
-            'success' => false,
-            'error' => [
-                'code' => 'DATABASE_ERROR',
-                'message' =>
-                    'Internal server error'
-            ]
-        ], 500);
-
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
 
 
-    $stmt->bindValue(
-        ':token_hash',
-        $refreshTokenHash,
-        SQLITE3_TEXT
-    );
-
-    $stmt->bindValue(
-        ':now',
-        time(),
-        SQLITE3_INTEGER
-    );
-
+    $stmt->bindValue(':token_hash', $refreshTokenHash, SQLITE3_TEXT);
+    $stmt->bindValue(':now', time(), SQLITE3_INTEGER);
 
     $result = $stmt->execute();
 
-
     if (!$result) {
-
-        outputJson([
-            'success' => false,
-            'error' => [
-                'code' => 'DATABASE_ERROR',
-                'message' =>
-                    'Internal server error'
-            ]
-        ], 500);
-
+        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
 
 
-    $storedToken =
-        $result->fetchArray(
-            SQLITE3_ASSOC
-        );
-
+    $storedToken = $result->fetchArray(SQLITE3_ASSOC);
 
     if (!$storedToken) {
-
         clearRefreshTokenCookie();
-
         outputJson([
             'success' => false,
-            'error' => [
-                'code' =>
-                    'INVALID_REFRESH_TOKEN',
-                'message' =>
-                    'Refresh token expired or invalid'
-            ]
-        ], 401);
+            'error' => ['code' => 'INVALID_REFRESH_TOKEN', 'message' => 'Refresh token expired or invalid']], 401);
 
     }
 
-
-    $jwt = createAccessToken(
-        (int) $storedToken['user_id']
-    );
+    $jwt = createAccessToken((int) $storedToken['user_id']);
 
 
-    outputJson([
-        'success' => true,
-        'jwt' => $jwt
-    ], 200);
+    outputJson(['success' => true, 'jwt' => $jwt], 200);
 }
+
 
 function requireLogin()
 {
@@ -1412,15 +946,19 @@ function patchProfile()
     
             $newValue = $data[$field];
             $currentValue = $currentUser[$field];
-    
+            
             if ($field === 'password') {
-    
-                if (!password_verify($newValue, $currentValue)) {
-    
-                    $updates[] = 'password = :password';
-                    $params['password'] = password_hash($newValue, PASSWORD_DEFAULT);
-                    $updatedFields[] = 'password';
+
+                if (password_verify($newValue, $currentValue)) {
+            
+                    $db->exec('ROLLBACK');
+                    outputJson(['success' => false, 'error' => ['code' => 'PASSWORD_UNCHANGED', 'message' => 'New password must be different from the current password']], 409);
                 }
+            
+                $updates[] = 'password = :password';
+                $params['password'] = password_hash($newValue, PASSWORD_DEFAULT);
+                $updatedFields[] = 'password';
+            
                 continue;
             }
     
@@ -1590,14 +1128,13 @@ function getUsers() {
 
     requireRole([1]);
 
-	$bd = initDB();
-	$result = $bd->query('SELECT id, username, email, role, user_image, created_at FROM users');
+	$db = initDB();
+	$result = $db->query('SELECT id, username, email, role, user_image, created_at FROM users');
 
     if (!$result) {
         error_log($db->lastErrorMsg());
         outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Internal server error']], 500);
     }
-
 
 	$ret = [];
 	while ($fila = $result->fetchArray(SQLITE3_ASSOC)) {
@@ -1611,9 +1148,9 @@ function getUsers() {
 function getUsersById($id)
 {
     requireRole([1]); 
-    $bd=initDB();
+    $db=initDB();
     $sql = "SELECT id, username, email, role, user_image, created_at FROM users WHERE id =:id";
-    $stmt = $bd->prepare($sql);
+    $stmt = $db->prepare($sql);
 
     if (!$stmt) {
         error_log($db->lastErrorMsg());

@@ -12,35 +12,12 @@ import { AuthService } from '../services/auth.service';
 export const authenticatedGuard:
   CanActivateFn = () => {
 
-  const authService =
-    inject(AuthService);
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  const router =
-    inject(Router);
-
-
-  if (
-    authService.isAuthenticated() &&
-    authService.currentUser()
-  ) {
-
+  if (authService.isAuthenticated() && authService.currentUser()) {
     return true;
-
   }
-
-
-  return authService
-    .checkStatus()
-    .pipe(
-
-      map(isAuthenticated =>
-
-        isAuthenticated
-          ? true
-          : router.createUrlTree(['/'])
-
-      )
-
-    );
+  return authService.checkStatus().pipe( map( isAuthenticated => isAuthenticated ? true : router.createUrlTree(['/']) ) );
 
 };

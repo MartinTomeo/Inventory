@@ -32,59 +32,29 @@ export const roleGuard = (
 
   return () => {
 
-    const authService =
-      inject(AuthService);
+    const authService = inject(AuthService);
 
-    const router =
-      inject(Router);
+    const router = inject(Router);
 
-
-    const validation$ =
-      authService.isAuthenticated() &&
-      authService.currentUser()
-        ? of(true)
-        : authService.checkStatus();
-
+    const validation$ = authService.isAuthenticated() && authService.currentUser() ? of(true) : authService.checkStatus();
 
     return validation$.pipe(
-
       map(isAuthenticated => {
 
         if (!isAuthenticated) {
-
-          return router.createUrlTree(
-            ['/']
-          );
-
+          return router.createUrlTree(['/']);
         }
 
-
-        const user =
-          authService.currentUser();
-
+        const user = authService.currentUser();
 
         if (!user) {
-
-          return router.createUrlTree(
-            ['/']
-          );
-
+          return router.createUrlTree(['/']);
         }
 
 
-        if (
-          !allowedRoles.includes(
-            user.role
-          )
-        ) {
-
-          return router.createUrlTree(
-            ['/user/profile']
-          );
-
+        if (!allowedRoles.includes(user.role)) {
+          return router.createUrlTree(['/user/profile']);
         }
-
-
         return true;
 
       })
