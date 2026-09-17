@@ -2,11 +2,11 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs';
+import { finalize, Subscription, timer } from 'rxjs';
 import { environment } from '@environments/environment.development';
 import { AuthService } from '../../../auth/services/auth.service';
 import { ProfileService } from '../../../auth/services/profile.service';
-import {ProfileResponse, UpdateProfileRequest} from '../../../auth/interfaces/profile.interface';
+import { ProfileResponse, UpdateProfileRequest } from '../../../auth/interfaces/profile.interface';
 import { FormUtils } from '../../../shared/utils/form-utils';
 import { PhotoUtils } from '../../../shared/utils/photo-utils';
 
@@ -34,6 +34,7 @@ export class ProfilePage implements OnInit {
 
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
+  private messageTimer: Subscription | null = null;
 
   fieldErrors = signal<Record<string, string | null>>({email: null, password: null});
 
@@ -52,8 +53,7 @@ export class ProfilePage implements OnInit {
     if (this.isLoading() || this.isSaving()) return;
 
     this.isLoading.set(true);
-    this.errorMessage.set(null);
-    this.successMessage.set(null);
+    this.clearMessages();
 
     this.profileService.getProfile()
       .pipe(
@@ -77,9 +77,7 @@ export class ProfilePage implements OnInit {
           });
         },
         error: error => {
-          this.errorMessage.set(
-            this.getErrorMessage(error, 'No se pudo cargar el perfil.')
-          );
+          this.showError(this.getErrorMessage(error, 'No se pudo cargar el perfil.'));
         },
       });
   }
@@ -90,8 +88,7 @@ export class ProfilePage implements OnInit {
     if (!currentProfile || this.isSaving() || this.isLoading()) return;
 
     this.isSubmitted.set(true);
-    this.errorMessage.set(null);
-    this.successMessage.set(null);
+    this.clearMessages();
 
     // Normalizar los datos antes de validar.
     const values = this.profileForm.getRawValue();
@@ -118,13 +115,12 @@ export class ProfilePage implements OnInit {
       update.email = data.email;
     }
 
-    // Vacío significa conservar la contraseña actual.
     if (data.password !== '') {
       update.password = data.password;
     }
 
     if (Object.keys(update).length === 0) {
-      this.successMessage.set('No hay cambios para guardar.');
+      this.showSuccess('No hay cambios para guardar.');
       return;
     }
 
@@ -137,23 +133,16 @@ export class ProfilePage implements OnInit {
       )
       .subscribe({
         next: response => {
-          this.profile.update(current =>
-            current ? { ...current, user: response.user } : current
-          );
-
+          this.profile.update(current => current ? { ...current, user: response.user } : current);
           this.authService.updateCurrentUser(response.user);
-
           this.profileForm.reset({
             email: response.user.email,
             password: '',
           });
-
-          this.successMessage.set('Perfil actualizado correctamente.');
+          this.showSuccess('Perfil actualizado correctamente.');
         },
         error: error => {
-          this.errorMessage.set(
-            this.getErrorMessage(error, 'No se pudo actualizar el perfil.')
-          );
+          this.showError(this.getErrorMessage(error, 'No se pudo actualizar el perfil.'));
         },
       });
   }
@@ -168,17 +157,10 @@ export class ProfilePage implements OnInit {
   uploadPhoto(input: HTMLInputElement): void {
     const photo = this.selectedPhoto();
 
-    if (
-      !photo ||
-      this.photoError() ||
-      !this.profile() ||
-      this.isSaving() ||
-      this.isLoading()
-    ) return;
+    if (!photo || this.photoError() || !this.profile() || this.isSaving() || this.isLoading()) return;
 
     this.isSaving.set(true);
-    this.errorMessage.set(null);
-    this.successMessage.set(null);
+    this.clearMessages();
 
     this.profileService.uploadProfilePhoto(photo)
       .pipe(
@@ -188,39 +170,62 @@ export class ProfilePage implements OnInit {
       .subscribe({
         next: response => {
           this.profile.update(current =>
-            current
-              ? {
-                  ...current,
-                  user: {
-                    ...current.user,
-                    user_image: response.image,
-                  },
-                }
-              : current
-          );
-
+            current ? { ...current, user: { ...current.user, user_image: response.image }} : current);
           const user = this.profile()?.user;
-
           if (user) {
             this.authService.updateCurrentUser(user);
           }
-
           this.selectedPhoto.set(null);
           this.photoError.set(null);
           input.value = '';
-
-          this.successMessage.set('Imagen actualizada correctamente.');
+          this.showSuccess('Imagen actualizada correctamente.');
         },
         error: error => {
-          this.errorMessage.set(
-            this.getErrorMessage(error, 'No se pudo actualizar la imagen.')
-          );
+          this.showError(this.getErrorMessage(error, 'No se pudo actualizar la imagen.'));
         },
       });
   }
 
   imageUrl(folder: 'users' | 'stock', filename: string): string {
     return `${this.uploadsUrl}/${folder}/${encodeURIComponent(filename)}`;
+  }
+
+
+  private clearMessages(): void {
+    this.messageTimer?.unsubscribe();
+    this.messageTimer = null;
+
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+  }
+
+  private showError(message: string): void {
+    this.clearMessages();
+
+    this.errorMessage.set(message);
+
+    this.messageTimer = timer(2000)
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+        this.errorMessage.set(null);
+        this.messageTimer = null;
+      });
+
+  }
+
+  private showSuccess(message: string): void {
+    this.clearMessages();
+
+    this.successMessage.set(message);
+
+    this.messageTimer = timer(2000)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        this.successMessage.set(null);
+        this.messageTimer = null;
+      });
+
   }
 
   private getErrorMessage(error: unknown, fallback: string): string {
@@ -235,7 +240,6 @@ export class ProfilePage implements OnInit {
         return message;
       }
     }
-
     return fallback;
   }
 }

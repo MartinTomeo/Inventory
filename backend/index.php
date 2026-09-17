@@ -785,75 +785,137 @@ function patchProfile()
     }
 
     try {
-        $conflict = findUserConflict($db, null, $data['email'] ?? null, $userId);
 
+        $stmt = $db->prepare('SELECT id, username, email, password, role, user_image, created_at FROM users WHERE id = :id');
+
+        if (!$stmt) {
+            throw new Exception('Could not prepare current profile query');
+        }
+    
+        $stmt->bindValue(':id', $userId, SQLITE3_INTEGER);
+    
+        $result = $stmt->execute();
+    
+        if (!$result) {
+            throw new Exception('Could not retrieve current profile');
+        }
+    
+        $currentUser = $result->fetchArray(SQLITE3_ASSOC);
+    
+        if (!$currentUser) {
+            $db->exec('ROLLBACK');
+            outputJson(['success' => false, 'error' => ['code' => 'USER_NOT_FOUND', 'message' => 'User not found']], 404);
+        }
+    
+        $conflict = findUserConflict($db, null, $data['email'] ?? null, $userId);
+    
         if ($conflict !== null) {
             $db->exec('ROLLBACK');
             outputJson(['success' => false, 'error' => $conflict], 409);
         }
-
+    
+    
         $updates = [];
         $params = [];
-
+        $updatedFields = [];
+    
         foreach ($allowedFields as $field) {
+    
             if (!array_key_exists($field, $data)) {
                 continue;
             }
-            $updates[] = "$field = :$field";
-            $params[$field] = $field === 'password' ? password_hash($data[$field], PASSWORD_DEFAULT) : $data[$field];
+    
+            $newValue = $data[$field];
+            $currentValue = $currentUser[$field];
+    
+            if ($field === 'password') {
+    
+                if (!password_verify($newValue, $currentValue)) {
+    
+                    $updates[] = 'password = :password';
+                    $params['password'] = password_hash($newValue, PASSWORD_DEFAULT);
+                    $updatedFields[] = 'password';
+                }
+                continue;
+            }
+    
+            if ($newValue !== $currentValue) {
+    
+                $updates[] = "$field = :$field";
+                $params[$field] = $newValue;
+                $updatedFields[] = $field;
+            }
         }
-
+    
+        if (empty($updatedFields)) {
+    
+            unset($currentUser['password']);
+            $currentUser['id'] = (int) $currentUser['id'];
+            $currentUser['role'] = (int) $currentUser['role'];
+            $db->exec('COMMIT');
+    
+            outputJson(['success' => true, 'data' => ['user' => $currentUser, 'updated' => []]], 200);
+        }
+    
         $sql = 'UPDATE users SET ' . implode(', ', $updates) . ' WHERE id = :id';
-
         $stmt = $db->prepare($sql);
-
+    
         if (!$stmt) {
             throw new Exception('Could not prepare profile update');
         }
-
+    
         foreach ($params as $field => $value) {
             $stmt->bindValue(":$field", $value, SQLITE3_TEXT);
         }
-
+    
         $stmt->bindValue(':id', $userId, SQLITE3_INTEGER);
-
+    
         if (!$stmt->execute()) {
             throw new Exception('Could not update profile');
         }
-
+    
         $stmt = $db->prepare('SELECT id, username, email, role, user_image, created_at FROM users WHERE id = :id');
-
+    
         if (!$stmt) {
             throw new Exception('Could not prepare updated profile query');
         }
-
+    
         $stmt->bindValue(':id', $userId, SQLITE3_INTEGER);
+    
         $result = $stmt->execute();
-
+    
         if (!$result) {
             throw new Exception('Could not retrieve updated profile');
         }
-
+    
         $user = $result->fetchArray(SQLITE3_ASSOC);
-
+    
         if (!$user) {
             throw new Exception('Updated user not found');
         }
-
+    
         $user['id'] = (int) $user['id'];
         $user['role'] = (int) $user['role'];
-
+    
+    
         if (!$db->exec('COMMIT')) {
             throw new Exception('Could not commit profile update');
         }
-
-        outputJson(['success' => true, 'data' => ['user' => $user, 'updated' => array_keys($params)]], 200);
-
+    
+    
+        outputJson(['success' => true, 'data' => ['user' => $user, 'updated' => $updatedFields]], 200);
+    
     } catch (Exception $e) {
+
         $db->exec('ROLLBACK');
+
         error_log($e->getMessage());
-        outputJson(['success' => false, 'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not update profile']], 500);
+
+        outputJson([
+            'success' => false,
+            'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Could not update profile']], 500);
     }
+    
 }
 
 

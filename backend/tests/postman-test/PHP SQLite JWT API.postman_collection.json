@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "e9a32870-8874-4baf-ac64-bdce49552a98",
+    "_postman_id": "3c98d5d3-3fd1-4f93-846a-1c93aa49a546",
     "name": "PHP SQLite JWT API",
     "description": "Suite de regresión preparada para ejecución reproducible. Configurar únicamente base_url, qa_admin_email y qa_admin_password en el environment importado. Las pruebas de archivos usan valid.png, invalid.txt y large.png relativos al Working Directory de Postman. run_file_tests controla si se ejecutan las pruebas de archivos. qa_expired_jwt es opcional para expiración real. La suite crea sus datos QA y variables temporales durante la ejecución y limpia al final.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -11758,6 +11758,394 @@
           "description": "Controles agregados sin modificar los existentes. Verifican persistencia en minúsculas para POST/PATCH, comparaciones NOCASE y login con email en mayúsculas."
         },
         {
+          "name": "15 · PATCH sin cambios reales y contraseña",
+          "item": [
+            {
+              "name": "Profile misma contraseña no genera actualización",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const missing = [\"qa_password\", \"qa_a_id\", \"qa_a2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "if (missing.length) {",
+                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
+                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
+                      " pm.execution.skipRequest();",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                      "let json;",
+                      "try { json = pm.response.json(); } catch(e) {}",
+                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
+                      "",
+                      "if (pm.response.code === 200 && json) {",
+                      " pm.test(\"Sin cambios\", () => pm.expect(json.data.updated).to.eql([]));",
+                      " pm.test(\"Usuario correcto\", () => pm.expect(json.data.user.id).to.eql(Number(pm.variables.get(\"qa_a_id\"))));",
+                      " pm.test(\"Password no expuesta\", () => pm.expect(json.data.user).not.to.have.property(\"password\"));",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{qa_a2_jwt}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"password\": \"{{qa_password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "profile"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Profile mismo email no genera actualización",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const missing = [\"qa_case_profile_email_lower\",\"qa_case_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
+                      "if (missing.length) {",
+                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
+                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
+                      " pm.execution.skipRequest();",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                      "let json;",
+                      "try { json = pm.response.json(); } catch(e) {}",
+                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
+                      "",
+                      "if (pm.response.code === 200 && json) {",
+                      " pm.test(\"Sin cambios\", () => pm.expect(json.data.updated).to.eql([]));",
+                      " pm.test(\"Email permanece igual\", () => pm.expect(json.data.user.email).to.eql(pm.variables.get(\"qa_case_profile_email_lower\")));",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{qa_case_jwt}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{qa_case_profile_email_lower}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "profile"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Users cambia contraseña válida",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const run = pm.collectionVariables.get('qa_run');",
+                      "if (run) pm.collectionVariables.set('qa_users_new_password', 'Np_' + run);",
+                      "",
+                      "const missing = [\"qa_run\", \"qa_a_id\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "if (missing.length) {",
+                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
+                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
+                      " pm.execution.skipRequest();",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                      "let json;",
+                      "try { json = pm.response.json(); } catch(e) {}",
+                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
+                      "",
+                      "if (pm.response.code === 200 && json) {",
+                      " pm.test(\"Password informada como actualizada\", () => pm.expect(json.data.updated).to.include(\"password\"));",
+                      " pm.test(\"Usuario correcto\", () => pm.expect(json.data.id).to.eql(Number(pm.variables.get(\"qa_a_id\"))));",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{qa_admin_jwt}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"password\": \"{{qa_users_new_password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/{{qa_a_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "{{qa_a_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Users misma contraseña no genera actualización",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const missing = [\"qa_users_new_password\", \"qa_a_id\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "if (missing.length) {",
+                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
+                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
+                      " pm.execution.skipRequest();",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                      "let json;",
+                      "try { json = pm.response.json(); } catch(e) {}",
+                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
+                      "",
+                      "if (pm.response.code === 200 && json) {",
+                      " pm.test(\"Sin cambios\", () => pm.expect(json.data.updated).to.eql([]));",
+                      " pm.test(\"Usuario correcto\", () => pm.expect(json.data.id).to.eql(Number(pm.variables.get(\"qa_a_id\"))));",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{qa_admin_jwt}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"password\": \"{{qa_users_new_password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/{{qa_a_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "{{qa_a_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Users restaura contraseña QA",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const missing = [\"qa_password\", \"qa_a_id\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "if (missing.length) {",
+                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
+                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
+                      " pm.execution.skipRequest();",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                      "let json;",
+                      "try { json = pm.response.json(); } catch(e) {}",
+                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
+                      "",
+                      "if (pm.response.code === 200 && json) {",
+                      " pm.test(\"Password restaurada\", () => pm.expect(json.data.updated).to.include(\"password\"));",
+                      " pm.test(\"Usuario correcto\", () => pm.expect(json.data.id).to.eql(Number(pm.variables.get(\"qa_a_id\"))));",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{qa_admin_jwt}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"password\": \"{{qa_password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/{{qa_a_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "{{qa_a_id}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Regresiones para comprobar que PATCH /profile y PATCH /users/{id} no informan cambios ni vuelven a hashear una contraseña cuando el valor recibido ya coincide con el almacenado."
+        },
+        {
           "name": "99 · Limpieza de los registros de esta ejecución",
           "item": [
             {
@@ -13522,6 +13910,10 @@
     },
     {
       "key": "qa_case_jwt",
+      "value": ""
+    },
+    {
+      "key": "qa_users_new_password",
       "value": ""
     }
   ]
