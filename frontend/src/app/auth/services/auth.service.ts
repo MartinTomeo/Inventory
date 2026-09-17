@@ -1,244 +1,543 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { HttpBackend, HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import {catchError, finalize, map, Observable, of, shareReplay, switchMap} from 'rxjs';
+import {
+  computed,
+  inject,
+  Injectable,
+  signal
+} from '@angular/core';
+
+import {
+  HttpBackend,
+  HttpClient,
+  HttpErrorResponse
+} from '@angular/common/http';
+
+import {
+  catchError,
+  finalize,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  switchMap,
+  tap,
+  throwError
+} from 'rxjs';
+
 import { environment } from '../../../environments/environment.development';
+
 import { AuthResponse } from '../interfaces/auth-response.interface';
 import { AuthUser } from '../interfaces/auth-user.interface';
 import { CheckStatusResponse } from '../interfaces/check-status-response.interface';
 
-type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
+
+interface RefreshResponse {
+  success: boolean;
+  jwt: string;
+}
+
+
+type AuthStatus =
+  | 'checking'
+  | 'authenticated'
+  | 'not-authenticated';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private router = inject(Router);
 
-  // Las peticiones de autenticación manejan sus propios errores
-  // y envían explícitamente el token correspondiente.
-  private sessionHttp = new HttpClient(inject(HttpBackend));
+  // HttpClient que no pasa por los interceptores.
+  private authHttp =
+    new HttpClient(inject(HttpBackend));
 
-  private _token = signal<string | null>(localStorage.getItem('jwt'));
-  private _currentUser = signal<AuthUser | null>(null);
-  private _authStatus = signal<AuthStatus>(
-    this._token() ? 'checking' : 'not-authenticated'
+
+  private _token = signal<string | null>(
+    localStorage.getItem('jwt')
   );
 
-  private sessionVersion = 0;
 
-  private checkInProgress$: Observable<boolean> | null = null;
+  private _currentUser =
+    signal<AuthUser | null>(null);
 
-  authStatus = computed(() => this._authStatus());
-  token = computed(() => this._token());
-  currentUser = computed(() => this._currentUser());
-  isAuthenticated = computed(() => this._authStatus() === 'authenticated');
-  username = computed(() => this._currentUser()?.username ?? '');
 
-  logoutError = signal<string | null>(null);
-
-  // Permite identificar a qué sesión pertenece una petición.
-  getSessionVersion(): number {
-    return this.sessionVersion;
-  }
-
-  isCurrentSession(version: number): boolean {
-    const token = this._token();
-
-    return (
-      version === this.sessionVersion &&
-      token !== null &&
-      localStorage.getItem('jwt') === token
+  private _authStatus =
+    signal<AuthStatus>(
+      this._token()
+        ? 'checking'
+        : 'not-authenticated'
     );
-  }
 
-  hasStoredToken(): boolean {
-    return !!localStorage.getItem('jwt');
-  }
 
-  hasValidatedSession(): boolean {
-    return (
-      this.isAuthenticated() &&
-      this.currentUser() !== null &&
-      this.isCurrentSession(this.sessionVersion)
+  // Mientras haya un refresh ejecutándose,
+  // todos los consumidores comparten este Observable.
+  private refreshInProgress$:
+    Observable<string | null> | null = null;
+
+    private authGeneration = 0;
+
+    private isLoggingOut = false;
+
+
+  authStatus =
+    computed(() => this._authStatus());
+
+
+  token =
+    computed(() => this._token());
+
+
+  currentUser =
+    computed(() => this._currentUser());
+
+
+  isAuthenticated =
+    computed(
+      () =>
+        this._authStatus() ===
+        'authenticated'
     );
+
+
+  username =
+    computed(
+      () =>
+        this._currentUser()?.username ?? ''
+    );
+
+
+  logoutError =
+    signal<string | null>(null);
+
+
+  // -----------------------------------------
+  // LOGIN
+  // -----------------------------------------
+login(
+  email: string,
+  password: string
+): Observable<boolean> {
+
+  this.isLoggingOut = false;
+
+  this.clearAuth();
+
+  this.logoutError.set(null);
+
+  this._authStatus.set('checking');
+
+
+  return this.authHttp
+  .post<AuthResponse>(
+    `${environment.apiUrl}/login`,
+    {
+      email,
+      password
+    },
+    {
+      withCredentials: true
+    }
+  )
+  .pipe(
+
+    tap(response => {
+
+      this.saveAccessToken(
+        response.jwt
+      );
+
+    }),
+
+    switchMap(() =>
+      this.checkStatus()
+    ),
+
+    catchError(() => {
+
+      this.clearAuth();
+
+      return of(false);
+
+    })
+
+  );
+}
+
+  // -----------------------------------------
+  // CHECK STATUS
+  // -----------------------------------------
+checkStatus(): Observable<boolean> {
+
+  const token =
+    this._token() ??
+    localStorage.getItem('jwt');
+
+
+  this._authStatus.set('checking');
+
+
+  if (!token) {
+
+    return this.refreshAndLoadUser();
+
   }
 
-  login(email: string, password: string): Observable<boolean> {
-    this.clearSession();
-    this.logoutError.set(null);
-    this._authStatus.set('checking');
 
-    const version = this.sessionVersion;
+  return this
+    .loadCurrentUser(token)
+    .pipe(
 
-    return this.sessionHttp
-      .post<AuthResponse>(
-        `${environment.apiUrl}/login`,
-        { email, password }
-      )
-      .pipe(
-        switchMap(response => {
-          // Ignorar una respuesta posterior a un logout u otro login.
-          if (
-            version !== this.sessionVersion ||
-            localStorage.getItem('jwt') !== null
-          ) {
-            return of(false);
+      catchError(
+        (error: HttpErrorResponse) => {
+
+          if (error.status === 401) {
+
+            return this
+              .refreshAndLoadUser();
+
           }
 
-          this.saveToken(response.jwt);
 
-          return this.checkStatus();
-        }),
-        catchError(() => {
-          if (version === this.sessionVersion) {
-            this.clearSession();
-          }
+          this._authStatus.set(
+            'not-authenticated'
+          );
 
           return of(false);
-        })
-      );
+
+        }
+      )
+
+    );
+
+}
+  // -----------------------------------------
+  // REFRESH TOKEN
+  // -----------------------------------------
+refreshAccessToken():
+  Observable<string | null> {
+
+  if (this.isLoggingOut) {
+
+    return of(null);
+
   }
 
-  checkStatus(): Observable<boolean> {
-    const token = localStorage.getItem('jwt');
 
-    if (!token) {
-      this.clearSession();
-      return of(false);
-    }
+  if (this.refreshInProgress$) {
 
-    // Si cambió el token desde otra pestaña, validar el estado recibido.
-    if (this._token() !== token) {
-      this.clearSession();
-      this.saveToken(token);
-    }
+    return this.refreshInProgress$;
 
-    if (this.checkInProgress$) {
-      return this.checkInProgress$;
-    }
+  }
 
-    const version = this.sessionVersion;
-    const previousStatus = this._authStatus();
 
-    this._authStatus.set('checking');
+  const generation =
+    this.authGeneration;
 
-    const request$ = this.sessionHttp
-      .get<CheckStatusResponse>(
-        `${environment.apiUrl}/checkStatus`,
+
+  const request$ =
+    this.authHttp
+      .post<RefreshResponse>(
+        `${environment.apiUrl}/refresh`,
+        {},
         {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+          withCredentials: true
         }
       )
       .pipe(
+
         map(response => {
-          if (!this.isCurrentSession(version)) {
-            return false;
+
+          if (
+            generation !==
+            this.authGeneration
+          ) {
+
+            return null;
+
           }
 
-          this._currentUser.set(response.data.user);
-          this._authStatus.set('authenticated');
 
-          return true;
+          this.saveAccessToken(
+            response.jwt
+          );
+
+          return response.jwt;
+
         }),
-        catchError(error => {
-          if (this.isCurrentSession(version)) {
-            if (error.status === 401) {
-              this.clearSession();
-            } else {
-              // No eliminar el token por un error temporal.
-              this._authStatus.set(
-                previousStatus === 'authenticated'
-                  ? 'authenticated'
-                  : 'not-authenticated'
-              );
+
+
+        catchError(
+          (error: HttpErrorResponse) => {
+
+            if (
+              generation !==
+              this.authGeneration
+            ) {
+
+              return of(null);
+
             }
+
+
+            if (error.status === 401) {
+
+              this.clearAuth();
+
+              return of(null);
+
+            }
+
+
+            return throwError(
+              () => error
+            );
+
+          }
+        ),
+
+
+        finalize(() => {
+
+          if (
+            this.refreshInProgress$
+            === request$
+          ) {
+
+            this.refreshInProgress$ =
+              null;
+
           }
 
-          return of(false);
         }),
-        finalize(() => {
-          if (this.checkInProgress$ === request$) {
-            this.checkInProgress$ = null;
-          }
-        }),
+
+
         shareReplay({
           bufferSize: 1,
           refCount: false
         })
+
       );
 
-    this.checkInProgress$ = request$;
 
-    return request$;
+  this.refreshInProgress$ =
+    request$;
+
+
+  return request$;
+
+}
+
+  // -----------------------------------------
+  // LOGOUT
+  // -----------------------------------------
+
+logout(): void {
+
+  this.logoutError.set(null);
+
+  this.isLoggingOut = true;
+
+  this.clearAuth();
+
+
+  this.authHttp
+    .delete<{ success: boolean }>(
+      `${environment.apiUrl}/login`,
+      {
+        withCredentials: true
+      }
+    )
+    .subscribe({
+
+      error: () => {
+
+        this.logoutError.set(
+          'Se cerró la sesión en este navegador, ' +
+          'pero no se pudo revocar el refresh token en el servidor.'
+        );
+
+      }
+
+    });
+
+}
+  // -----------------------------------------
+  // UPDATE CURRENT USER
+  // -----------------------------------------
+
+  updateCurrentUser(
+    user: AuthUser
+  ): void {
+
+    if (
+      this.isAuthenticated() &&
+      this.currentUser()?.id === user.id
+    ) {
+
+      this._currentUser.set(user);
+
+    }
+
   }
 
-  logout(): void {
-    const token = localStorage.getItem('jwt') ?? this._token();
 
-    this.logoutError.set(null);
-    this.clearSession();
+  // -----------------------------------------
+  // CLEAR AUTH
+  // -----------------------------------------
 
-    if (!token) return;
+clearAuth(): void {
 
-    const version = this.sessionVersion;
+  this.authGeneration++;
 
-    this.sessionHttp
-      .delete<{ success: boolean }>(
-        `${environment.apiUrl}/login`,
+  this.refreshInProgress$ = null;
+
+  localStorage.removeItem('jwt');
+
+  this._token.set(null);
+
+  this._currentUser.set(null);
+
+  this._authStatus.set(
+    'not-authenticated'
+  );
+
+}
+
+
+  // -----------------------------------------
+  // CARGAR USUARIO
+  // -----------------------------------------
+
+  private loadCurrentUser(
+    token: string
+  ): Observable<boolean> {
+
+    return this.authHttp
+      .get<CheckStatusResponse>(
+        `${environment.apiUrl}/checkStatus`,
         {
           headers: {
-            Authorization: `Bearer ${token}`
+
+            Authorization:
+              `Bearer ${token}`
+
           }
         }
       )
-      .subscribe({
-        error: error => {
-          if (
-            error.status !== 401 &&
-            version === this.sessionVersion &&
-            !this.hasStoredToken()
-          ) {
-            this.logoutError.set(
-              'Se cerró la sesión en este navegador, pero no se pudo ' +
-              'confirmar su revocación en el servidor.'
-            );
-          }
+      .pipe(
+
+        map(response => {
+
+          this._currentUser.set(
+            response.data.user
+          );
+
+          this._authStatus.set(
+            'authenticated'
+          );
+
+          return true;
+
+        })
+
+      );
+
+  }
+
+
+  // -----------------------------------------
+  // REFRESH + CARGAR USUARIO
+  // -----------------------------------------
+
+private refreshAndLoadUser():
+  Observable<boolean> {
+
+  return this
+    .refreshAccessToken()
+    .pipe(
+
+      switchMap(newToken => {
+
+        if (!newToken) {
+
+          this._authStatus.set(
+            'not-authenticated'
+          );
+
+          return of(false);
+
         }
-      });
-  }
 
-  invalidateLocalSession(): void {
-    this.clearSession();
-  }
 
-  updateCurrentUser(user: AuthUser): void {
-    // Evitar actualizar el usuario después de cerrar sesión.
-    if (
-      this.hasValidatedSession() &&
-      this.currentUser()?.id === user.id
-    ) {
-      this._currentUser.set(user);
-    }
-  }
+        return this
+          .loadCurrentUser(newToken)
+          .pipe(
 
-  private saveToken(token: string): void {
+            catchError(() => {
+
+              this.clearAuth();
+
+              return of(false);
+
+            })
+
+          );
+
+      }),
+
+
+      catchError(() => {
+
+        this._authStatus.set(
+          'not-authenticated'
+        );
+
+        return of(false);
+
+      })
+
+    );
+
+}
+
+  // -----------------------------------------
+  // GUARDAR ACCESS TOKEN
+  // -----------------------------------------
+
+  private saveAccessToken(
+    token: string
+  ): void {
+
     this._token.set(token);
-    localStorage.setItem('jwt', token);
-  }
 
-  private clearSession(): void {
-    this.sessionVersion++;
-
-    localStorage.removeItem('jwt');
-
-    this._token.set(null);
-    this._currentUser.set(null);
-    this._authStatus.set('not-authenticated');
-
-    this.checkInProgress$ = null;
+    localStorage.setItem(
+      'jwt',
+      token
+    );
 
   }
+
+
+  getAuthContext(): {
+  token: string | null;
+  generation: number;
+} {
+  return {
+    token: this._token(),
+    generation: this.authGeneration
+  };
+}
+
+
+isAuthContextCurrent(
+  generation: number
+): boolean {
+
+  return (
+    generation ===
+    this.authGeneration
+  );
+
+}
+
 }

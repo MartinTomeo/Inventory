@@ -1,34 +1,46 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import {
+  CanActivateFn,
+  Router
+} from '@angular/router';
+
 import { map } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 
-export const authenticatedGuard: CanActivateFn = () => {
 
-  const authService = inject(AuthService);
-  const router = inject(Router);
+export const authenticatedGuard:
+  CanActivateFn = () => {
 
-  // No hay JWT almacenado.
-  if (!authService.hasStoredToken()) {
+  const authService =
+    inject(AuthService);
 
-    authService.invalidateLocalSession();
-    return router.createUrlTree(['/']);
-  }
+  const router =
+    inject(Router);
 
-  if (authService.hasValidatedSession()) {
+
+  if (
+    authService.isAuthenticated() &&
+    authService.currentUser()
+  ) {
+
     return true;
+
   }
 
-  return authService.checkStatus().pipe(
 
-    map(isAuthenticated => {
+  return authService
+    .checkStatus()
+    .pipe(
 
-      if (!isAuthenticated) {
-        return router.createUrlTree(['/']);
-      }
+      map(isAuthenticated =>
 
-      return true;
-    })
-  );
+        isAuthenticated
+          ? true
+          : router.createUrlTree(['/'])
+
+      )
+
+    );
+
 };

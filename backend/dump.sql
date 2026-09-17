@@ -6,7 +6,7 @@ PRAGMA foreign_keys = ON;
 -- ============================================
 
 DROP TABLE IF EXISTS subscriptions;
-DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS refresh_tokens;
 DROP TABLE IF EXISTS stock;
 DROP TABLE IF EXISTS users;
 
@@ -55,27 +55,21 @@ ON stock(line);
 
 
 -- ============================================
--- SESSIONS
+-- refresh_tokens
 -- Depende de users
 -- ============================================
 
-CREATE TABLE sessions (
-    sid TEXT PRIMARY KEY,
+CREATE TABLE refresh_tokens (
+    token_hash TEXT PRIMARY KEY,
     user_id INTEGER NOT NULL,
     expires_at INTEGER NOT NULL,
-    created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
 
     FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE CASCADE
 );
-
-CREATE INDEX IF NOT EXISTS idx_sessions_user_id
-ON sessions(user_id);
-
-CREATE INDEX IF NOT EXISTS idx_sessions_expires_at
-ON sessions(expires_at);
-
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id
+ON refresh_tokens(user_id);
 
 -- ============================================
 -- SUBSCRIPTIONS
@@ -101,27 +95,6 @@ ON subscriptions(stock_id);
 
 CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id
 ON subscriptions(user_id);
-
-
--- ============================================
--- TRIGGERS
--- ============================================
-
-CREATE TRIGGER IF NOT EXISTS revoke_sessions_after_role_change
-AFTER UPDATE OF role ON users
-WHEN OLD.role != NEW.role
-BEGIN
-    DELETE FROM sessions
-    WHERE user_id = NEW.id;
-END;
-
-
-CREATE TRIGGER IF NOT EXISTS revoke_sessions_after_user_delete
-AFTER DELETE ON users
-BEGIN
-    DELETE FROM sessions
-    WHERE user_id = OLD.id;
-END;
 
 -- ============================================
 -- 1. USUARIOS (50 usuarios con 3 niveles de permiso)

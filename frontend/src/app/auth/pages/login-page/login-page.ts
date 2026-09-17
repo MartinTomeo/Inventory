@@ -3,6 +3,7 @@ import {ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { FormUtils } from '../../../shared/utils/form-utils';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs'
 
 @Component({
   selector: 'login-form',
@@ -17,6 +18,7 @@ export class LoginPage {
   formUtils = FormUtils;
   hasError = signal(false);
   isSubmitted = signal(false);
+  isLoading = signal(false);
   fieldErrors = signal<Record<string, string | null>>({});
 
   loginForm = this.fb.group({
@@ -25,6 +27,7 @@ export class LoginPage {
   });
 
   onSubmit(): void {
+    if (this.isLoading()) return;
     this.isSubmitted.set(true);
     this.hasError.set(false);
     this.authService.logoutError.set(null);
@@ -40,17 +43,23 @@ export class LoginPage {
 
     const { email = '', password = '' } = this.loginForm.getRawValue();
 
-    this.authService.login(email!, password!).subscribe((isAuthenticated) => {
-      if (isAuthenticated) {
-        this.router.navigateByUrl('/user/subs');
-        return;
-      }
+    this.authService.login( email!, password! )
+    .pipe(
+      finalize(() => this.isLoading.set(false))
+    )
+      .subscribe(
+        isAuthenticated => {
 
-      this.hasError.set(true);
-      setTimeout(() => {
-        this.hasError.set(false);
-      }, 2000);
-    });
+        if (isAuthenticated) {
+          this.router.navigateByUrl('/user/subs');
+          return;
+        }
+        this.hasError.set(true);
+        setTimeout(() => {
+          this.hasError.set(false);
+        }, 2000);
+      }
+    );
   }
 
 }

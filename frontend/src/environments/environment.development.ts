@@ -1,5 +1,5 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'http://127.0.0.1/Inventory/backend',
+  apiUrl: 'http://localhost/Inventory/backend',
 };
