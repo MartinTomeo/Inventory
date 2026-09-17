@@ -37,9 +37,12 @@ export class UsersForm {
   //Para toast con error 409
   formError = signal<string>('');
   hasFormError = signal(false);
-
   //Para guardar los errores de formControls y que se renderizen denuevo en onSubmit()
   submittedControlErrors = signal<Record<string, string>>({}); //para guardar los errores de formControls y que se renderizen denuevo en onSubmit()
+
+  formSuccess = signal<string>('');
+  hasFormSuccess = signal(false);
+
 
   userForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z0-9._-]+$/)]],
@@ -50,28 +53,18 @@ export class UsersForm {
 
   constructor() {
 
-    effect(() => {
+  effect(() => {
 
-      const mode = this.usersService.formMode();
-      this.configurePasswordValidators(mode);
-      if (mode === 'new') {
-        this.isSubmited.set(false);
-        this.userForm.reset({
-          username: '',
-          email: '',
-          password: '',
-          role: 1,
-        });
-        this.selectedPhoto.set(null);
-        this.photoError.set(null);
-        return;
-      }
+    const mode = this.usersService.formMode();
+    this.configurePasswordValidators(mode);
 
-      const user = this.selectedUser();
+    if (mode === 'new') {
+      this.resetForm();
+      return;
+    }
 
-      if (!user) {
-        return;
-      }
+    const user = this.selectedUser();
+    if (!user) return;
 
       this.isSubmited.set(false);
 
@@ -84,6 +77,7 @@ export class UsersForm {
 
       this.selectedPhoto.set(null);
       this.photoError.set(null);
+      this.submittedControlErrors.set({});
     });
   }
 
@@ -114,12 +108,24 @@ export class UsersForm {
 
   }
 
-  clearForm() {
-    this.isSubmited.set(false);
-    this.submittedControlErrors.set({});
+  private resetForm(): void {
+    this.userForm.reset({
+      username: '',
+      email: '',
+      password: '',
+      role: 1,
+    });
+
     this.selectedPhoto.set(null);
     this.photoError.set(null);
+    this.submittedControlErrors.set({});
+    this.isSubmited.set(false);
+    this.hasFormError.set(false);
+  }
+
+  clearForm() {
     this.usersService.newUser();
+    this.resetForm();
   }
 
   private configurePasswordValidators(mode: 'new' | 'edit') {
@@ -164,12 +170,9 @@ export class UsersForm {
     .subscribe({
       next: () => {
         this.usersService.usersResource.reload();
-        this.selectedPhoto.set(null);
-        this.photoError.set(null);
-        this.submittedControlErrors.set({});
-        this.isSubmited.set(false);
-        this.hasFormError.set(false);
         this.usersService.newUser();
+        this.resetForm();
+        this.showFormSuccess('User created successfully.');
       },
       error: (error: HttpErrorResponse) => {
         this.showRequestError(error);
@@ -208,6 +211,7 @@ export class UsersForm {
               .subscribe({
                 next: () => {
                   this.reloadResources();
+                  this.showFormSuccess('User updated successfully.');
                 },
                 error: (error: HttpErrorResponse) => {
                   this.showRequestError(error);
@@ -241,6 +245,15 @@ export class UsersForm {
 
     setTimeout(() => {
       this.hasFormError.set(false);
+    }, 2000);
+  }
+
+  private showFormSuccess(message: string): void {
+    this.formSuccess.set(message);
+    this.hasFormSuccess.set(true);
+
+    setTimeout(() => {
+      this.hasFormSuccess.set(false);
     }, 2000);
   }
 

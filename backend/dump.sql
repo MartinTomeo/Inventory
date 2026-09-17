@@ -1,13 +1,28 @@
--- Users table
-DROP TABLE IF EXISTS "users";
-CREATE TABLE IF NOT EXISTS "users" (
-	"id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-	"username"	TEXT NOT NULL,
-	"email" TEXT NOT NULL,
-	"password"	TEXT NOT NULL,
-	"role" INTEGER NOT NULL CHECK (role IN (1, 2, 3)),
-    "user_image" TEXT,
-	"created_at" DATETIME DEFAULT CURRENT_TIMESTAMP
+PRAGMA foreign_keys = ON;
+
+-- ============================================
+-- DROP TABLES
+-- Primero tablas hijas, después tablas padre
+-- ============================================
+
+DROP TABLE IF EXISTS subscriptions;
+DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS stock;
+DROP TABLE IF EXISTS users;
+
+
+-- ============================================
+-- USERS
+-- ============================================
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    email TEXT NOT NULL,
+    password TEXT NOT NULL,
+    role INTEGER NOT NULL CHECK (role IN (1, 2, 3)),
+    user_image TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username
@@ -16,51 +31,43 @@ ON users(username COLLATE NOCASE);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email
 ON users(email COLLATE NOCASE);
 
--- Permision Types
--- 1 admin -- full permision
--- 2 aduit -- full permision except users
--- 3 editor -- suscribe, stock.
 
+-- ============================================
+-- STOCK
+-- ============================================
 
--- users_stock pivot table
-DROP TABLE IF EXISTS "subscriptions";
-CREATE TABLE IF NOT EXISTS "subscriptions" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "user_id" INTEGER NOT NULL,
-    "stock_id" INTEGER NOT NULL,
-    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE,
-    FOREIGN KEY ("stock_id") REFERENCES "stock" ("id") ON DELETE CASCADE
+CREATE TABLE stock (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    imei TEXT NOT NULL,
+    model TEXT NOT NULL,
+    brand TEXT NOT NULL,
+    ph_provider TEXT NOT NULL,
+    phone_image TEXT,
+    line INTEGER NOT NULL,
+    line_provider TEXT NOT NULL
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_subscriptions_stock_id
-ON subscriptions(stock_id);
-CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id
-ON subscriptions(user_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_stock_imei
+ON stock(imei);
 
--- stock table
-DROP TABLE IF EXISTS "stock";
-CREATE TABLE IF NOT EXISTS "stock"(
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "imei" TEXT NOT NULL,
-    "model" TEXT NOT NULL,
-    "brand" TEXT NOT NULL,
-    "ph_provider" TEXT NOT NULL,
-    "phone_image" TEXT,
-    "line" INTEGER NOT NULL,
-    "line_provider" TEXT NOT NULL
-
-);
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_stock_imei ON stock(imei);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_stock_line ON stock(line);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_stock_line
+ON stock(line);
 
 
-DROP TABLE IF EXISTS sessions;
-CREATE TABLE IF NOT EXISTS sessions (
+-- ============================================
+-- SESSIONS
+-- Depende de users
+-- ============================================
+
+CREATE TABLE sessions (
     sid TEXT PRIMARY KEY,
     user_id INTEGER NOT NULL,
     expires_at INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_sessions_user_id
@@ -69,20 +76,52 @@ ON sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_expires_at
 ON sessions(expires_at);
 
--- Revocar las sesiones cuando cambia el rol.
+
+-- ============================================
+-- SUBSCRIPTIONS
+-- Depende de users y stock
+-- ============================================
+
+CREATE TABLE subscriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    stock_id INTEGER NOT NULL,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (stock_id)
+        REFERENCES stock(id)
+        ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_subscriptions_stock_id
+ON subscriptions(stock_id);
+
+CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id
+ON subscriptions(user_id);
+
+
+-- ============================================
+-- TRIGGERS
+-- ============================================
+
 CREATE TRIGGER IF NOT EXISTS revoke_sessions_after_role_change
 AFTER UPDATE OF role ON users
 WHEN OLD.role != NEW.role
 BEGIN
-    DELETE FROM sessions WHERE user_id = NEW.id;
+    DELETE FROM sessions
+    WHERE user_id = NEW.id;
 END;
 
--- Eliminar sesiones incluso si la conexión no activó foreign_keys.
+
 CREATE TRIGGER IF NOT EXISTS revoke_sessions_after_user_delete
 AFTER DELETE ON users
 BEGIN
-    DELETE FROM sessions WHERE user_id = OLD.id;
-END;;
+    DELETE FROM sessions
+    WHERE user_id = OLD.id;
+END;
 
 -- ============================================
 -- 1. USUARIOS (50 usuarios con 3 niveles de permiso)

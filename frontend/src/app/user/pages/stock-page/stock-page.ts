@@ -3,12 +3,24 @@ import { SearchInput } from '../../../shared/components/search-input/search-inpu
 import { StockForm } from '../../components/stock-form/stock-form';
 import { StockList } from '../../components/stock-list/stock-list';
 import { StockService } from '../../services/stock.service';
-
+import { DestroyRef } from '@angular/core';
 @Component({
   selector: 'stock-page',
   imports: [StockList, SearchInput, StockForm],
   templateUrl: './stock-page.html',
 })
 export class StockPage {
+
+  private destroyRef = inject(DestroyRef);
   stockService = inject(StockService);
+
+  constructor() {
+
+    this.stockService.stockResource.reload();
+
+    this.destroyRef.onDestroy(() => {
+      this.stockService.resetState();
+    });
+
+  }
 }

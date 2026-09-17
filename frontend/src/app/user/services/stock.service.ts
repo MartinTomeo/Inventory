@@ -31,6 +31,12 @@ export class StockService {
     this.formMode.set('new');
   }
 
+  resetState(): void {
+    this.query.set('');
+    this.selectedStockId.set(null);
+    this.formMode.set('new');
+  }
+
   getStock() {
     return this.http
       .get<ApiResponse<Stock[]>>(`${environment.apiUrl}/stock`)

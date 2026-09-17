@@ -28,7 +28,6 @@ export class AuthService {
   private sessionVersion = 0;
 
   private checkInProgress$: Observable<boolean> | null = null;
-  private refreshInProgress$: Observable<boolean> | null = null;
 
   authStatus = computed(() => this._authStatus());
   token = computed(() => this._token());
@@ -176,72 +175,6 @@ export class AuthService {
     return request$;
   }
 
-  refreshSession(): Observable<boolean> {
-    const token = this._token();
-
-    if (
-      !token ||
-      !this.isCurrentSession(this.sessionVersion)
-    ) {
-      this.invalidateLocalSession();
-      void this.router.navigateByUrl('/', { replaceUrl: true });
-
-      return of(false);
-    }
-
-    if (this.refreshInProgress$) {
-      return this.refreshInProgress$;
-    }
-
-    const version = this.sessionVersion;
-
-    const request$ = this.sessionHttp
-      .patch<{ success: boolean; jwt: string }>(
-        `${environment.apiUrl}/login`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-      .pipe(
-        map(response => {
-          if (!this.isCurrentSession(version)) {
-            return false;
-          }
-
-          this.saveToken(response.jwt);
-
-          return true;
-        }),
-        catchError(error => {
-          if (
-            error.status === 401 &&
-            this.isCurrentSession(version)
-          ) {
-            this.invalidateLocalSession();
-            void this.router.navigateByUrl('/', { replaceUrl: true });
-          }
-
-          return of(false);
-        }),
-        finalize(() => {
-          if (this.refreshInProgress$ === request$) {
-            this.refreshInProgress$ = null;
-          }
-        }),
-        shareReplay({
-          bufferSize: 1,
-          refCount: false
-        })
-      );
-
-    this.refreshInProgress$ = request$;
-
-    return request$;
-  }
-
   logout(): void {
     const token = localStorage.getItem('jwt') ?? this._token();
 
@@ -306,6 +239,6 @@ export class AuthService {
     this._authStatus.set('not-authenticated');
 
     this.checkInProgress$ = null;
-    this.refreshInProgress$ = null;
+
   }
 }

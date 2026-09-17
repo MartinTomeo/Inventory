@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, DestroyRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { SubscriptionStockOption, SubscriptionUserOption } from '../../interfaces/subscriptions.interface';
@@ -16,7 +16,7 @@ import { SearchInput } from '../../../shared/components/search-input/search-inpu
 export class SubscriptionsPage {
   private formBuilder = inject(FormBuilder);
   subsService = inject(SubsService);
-
+  private destroyRef = inject(DestroyRef);
   isCreateModalOpen = signal(false);
   isDeleteModalOpen = signal(false);
   isLoadingOptions = signal(false);
@@ -28,13 +28,23 @@ export class SubscriptionsPage {
   users = signal<SubscriptionUserOption[]>([]);
   availableStock = signal<SubscriptionStockOption[]>([]);
 
+  constructor() {
+
+    this.subsService.subsResource.reload();
+
+    this.destroyRef.onDestroy(() => {
+      this.subsService.resetState();
+    });
+
+  }
+
   subscriptionForm = this.formBuilder.nonNullable.group({
     user_id: [0, [Validators.required, Validators.min(1)]],
     stock_id: [0, [Validators.required, Validators.min(1)]],
   });
 
   search(value: string | number) {
-    this.subsService.clearSelection();
+    this.subsService.clearSelection(); //borrar para preservar ticks en filas.
     this.subsService.query.set(value.toString());
   }
 

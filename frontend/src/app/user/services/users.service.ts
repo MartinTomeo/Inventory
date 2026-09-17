@@ -30,6 +30,12 @@ export class UsersService {
     this.formMode.set('new');
   }
 
+  resetState(): void {
+    this.query.set('');
+    this.selectedUserId.set(null);
+    this.formMode.set('new');
+  }
+
   getUsers() {
     return this.http
       .get<ApiResponse<User[]>>(`${environment.apiUrl}/users`)
@@ -96,26 +102,21 @@ export class UsersService {
     });
   }
 
-  usersResource = rxResource({
-    params: () => ({ query: this.query() }),
-    defaultValue: [],
-    stream: ({ params }) => {
-
-      if (!params.query || params.query.trim() === '') return this.getUsers().pipe(
-        catchError(() => {
-
-          return throwError(() => new Error('No hay usuarios disponibles.'));
-        })
-      );
-
-      return this.getUsersByName(params.query).pipe(
-        catchError(() => {
-
-          return throwError(() => new Error('No hay usuarios que coincidan con la búsqueda.'));
-        })
-      );
-
-    }
+ usersResource = rxResource({
+  params: () => ({ query: this.query() }),
+  defaultValue: [],
+  stream: ({ params }) => {
+    if (!params.query || params.query.trim() === '') return this.getUsers().pipe(
+      catchError(() => {
+        return throwError(() => new Error('No hay usuarios disponibles.'));
+      })
+    );
+    return this.getUsersByName(params.query).pipe(
+      catchError(() => {
+        return throwError(() => new Error('No hay usuarios que coincidan con la búsqueda.'));
+      })
+    );
+  }
   });
 
 selectedUserResource = rxResource<User | null, { id: number } | undefined>({

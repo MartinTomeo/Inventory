@@ -38,6 +38,7 @@ $resource = strtolower($action[0] ?? '');
 $authRoutes = [
     'post:login' => 'postLogin',
     'get:checkstatus' => 'getCheckStatus',
+    
 ];
 
 $routeKey = $method . ':' . $resource;
@@ -282,14 +283,16 @@ function findStockConflict(SQLite3 $db, ?string $imei, ?int $line, ?int $exclude
 }
 
 
-
-
 // ----------------- Establecer Base de datos ------------------
 
 function initDB() {
     return new SQLite3('data.db');
+    if (!$db->exec('PRAGMA foreign_keys = ON')) {
+        throw new RuntimeException('Could not enable foreign keys');
+    }
 }
 
+// ----------------- Solo para desarrollo ------------------
 function postReset() {
 
     $db = initDB();
@@ -314,6 +317,83 @@ function postReset() {
     outputJson(['status' => 'DB Reset']);
 
 }
+
+
+
+function getSessions()
+{
+
+    $db = initDB();
+    $now = time();
+
+    // Limpia sesiones vencidas antes de devolver el estado actual.
+    sessionQuery(
+        $db,
+        'DELETE FROM sessions
+         WHERE expires_at <= :now',
+        [
+            ':now' => $now
+        ]
+    );
+
+    $stmt = $db->prepare(
+        'SELECT
+            s.sid,
+            s.user_id,
+            u.username,
+            u.email,
+            u.role,
+            s.expires_at,
+            s.created_at
+         FROM sessions s
+         INNER JOIN users u
+            ON u.id = s.user_id
+         ORDER BY s.user_id, s.created_at'
+    );
+
+    if (!$stmt) {
+        outputJson([
+            'success' => false,
+            'error' => [
+                'code' => 'DATABASE_ERROR',
+                'message' => 'Could not prepare sessions query'
+            ]
+        ], 500);
+    }
+
+    $result = $stmt->execute();
+
+    if (!$result) {
+        outputJson([
+            'success' => false,
+            'error' => [
+                'code' => 'DATABASE_ERROR',
+                'message' => 'Could not retrieve sessions'
+            ]
+        ], 500);
+    }
+
+    $sessions = [];
+
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+
+        $sessions[] = [
+            'sid' => $row['sid'],
+            'user_id' => (int) $row['user_id'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'role' => (int) $row['role'],
+            'expires_at' => (int) $row['expires_at'],
+            'created_at' => (int) $row['created_at']
+        ];
+    }
+
+    outputJson([
+        'success' => true,
+        'data' => $sessions
+    ]);
+}
+
 
 // ----------------- Autenticacion y Autorizacion ------------------
 
@@ -409,44 +489,13 @@ function postLogin()
         $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
 
         sessionQuery(
-            $db,
-            'INSERT INTO sessions (sid, user_id, expires_at)
-             SELECT :sid, id, :expires_at
-             FROM users
+            $db, 'INSERT INTO sessions (sid, user_id, expires_at) SELECT :sid, id, :expires_at FROM users
              WHERE id = :user_id AND role = :role',
-            [':sid' => $sid, ':expires_at' => $payload['exp'], ':user_id' => $logged['id'], ':role' => $logged['role']]);
+            [':sid' => $sid, ':expires_at' => $payload['exp'], ':user_id' => $logged['id'], ':role' => $logged['role']]
+        );
 
         if ($db->changes() !== 1) {
             outputJson(['success' => false, 'error' => ['code' => 'UNAUTHORIZED', 'message' => 'Please log in again']], 401);
-        }
-
-    } catch (Throwable $error) {
-        sessionDatabaseError($error);
-    }
-
-    outputJson(['success' => true, 'jwt' => $jwt], 200);
-}
-
-
-function patchLogin()
-{
-    $payload = requireLogin();
-
-    try {
-        $db = initDB();
-        $now = time();
-
-        $payload->iat = $now;
-        $payload->exp = $now + JWT_EXP;
-
-        $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
-
-        sessionQuery($db, 'UPDATE sessions SET expires_at = MAX(expires_at, :expires_at) WHERE sid = :sid AND user_id = :user_id AND expires_at > :now', [':expires_at' => $payload->exp, ':sid' => $payload->sid, ':user_id' => $payload->uid, ':now' => $now]);
-
-        if ($db->changes() !== 1) {
-            outputJson([
-                'success' => false,
-                'error' => ['code' => 'SESSION_REVOKED', 'message' => 'Session expired or revoked']], 401);
         }
 
     } catch (Throwable $error) {
@@ -2841,6 +2890,7 @@ function deleteSubscriptions()
 
     outputJson(['success' => true, 'data' => ['deleted_count' => count($idArray), 'ids' => $idArray]]);
 }
+
 
 
 ?>

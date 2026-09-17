@@ -105,6 +105,11 @@ export class SubsService {
     });
   }
 
+  resetState(): void {
+    this.query.set('');
+    this.clearSelection();
+  }
+
   clearSelection() {
     this.selectedIds.set([]);
   }

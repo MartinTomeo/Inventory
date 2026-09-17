@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "3c98d5d3-3fd1-4f93-846a-1c93aa49a546",
+    "_postman_id": "a8de1510-ede9-4878-b65c-7d12ad5ba966",
     "name": "PHP SQLite JWT API",
-    "description": "Suite de regresión preparada para ejecución reproducible. Configurar únicamente base_url, qa_admin_email y qa_admin_password en el environment importado. Las pruebas de archivos usan valid.png, invalid.txt y large.png relativos al Working Directory de Postman. run_file_tests controla si se ejecutan las pruebas de archivos. qa_expired_jwt es opcional para expiración real. La suite crea sus datos QA y variables temporales durante la ejecución y limpia al final.",
+    "description": "Suite final de regresión para autenticación y autorización con JWT + sesiones revocables por SID, sin refresh token. Permite múltiples sesiones por usuario y verifica aislamiento, logout, expiración, revocación por cambio de rol/eliminación, permisos por rol, CRUD, conflictos, fotos y contratos de la API.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "29901853"
   },
@@ -21,7 +21,31 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "const pending = ['qa_owned_users','qa_owned_stock','qa_owned_subs'].some(k=>JSON.parse(pm.collectionVariables.get(k)||'[]').length);\nif (pending) {\n pm.test('Ejecución anterior limpia', () => { throw new Error('Hay registros QA pendientes. Ejecutar la carpeta 99 antes de iniciar otra ejecución.'); });\n pm.execution.setNextRequest(null); pm.execution.skipRequest();\n} else {\n for (const key of Object.keys(pm.collectionVariables.toObject())) if(key.startsWith('qa_')) pm.collectionVariables.unset(key);\n const stamp = Date.now().toString(36) + Math.random().toString(36).slice(2,5);\n pm.collectionVariables.set('qa_run', stamp);\n pm.collectionVariables.set('qa_password', 'Qa_' + stamp + '9');\n for (const tag of ['a','b','audit','deleted']) {\n  pm.collectionVariables.set('qa_'+tag+'_name', 'qa_'+tag.slice(0,3)+'_'+stamp);\n  pm.collectionVariables.set('qa_'+tag+'_email', 'qa_'+tag+'_'+stamp+'@example.com');\n }\n pm.collectionVariables.set('qa_a_upper', ('qa_a_'+stamp).toUpperCase());\n pm.collectionVariables.set('qa_b_email_upper', ('qa_b_'+stamp+'@example.com').toUpperCase());\n pm.collectionVariables.set('qa_new_email','qa_new_'+stamp+'@example.com');\n const n=Date.now();\n for (const [i,tag] of ['s1','s2'].entries()) {\n  pm.collectionVariables.set('qa_'+tag+'_imei', String(n*10+i));\n  pm.collectionVariables.set('qa_'+tag+'_line', String(1100000000+(n%800000000)+i));\n }\n pm.collectionVariables.set('qa_owned_users','[]');\n pm.collectionVariables.set('qa_owned_stock','[]');\n pm.collectionVariables.set('qa_owned_subs','[]');\n}",
+                      "const pending = ['qa_owned_users','qa_owned_stock','qa_owned_subs'].some(k=>JSON.parse(pm.collectionVariables.get(k)||'[]').length);",
+                      "if (pending) {",
+                      " pm.test('Ejecución anterior limpia', () => { throw new Error('Hay registros QA pendientes. Ejecutar la carpeta 99 antes de iniciar otra ejecución.'); });",
+                      " pm.execution.setNextRequest(null); pm.execution.skipRequest();",
+                      "} else {",
+                      " for (const key of Object.keys(pm.collectionVariables.toObject())) if(key.startsWith('qa_') && !key.startsWith('qa_photo_')) pm.collectionVariables.unset(key);",
+                      " const stamp = Date.now().toString(36) + Math.random().toString(36).slice(2,5);",
+                      " pm.collectionVariables.set('qa_run', stamp);",
+                      " pm.collectionVariables.set('qa_password', 'Qa_' + stamp + '9');",
+                      " for (const tag of ['a','b','audit','deleted']) {",
+                      "  pm.collectionVariables.set('qa_'+tag+'_name', 'qa_'+tag.slice(0,3)+'_'+stamp);",
+                      "  pm.collectionVariables.set('qa_'+tag+'_email', 'qa_'+tag+'_'+stamp+'@example.com');",
+                      " }",
+                      " pm.collectionVariables.set('qa_a_upper', ('qa_a_'+stamp).toUpperCase());",
+                      " pm.collectionVariables.set('qa_b_email_upper', ('qa_b_'+stamp+'@example.com').toUpperCase());",
+                      " pm.collectionVariables.set('qa_new_email','qa_new_'+stamp+'@example.com');",
+                      " const n=Date.now();",
+                      " for (const [i,tag] of ['s1','s2'].entries()) {",
+                      "  pm.collectionVariables.set('qa_'+tag+'_imei', String(n*10+i));",
+                      "  pm.collectionVariables.set('qa_'+tag+'_line', String(1100000000+(n%800000000)+i));",
+                      " }",
+                      " pm.collectionVariables.set('qa_owned_users','[]');",
+                      " pm.collectionVariables.set('qa_owned_stock','[]');",
+                      " pm.collectionVariables.set('qa_owned_subs','[]');",
+                      "}",
                       "",
                       "const missing = [\"qa_admin_email\",\"qa_admin_password\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
@@ -118,7 +142,8 @@
                       "",
                       "if (pm.response.code === 200 && json) {",
                       "pm.test(\"Usuario administrador\", () => { pm.expect(json.data.user.role).to.eql(1); pm.expect(json.data.user).not.to.have.property(\"password\"); });",
-                      "}"
+                      "}",
+                      "pm.test(\"CheckStatus no emite un JWT nuevo\", () => pm.expect(json).not.to.have.property(\"jwt\"));"
                     ]
                   }
                 }
@@ -2184,7 +2209,7 @@
           ]
         },
         {
-          "name": "03 · Sesiones, renovación, revocación y aislamiento",
+          "name": "03 · Sesiones, revocación y aislamiento",
           "item": [
             {
               "name": "Login sesión A",
@@ -2332,14 +2357,14 @@
               "response": []
             },
             {
-              "name": "Renovar A — conservar SID y volver a 12 horas",
+              "name": "Sesión A sigue activa después de crear sesión B",
               "event": [
                 {
                   "listen": "prerequest",
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.collectionVariables.set('qa_old_jwt',pm.variables.get('qa_a_jwt'));",
+                      "",
                       "const missing = [\"qa_a_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
@@ -2361,11 +2386,7 @@
                       "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
                       "",
                       "if (pm.response.code === 200 && json) {",
-                      "const payload = JSON.parse(Buffer.from(json.jwt.split('.')[1], 'base64').toString('utf8'));",
-                      "pm.test(\"JWT con tres segmentos\", () => { pm.expect(json.jwt.split(\".\")).to.have.lengthOf(3); });pm.test(\"SID de sesión\", () => { pm.expect(payload.sid).to.match(/^[a-f0-9]{64}$/); });pm.test(\"Duración de 12 horas\", () => { pm.expect(payload.exp - payload.iat).to.eql(43200); });pm.test(\"Token recién emitido\", () => { pm.expect(Math.abs(payload.iat - Math.floor(Date.now()/1000))).to.be.below(120); });pm.test(\"Rol esperado\", () => { pm.expect(payload.role).to.eql(3); });",
-                      "pm.collectionVariables.set('qa_a_jwt', json.jwt);",
-                      "pm.collectionVariables.set('qa_a_jwt_sid', payload.sid);",
-                      "pm.collectionVariables.set('qa_a_jwt_uid', payload.uid);pm.test(\"SID conservado\", () => { const old=JSON.parse(Buffer.from(pm.variables.get('qa_old_jwt').split('.')[1],'base64').toString()); pm.expect(payload.sid).to.eql(old.sid); pm.expect(payload.uid).to.eql(old.uid); pm.expect(payload.exp).to.be.at.least(old.exp); });",
+                      "",
                       "}"
                     ]
                   }
@@ -2378,81 +2399,6 @@
                     {
                       "key": "token",
                       "value": "{{qa_a_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/login",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "login"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Token anterior aún pertenece a sesión activa",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "",
-                      "const missing = [\"qa_old_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      "",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_old_jwt}}",
                       "type": "string"
                     }
                   ]
@@ -2594,68 +2540,7 @@
               "response": []
             },
             {
-              "name": "Revocada GET /profile old_jwt",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "",
-                      "const missing = [\"qa_old_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(false));",
-                      "pm.test(\"Código SESSION_REVOKED\", () => pm.expect(json && json.error && json.error.code).to.eql(\"SESSION_REVOKED\"));",
-                      "if (pm.response.code === 401 && json) {",
-                      "",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_old_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/profile",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "profile"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Revocada PATCH /login a_jwt",
+              "name": "Revocada GET /profile sesión A",
               "event": [
                 {
                   "listen": "prerequest",
@@ -2701,29 +2586,15 @@
                     }
                   ]
                 },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
+                "method": "GET",
+                "header": [],
                 "url": {
-                  "raw": "{{base_url}}/login",
+                  "raw": "{{base_url}}/profile",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
-                    "login"
+                    "profile"
                   ]
                 }
               },
@@ -3116,74 +2987,6 @@
                   ],
                   "path": [
                     "subscriptions"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Sin token PATCH login",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "",
-                      "const missing = [].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(false));",
-                      "pm.test(\"Código UNAUTHORIZED\", () => pm.expect(json && json.error && json.error.code).to.eql(\"UNAUTHORIZED\"));",
-                      "if (pm.response.code === 401 && json) {",
-                      "",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/login",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "login"
                   ]
                 }
               },
@@ -5670,6 +5473,68 @@
                   ],
                   "path": [
                     "stock"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "403 de Stock no revoca sesión del editor",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "",
+                      "const missing = [\"qa_a2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "if (missing.length) {",
+                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
+                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
+                      " pm.execution.skipRequest();",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "let json;",
+                      "try { json = pm.response.json(); } catch(e) {}",
+                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
+                      "if (pm.response.code === 200 && json) {",
+                      "  pm.test(\"Sesión del editor sigue activa\", () => {",
+                      "    pm.expect(json.data.user.role).to.eql(3);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{qa_a2_jwt}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/checkStatus",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "checkStatus"
                   ]
                 }
               },
@@ -8340,7 +8205,7 @@
                     "type": "text/javascript",
                     "exec": [
                       "if (pm.environment.get('run_file_tests') !== 'true') pm.execution.skipRequest();",
-                      "const missing = [\"qa_a2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "const missing = [\"qa_photo_invalid\",\"qa_a2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " ",
                       " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
@@ -8386,7 +8251,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "src": "invalid.txt"
+                      "src": "{{qa_photo_invalid}}"
                     }
                   ]
                 },
@@ -8412,7 +8277,7 @@
                     "type": "text/javascript",
                     "exec": [
                       "if (pm.environment.get('run_file_tests') !== 'true') pm.execution.skipRequest();",
-                      "const missing = [\"qa_a2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "const missing = [\"qa_photo_large\",\"qa_a2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " ",
                       " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
@@ -8458,7 +8323,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "src": "large.png"
+                      "src": "{{qa_photo_large}}"
                     }
                   ]
                 },
@@ -8484,7 +8349,7 @@
                     "type": "text/javascript",
                     "exec": [
                       "if (pm.environment.get('run_file_tests') !== 'true') pm.execution.skipRequest();",
-                      "const missing = [\"qa_a2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "const missing = [\"qa_photo_png\",\"qa_a2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " ",
                       " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
@@ -8530,7 +8395,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "src": "valid.png"
+                      "src": "{{qa_photo_png}}"
                     }
                   ]
                 },
@@ -8556,7 +8421,7 @@
                     "type": "text/javascript",
                     "exec": [
                       "if (pm.environment.get('run_file_tests') !== 'true') pm.execution.skipRequest();",
-                      "const missing = [\"qa_b_id\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "const missing = [\"qa_b_id\",\"qa_photo_invalid\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " ",
                       " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
@@ -8607,7 +8472,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "src": "invalid.txt"
+                      "src": "{{qa_photo_invalid}}"
                     }
                   ]
                 },
@@ -8633,7 +8498,7 @@
                     "type": "text/javascript",
                     "exec": [
                       "if (pm.environment.get('run_file_tests') !== 'true') pm.execution.skipRequest();",
-                      "const missing = [\"qa_b_id\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "const missing = [\"qa_b_id\",\"qa_photo_large\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " ",
                       " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
@@ -8684,7 +8549,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "src": "large.png"
+                      "src": "{{qa_photo_large}}"
                     }
                   ]
                 },
@@ -8710,7 +8575,7 @@
                     "type": "text/javascript",
                     "exec": [
                       "if (pm.environment.get('run_file_tests') !== 'true') pm.execution.skipRequest();",
-                      "const missing = [\"qa_b_id\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "const missing = [\"qa_b_id\",\"qa_photo_png\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " ",
                       " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
@@ -8761,7 +8626,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "src": "valid.png"
+                      "src": "{{qa_photo_png}}"
                     }
                   ]
                 },
@@ -8787,7 +8652,7 @@
                     "type": "text/javascript",
                     "exec": [
                       "if (pm.environment.get('run_file_tests') !== 'true') pm.execution.skipRequest();",
-                      "const missing = [\"qa_s1_id\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "const missing = [\"qa_s1_id\",\"qa_photo_invalid\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " ",
                       " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
@@ -8838,7 +8703,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "src": "invalid.txt"
+                      "src": "{{qa_photo_invalid}}"
                     }
                   ]
                 },
@@ -8864,7 +8729,7 @@
                     "type": "text/javascript",
                     "exec": [
                       "if (pm.environment.get('run_file_tests') !== 'true') pm.execution.skipRequest();",
-                      "const missing = [\"qa_s1_id\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "const missing = [\"qa_s1_id\",\"qa_photo_large\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " ",
                       " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
@@ -8915,7 +8780,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "src": "large.png"
+                      "src": "{{qa_photo_large}}"
                     }
                   ]
                 },
@@ -8941,7 +8806,7 @@
                     "type": "text/javascript",
                     "exec": [
                       "if (pm.environment.get('run_file_tests') !== 'true') pm.execution.skipRequest();",
-                      "const missing = [\"qa_s1_id\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "const missing = [\"qa_s1_id\",\"qa_photo_png\",\"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " ",
                       " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
@@ -8992,7 +8857,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "src": "valid.png"
+                      "src": "{{qa_photo_png}}"
                     }
                   ]
                 },
@@ -9383,14 +9248,14 @@
               "response": []
             }
           ],
-          "description": "Pruebas opcionales de archivos. Configure Postman Working Directory apuntando a la carpeta que contiene valid.png, invalid.txt y large.png. Active run_file_tests=true en el environment. No requiere variables qa_photo_*.",
+          "description": "Configurar rutas qa_photo_png, qa_photo_invalid y qa_photo_large en el entorno y activar run_file_tests. Ejecutar dentro de la suite completa, antes de limpieza.",
           "event": [
             {
               "listen": "prerequest",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (pm.environment.get('run_file_tests') !== 'true') pm.execution.skipRequest();"
+                  "if (pm.environment.get('run_file_tests') !== 'true' || ['qa_photo_png','qa_photo_invalid','qa_photo_large'].some(k=>!pm.environment.get(k))) pm.execution.skipRequest();"
                 ]
               }
             }
@@ -9434,6 +9299,78 @@
                       "pm.collectionVariables.set('qa_b_jwt', json.jwt);",
                       "pm.collectionVariables.set('qa_b_jwt_sid', payload.sid);",
                       "pm.collectionVariables.set('qa_b_jwt_uid', payload.uid);",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{qa_b_email}}\",\n  \"password\": \"{{qa_password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login segunda sesión B antes de cambiar rol",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "",
+                      "const missing = [\"qa_b_email\",\"qa_password\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "if (missing.length) {",
+                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
+                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
+                      " pm.execution.skipRequest();",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "let json;",
+                      "try { json = pm.response.json(); } catch(e) {}",
+                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
+                      "",
+                      "if (pm.response.code === 200 && json) {",
+                      "const payload = JSON.parse(Buffer.from(json.jwt.split('.')[1], 'base64').toString('utf8'));",
+                      "pm.test(\"JWT con tres segmentos\", () => { pm.expect(json.jwt.split(\".\")).to.have.lengthOf(3); });pm.test(\"SID de sesión\", () => { pm.expect(payload.sid).to.match(/^[a-f0-9]{64}$/); });pm.test(\"Duración de 12 horas\", () => { pm.expect(payload.exp - payload.iat).to.eql(43200); });pm.test(\"Token recién emitido\", () => { pm.expect(Math.abs(payload.iat - Math.floor(Date.now()/1000))).to.be.below(120); });pm.test(\"Rol esperado\", () => { pm.expect(payload.role).to.eql(3); });",
+                      "pm.collectionVariables.set('qa_b_role2_jwt', json.jwt);",
+                      "pm.collectionVariables.set('qa_b_role2_jwt_sid', payload.sid);",
+                      "pm.collectionVariables.set('qa_b_role2_jwt_uid', payload.uid);",
                       "}"
                     ]
                   }
@@ -9609,6 +9546,67 @@
               "response": []
             },
             {
+              "name": "Segunda sesión B rechazada después de cambiar rol",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "",
+                      "const missing = [\"qa_b_role2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "if (missing.length) {",
+                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
+                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
+                      " pm.execution.skipRequest();",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
+                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "let json;",
+                      "try { json = pm.response.json(); } catch(e) {}",
+                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(false));",
+                      "pm.test(\"Código SESSION_REVOKED\", () => pm.expect(json && json.error && json.error.code).to.eql(\"SESSION_REVOKED\"));",
+                      "if (pm.response.code === 401 && json) {",
+                      "",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{qa_b_role2_jwt}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/checkStatus",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "checkStatus"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
               "name": "Restaurar rol B",
               "event": [
                 {
@@ -9731,29 +9729,15 @@
                     }
                   ]
                 },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
+                "method": "GET",
+                "header": [],
                 "url": {
-                  "raw": "{{base_url}}/login",
+                  "raw": "{{base_url}}/checkStatus",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
-                    "login"
+                    "checkStatus"
                   ]
                 }
               },
@@ -9866,6 +9850,78 @@
                       "pm.collectionVariables.set('qa_deleted_jwt', json.jwt);",
                       "pm.collectionVariables.set('qa_deleted_jwt_sid', payload.sid);",
                       "pm.collectionVariables.set('qa_deleted_jwt_uid', payload.uid);",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{qa_deleted_email}}\",\n  \"password\": \"{{qa_password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login segunda sesión del usuario que se eliminará",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "",
+                      "const missing = [\"qa_deleted_email\",\"qa_password\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "if (missing.length) {",
+                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
+                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
+                      " pm.execution.skipRequest();",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "let json;",
+                      "try { json = pm.response.json(); } catch(e) {}",
+                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
+                      "",
+                      "if (pm.response.code === 200 && json) {",
+                      "const payload = JSON.parse(Buffer.from(json.jwt.split('.')[1], 'base64').toString('utf8'));",
+                      "pm.test(\"JWT con tres segmentos\", () => { pm.expect(json.jwt.split(\".\")).to.have.lengthOf(3); });pm.test(\"SID de sesión\", () => { pm.expect(payload.sid).to.match(/^[a-f0-9]{64}$/); });pm.test(\"Duración de 12 horas\", () => { pm.expect(payload.exp - payload.iat).to.eql(43200); });pm.test(\"Token recién emitido\", () => { pm.expect(Math.abs(payload.iat - Math.floor(Date.now()/1000))).to.be.below(120); });pm.test(\"Rol esperado\", () => { pm.expect(payload.role).to.eql(3); });",
+                      "pm.collectionVariables.set('qa_deleted2_jwt', json.jwt);",
+                      "pm.collectionVariables.set('qa_deleted2_jwt_sid', payload.sid);",
+                      "pm.collectionVariables.set('qa_deleted2_jwt_uid', payload.uid);",
                       "}"
                     ]
                   }
@@ -10040,7 +10096,7 @@
               "response": []
             },
             {
-              "name": "Usuario eliminado no puede renovar",
+              "name": "Segunda sesión del usuario eliminado también queda revocada",
               "event": [
                 {
                   "listen": "prerequest",
@@ -10048,7 +10104,7 @@
                     "type": "text/javascript",
                     "exec": [
                       "",
-                      "const missing = [\"qa_deleted_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
+                      "const missing = [\"qa_deleted2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
                       "if (missing.length) {",
                       " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
                       " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
@@ -10081,34 +10137,20 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{qa_deleted_jwt}}",
+                      "value": "{{qa_deleted2_jwt}}",
                       "type": "string"
                     }
                   ]
                 },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
+                "method": "GET",
+                "header": [],
                 "url": {
-                  "raw": "{{base_url}}/login",
+                  "raw": "{{base_url}}/profile",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
-                    "login"
+                    "profile"
                   ]
                 }
               },
@@ -10175,81 +10217,6 @@
                   ],
                   "path": [
                     "checkStatus"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "JWT expirado PATCH /login",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "",
-                      "const missing = [\"qa_expired_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
-                      "if (missing.length) {",
-                      " ",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(false));",
-                      "pm.test(\"Código UNAUTHORIZED\", () => pm.expect(json && json.error && json.error.code).to.eql(\"UNAUTHORIZED\"));",
-                      "if (pm.response.code === 401 && json) {",
-                      "",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_expired_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/login",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "login"
                   ]
                 }
               },
@@ -11108,1044 +11075,6 @@
           "description": "Estas pruebas expresan restricciones esperadas. La última API revisada no limita roles en POST ni replica todas las longitudes del frontend. Un fallo aquí NO se convierte en éxito: todo registro creado inesperadamente se registra para limpieza."
         },
         {
-          "name": "14 · Normalización en minúsculas y NOCASE",
-          "item": [
-            {
-              "name": "POST users normaliza username y email a minúsculas",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const run = pm.collectionVariables.get('qa_run');",
-                      "if (run) {",
-                      " const postUser = 'qac_' + run;",
-                      " const postEmail = 'qac_' + run + '@example.com';",
-                      " const patchUser = 'qap_' + run;",
-                      " const patchEmail = 'qap_' + run + '@example.com';",
-                      " const profileEmail = 'qapr_' + run + '@example.com';",
-                      " pm.collectionVariables.set('qa_case_post_username_upper', postUser.toUpperCase());",
-                      " pm.collectionVariables.set('qa_case_post_username_lower', postUser.toLowerCase());",
-                      " pm.collectionVariables.set('qa_case_post_email_upper', postEmail.toUpperCase());",
-                      " pm.collectionVariables.set('qa_case_post_email_lower', postEmail.toLowerCase());",
-                      " pm.collectionVariables.set('qa_case_patch_username_upper', patchUser.toUpperCase());",
-                      " pm.collectionVariables.set('qa_case_patch_username_lower', patchUser.toLowerCase());",
-                      " pm.collectionVariables.set('qa_case_patch_email_upper', patchEmail.toUpperCase());",
-                      " pm.collectionVariables.set('qa_case_patch_email_lower', patchEmail.toLowerCase());",
-                      " pm.collectionVariables.set('qa_case_profile_email_upper', profileEmail.toUpperCase());",
-                      " pm.collectionVariables.set('qa_case_profile_email_lower', profileEmail.toLowerCase());",
-                      "}",
-                      "const missing = [\"qa_run\", \"qa_password\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 201 && json) {",
-                      " pm.collectionVariables.set('qa_case_id', json.data.id);",
-                      " const key='qa_owned_users'; const ids=JSON.parse(pm.collectionVariables.get(key)||'[]'); if(Number.isInteger(json.data.id)&&!ids.includes(json.data.id)) { ids.push(json.data.id); pm.collectionVariables.set(key,JSON.stringify(ids)); }",
-                      " pm.test(\"ID positivo\", () => pm.expect(json.data.id).to.be.a(\"number\").above(0));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_admin_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "username",
-                      "value": "{{qa_case_post_username_upper}}",
-                      "type": "text"
-                    },
-                    {
-                      "key": "email",
-                      "value": "{{qa_case_post_email_upper}}",
-                      "type": "text"
-                    },
-                    {
-                      "key": "password",
-                      "value": "{{qa_password}}",
-                      "type": "text"
-                    },
-                    {
-                      "key": "role",
-                      "value": "3",
-                      "type": "text"
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{base_url}}/users",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "users"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET confirma normalización del POST",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_case_id\", \"qa_case_post_username_lower\", \"qa_case_post_email_lower\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"Username persistido en minúsculas\", () => pm.expect(json.data.username).to.eql(pm.variables.get(\"qa_case_post_username_lower\")));",
-                      " pm.test(\"Email persistido en minúsculas\", () => pm.expect(json.data.email).to.eql(pm.variables.get(\"qa_case_post_email_lower\")));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_admin_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/users/{{qa_case_id}}",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{qa_case_id}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "PATCH rechaza email ocupado con distinta capitalización",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const email = pm.collectionVariables.get('qa_a_email');",
-                      "if (email) pm.collectionVariables.set('qa_a_email_upper_check', email.toUpperCase());",
-                      "const missing = [\"qa_case_id\", \"qa_a_email\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 409\", () => pm.response.to.have.status(409));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(false));",
-                      "pm.test(\"Código EMAIL_ALREADY_EXISTS\", () => pm.expect(json && json.error && json.error.code).to.eql(\"EMAIL_ALREADY_EXISTS\"));"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_admin_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"email\": \"{{qa_a_email_upper_check}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/users/{{qa_case_id}}",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{qa_case_id}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "PATCH users normaliza username y email a minúsculas",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_case_id\", \"qa_case_patch_username_upper\", \"qa_case_patch_email_upper\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"PATCH informa username actualizado\", () => pm.expect(json.data.updated).to.include(\"username\"));",
-                      " pm.test(\"PATCH informa email actualizado\", () => pm.expect(json.data.updated).to.include(\"email\"));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_admin_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"username\": \"{{qa_case_patch_username_upper}}\",\n  \"email\": \"{{qa_case_patch_email_upper}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/users/{{qa_case_id}}",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{qa_case_id}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET confirma normalización del PATCH",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_case_id\", \"qa_case_patch_username_lower\", \"qa_case_patch_email_lower\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"Username PATCH persistido en minúsculas\", () => pm.expect(json.data.username).to.eql(pm.variables.get(\"qa_case_patch_username_lower\")));",
-                      " pm.test(\"Email PATCH persistido en minúsculas\", () => pm.expect(json.data.email).to.eql(pm.variables.get(\"qa_case_patch_email_lower\")));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_admin_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/users/{{qa_case_id}}",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{qa_case_id}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Búsqueda de username en mayúsculas funciona con NOCASE",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_case_id\", \"qa_case_patch_username_upper\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"Búsqueda NOCASE encuentra el usuario\", () => { pm.expect(json.data).to.be.an(\"array\"); pm.expect(json.data.some(u => u.id === Number(pm.variables.get(\"qa_case_id\")))).to.eql(true); });",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_admin_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/users/{{qa_case_patch_username_upper}}",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{qa_case_patch_username_upper}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Login acepta email en mayúsculas",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_case_patch_email_upper\", \"qa_password\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"JWT emitido\", () => { pm.expect(json.jwt).to.be.a(\"string\"); pm.expect(json.jwt.split(\".\")).to.have.lengthOf(3); });",
-                      " pm.collectionVariables.set('qa_case_jwt', json.jwt);",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"email\": \"{{qa_case_patch_email_upper}}\",\n  \"password\": \"{{qa_password}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/login",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "login"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "PATCH profile normaliza email a minúsculas",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_case_jwt\", \"qa_case_profile_email_upper\", \"qa_case_profile_email_lower\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"Profile devuelve email normalizado\", () => pm.expect(json.data.user.email).to.eql(pm.variables.get(\"qa_case_profile_email_lower\")));",
-                      " pm.test(\"Profile informa email actualizado\", () => pm.expect(json.data.updated).to.include(\"email\"));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_case_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"email\": \"{{qa_case_profile_email_upper}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/profile",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "profile"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET profile confirma email persistido en minúsculas",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_case_jwt\", \"qa_case_id\", \"qa_case_profile_email_lower\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"Email de profile persistido en minúsculas\", () => pm.expect(json.data.user.email).to.eql(pm.variables.get(\"qa_case_profile_email_lower\")));",
-                      " pm.test(\"Profile corresponde al usuario QA\", () => pm.expect(json.data.user.id).to.eql(Number(pm.variables.get(\"qa_case_id\"))));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_case_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/profile",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "profile"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ],
-          "description": "Controles agregados sin modificar los existentes. Verifican persistencia en minúsculas para POST/PATCH, comparaciones NOCASE y login con email en mayúsculas."
-        },
-        {
-          "name": "15 · PATCH sin cambios reales y contraseña",
-          "item": [
-            {
-              "name": "Profile misma contraseña no genera actualización",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_password\", \"qa_a_id\", \"qa_a2_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"Sin cambios\", () => pm.expect(json.data.updated).to.eql([]));",
-                      " pm.test(\"Usuario correcto\", () => pm.expect(json.data.user.id).to.eql(Number(pm.variables.get(\"qa_a_id\"))));",
-                      " pm.test(\"Password no expuesta\", () => pm.expect(json.data.user).not.to.have.property(\"password\"));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_a2_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"password\": \"{{qa_password}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/profile",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "profile"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Profile mismo email no genera actualización",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_case_profile_email_lower\",\"qa_case_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === \"\");",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"Sin cambios\", () => pm.expect(json.data.updated).to.eql([]));",
-                      " pm.test(\"Email permanece igual\", () => pm.expect(json.data.user.email).to.eql(pm.variables.get(\"qa_case_profile_email_lower\")));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_case_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"email\": \"{{qa_case_profile_email_lower}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/profile",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "profile"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Users cambia contraseña válida",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const run = pm.collectionVariables.get('qa_run');",
-                      "if (run) pm.collectionVariables.set('qa_users_new_password', 'Np_' + run);",
-                      "",
-                      "const missing = [\"qa_run\", \"qa_a_id\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"Password informada como actualizada\", () => pm.expect(json.data.updated).to.include(\"password\"));",
-                      " pm.test(\"Usuario correcto\", () => pm.expect(json.data.id).to.eql(Number(pm.variables.get(\"qa_a_id\"))));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_admin_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"password\": \"{{qa_users_new_password}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/users/{{qa_a_id}}",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{qa_a_id}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Users misma contraseña no genera actualización",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_users_new_password\", \"qa_a_id\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"Sin cambios\", () => pm.expect(json.data.updated).to.eql([]));",
-                      " pm.test(\"Usuario correcto\", () => pm.expect(json.data.id).to.eql(Number(pm.variables.get(\"qa_a_id\"))));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_admin_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"password\": \"{{qa_users_new_password}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/users/{{qa_a_id}}",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{qa_a_id}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Users restaura contraseña QA",
-              "event": [
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const missing = [\"qa_password\", \"qa_a_id\", \"qa_admin_jwt\"].filter(k => pm.variables.get(k) === undefined || pm.variables.get(k) === null || pm.variables.get(k) === '');",
-                      "if (missing.length) {",
-                      " pm.test(\"Prerrequisitos disponibles\", () => { throw new Error(\"Faltan: \" + missing.join(\", \")); });",
-                      " console.warn(\"Omitida por prerrequisitos: \" + missing.join(\", \"));",
-                      " pm.execution.skipRequest();",
-                      "}"
-                    ]
-                  }
-                },
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
-                      "pm.test(\"Respuesta JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
-                      "let json;",
-                      "try { json = pm.response.json(); } catch(e) {}",
-                      "pm.test(\"Contrato success\", () => pm.expect(json && json.success).to.eql(true));",
-                      "",
-                      "if (pm.response.code === 200 && json) {",
-                      " pm.test(\"Password restaurada\", () => pm.expect(json.data.updated).to.include(\"password\"));",
-                      " pm.test(\"Usuario correcto\", () => pm.expect(json.data.id).to.eql(Number(pm.variables.get(\"qa_a_id\"))));",
-                      "}"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{qa_admin_jwt}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"password\": \"{{qa_password}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/users/{{qa_a_id}}",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{qa_a_id}}"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ],
-          "description": "Regresiones para comprobar que PATCH /profile y PATCH /users/{id} no informan cambios ni vuelven a hashear una contraseña cuando el valor recibido ya coincide con el almacenado."
-        },
-        {
           "name": "99 · Limpieza de los registros de esta ejecución",
           "item": [
             {
@@ -12818,7 +11747,7 @@
       ]
     },
     {
-      "name": "Ejecución manual",
+      "name": "Referencia original · ejecución manual",
       "item": [
         {
           "name": "Setup",
@@ -12829,10 +11758,12 @@
                 {
                   "listen": "prerequest",
                   "script": {
-                    "type": "text/javascript",
                     "exec": [
                       "if (pm.environment.get('allow_reset') !== 'true') pm.execution.skipRequest();"
-                    ]
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
                   }
                 }
               ],
@@ -12862,7 +11793,11 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "if (pm.response.code === 200) {\n  const json = pm.response.json();\n  pm.environment.set('jwt', json.jwt);\n\n}"
+                      "if (pm.response.code === 200) {",
+                      "  const json = pm.response.json();",
+                      "  pm.environment.set('jwt', json.jwt);",
+                      "",
+                      "}"
                     ]
                   }
                 }
@@ -12918,6 +11853,38 @@
                   ],
                   "path": [
                     "checkStatus"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Check sessions (dev)",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{qa_admin_email}}\",\n  \"password\": \"{{qa_admin_password}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/sessions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "sessions"
                   ]
                 }
               },
@@ -13023,7 +11990,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "value": null,
+                      "value": "",
                       "disabled": true
                     }
                   ]
@@ -13107,7 +12074,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "value": null,
+                      "value": "",
                       "disabled": true
                     }
                   ]
@@ -13267,7 +12234,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "value": null,
+                      "value": "",
                       "disabled": true
                     }
                   ]
@@ -13351,7 +12318,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "value": null,
+                      "value": "",
                       "disabled": true
                     }
                   ]
@@ -13590,7 +12557,7 @@
                     {
                       "key": "photo",
                       "type": "file",
-                      "value": null,
+                      "value": "",
                       "disabled": true
                     }
                   ]
@@ -13611,7 +12578,7 @@
           ]
         }
       ],
-      "description": "No forman parte de la suite automática. Requieren run_legacy_requests=true; Reset requiere además allow_reset=true. Usan IDs/valores manuales: revisar cada petición antes de enviar.",
+      "description": "Peticiones originales conservadas. No forman parte de la suite automática. Requieren run_legacy_requests=true; Reset requiere además allow_reset=true. Usan IDs/valores manuales: revisar cada petición antes de enviar.",
       "event": [
         {
           "listen": "prerequest",
@@ -13636,6 +12603,18 @@
     ]
   },
   "variable": [
+    {
+      "key": "qa_photo_png",
+      "value": "valid.png"
+    },
+    {
+      "key": "qa_photo_invalid",
+      "value": "invalid.txt"
+    },
+    {
+      "key": "qa_photo_large",
+      "value": "large.png"
+    },
     {
       "key": "qa_run",
       "value": ""
@@ -13726,10 +12705,6 @@
     },
     {
       "key": "qa_admin_jwt_uid",
-      "value": ""
-    },
-    {
-      "key": "qa_old_jwt",
       "value": ""
     },
     {
@@ -13833,6 +12808,18 @@
       "value": ""
     },
     {
+      "key": "qa_b_role2_jwt",
+      "value": ""
+    },
+    {
+      "key": "qa_b_role2_jwt_sid",
+      "value": ""
+    },
+    {
+      "key": "qa_b_role2_jwt_uid",
+      "value": ""
+    },
+    {
       "key": "qa_b2_jwt",
       "value": ""
     },
@@ -13857,63 +12844,19 @@
       "value": ""
     },
     {
+      "key": "qa_deleted2_jwt",
+      "value": ""
+    },
+    {
+      "key": "qa_deleted2_jwt_sid",
+      "value": ""
+    },
+    {
+      "key": "qa_deleted2_jwt_uid",
+      "value": ""
+    },
+    {
       "key": "qa_original_admin_jwt",
-      "value": ""
-    },
-    {
-      "key": "qa_case_post_username_upper",
-      "value": ""
-    },
-    {
-      "key": "qa_case_post_username_lower",
-      "value": ""
-    },
-    {
-      "key": "qa_case_post_email_upper",
-      "value": ""
-    },
-    {
-      "key": "qa_case_post_email_lower",
-      "value": ""
-    },
-    {
-      "key": "qa_case_patch_username_upper",
-      "value": ""
-    },
-    {
-      "key": "qa_case_patch_username_lower",
-      "value": ""
-    },
-    {
-      "key": "qa_case_patch_email_upper",
-      "value": ""
-    },
-    {
-      "key": "qa_case_patch_email_lower",
-      "value": ""
-    },
-    {
-      "key": "qa_case_profile_email_upper",
-      "value": ""
-    },
-    {
-      "key": "qa_case_profile_email_lower",
-      "value": ""
-    },
-    {
-      "key": "qa_a_email_upper_check",
-      "value": ""
-    },
-    {
-      "key": "qa_case_id",
-      "value": ""
-    },
-    {
-      "key": "qa_case_jwt",
-      "value": ""
-    },
-    {
-      "key": "qa_users_new_password",
       "value": ""
     }
   ]

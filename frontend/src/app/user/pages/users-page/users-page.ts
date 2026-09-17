@@ -3,7 +3,7 @@ import { SearchInput } from '../../../shared/components/search-input/search-inpu
 import { UsersList } from '../../components/users-list/users-list';
 import { UsersForm } from '../../components/users-form/users-form';
 import { UsersService } from '../../services/users.service';
-
+import { DestroyRef } from '@angular/core';
 
 
 
@@ -15,6 +15,18 @@ import { UsersService } from '../../services/users.service';
 export class UsersPage {
 
   usersService = inject(UsersService);
+  private destroyRef = inject(DestroyRef);
+
+  constructor() {
+    this.usersService.usersResource.reload();
+
+    this.destroyRef.onDestroy(() => {
+      this.usersService.resetState();
+    });
+
+  }
+
+
 }
 
 

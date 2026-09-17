@@ -14,12 +14,16 @@ export const ROLE_ACCESS = {
 export const roleGuard = (
   allowedRoles: readonly number[]
 ): CanActivateFn => {
+
   return () => {
+
     const authService = inject(AuthService);
     const router = inject(Router);
 
     if (!authService.hasStoredToken()) {
+
       authService.invalidateLocalSession();
+
       return router.createUrlTree(['/']);
     }
 
@@ -28,16 +32,23 @@ export const roleGuard = (
       : authService.checkStatus();
 
     return validation$.pipe(
+
       map(isAuthenticated => {
         if (!isAuthenticated) {
           return router.createUrlTree(['/']);
         }
 
         const user = authService.currentUser();
+        if (!user) {
 
-        if (!user || !allowedRoles.includes(user.role)) {
-          authService.logout();
+          authService.invalidateLocalSession();
+
           return router.createUrlTree(['/']);
+        }
+
+        if (!allowedRoles.includes(user.role)) {
+
+          return router.createUrlTree(['/user/profile']);
         }
 
         return true;

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { ROLE_ACCESS } from '../../../auth/guards/role.guard';
@@ -13,16 +13,19 @@ export class TopMenu {
   protected authService = inject(AuthService);
   private router = inject(Router);
   protected readonly roleAccess = ROLE_ACCESS;
+  protected menuOpen = signal(false);
+
+  protected closeMenu(): void {
+    this.menuOpen.set(false);
+  }
 
   protected hasAnyRole(allowedRoles: readonly number[]): boolean {
     const role = this.authService.currentUser()?.role;
     return role !== undefined && allowedRoles.includes(role);
   }
-  renewSession(): void {
-    this.authService.refreshSession().subscribe();
-  }
 
   logout(): void {
+    this.closeMenu();
     this.authService.logout();
     this.router.navigateByUrl('/', { replaceUrl: true });
   }
