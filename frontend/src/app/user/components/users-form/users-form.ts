@@ -180,56 +180,71 @@ export class UsersForm {
     });
   }
 
-  private updateUser() {
-    const id = this.usersService.selectedUserId();
-    if (id === null) {
-      return;
-    }
-    const value = this.userForm.getRawValue();
+  private updateUser(): void {
+  const id = this.usersService.selectedUserId();
 
-    const payload: {
-      username: string;
-      email: string;
-      password?: string;
-      role: 1 | 2 | 3;
-    } = {
-      username: value.username,
-      email: value.email,
-      role: value.role,
-    };
-
-    if (value.password.trim()) {
-      payload.password = value.password;
-    }
-
-    this.usersService.updateUser(id, payload)
-      .subscribe({
-        next: () => {
-          const photo = this.selectedPhoto();
-          if (photo){
-            this.usersService.uploadUserPhoto(id, photo)
-              .subscribe({
-                next: () => {
-                  this.reloadResources();
-                  this.showFormSuccess('User updated successfully.');
-                },
-                error: (error: HttpErrorResponse) => {
-                  this.showRequestError(error);
-                }
-              });
-
-            return;
-          }
-          this.reloadResources();
-        },
-        error: (error: HttpErrorResponse) => {
-          this.showRequestError(error);
-        }
-      });
+  if (id === null) {
+    return;
   }
 
-  private reloadResources() {
+  const value = this.userForm.getRawValue();
 
+  const payload: {
+    username: string;
+    email: string;
+    password?: string;
+    role: 1 | 2 | 3;
+  } = {
+    username: value.username,
+    email: value.email,
+    role: value.role,
+  };
+
+  if (value.password.trim()) {
+    payload.password = value.password;
+  }
+
+  this.usersService
+    .updateUser(id, payload)
+    .subscribe({
+      next: () => {
+        const photo = this.selectedPhoto();
+
+        if (!photo) {
+          this.reloadResources();
+          return;
+        }
+
+        this.usersService
+          .uploadUserPhoto(id, photo)
+          .subscribe({
+            next: () => {
+              this.reloadResources();
+            },
+
+            error: (error: HttpErrorResponse) => {
+              const message = PhotoUtils.uploadError(
+                error.error?.error?.code
+              );
+
+              if (message) {
+                this.photoError.set(message);
+              }
+
+              this.showFormError(
+                message ??
+                'The user was updated, but the image could not be uploaded.'
+              );
+            },
+          });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.showRequestError(error);
+      },
+    });
+}
+
+  private reloadResources(): void {
     this.usersService.usersResource.reload();
     this.usersService.selectedUserResource.reload();
     this.selectedPhoto.set(null);
@@ -237,9 +252,13 @@ export class UsersForm {
     this.submittedControlErrors.set({});
     this.isSubmited.set(false);
     this.hasFormError.set(false);
+    this.showFormSuccess('User updated successfully.');
   }
 
-  private showFormError(message: string) {
+
+  private showFormError(message: string): void {
+    this.hasFormSuccess.set(false);
+
     this.formError.set(message);
     this.hasFormError.set(true);
 
@@ -249,6 +268,8 @@ export class UsersForm {
   }
 
   private showFormSuccess(message: string): void {
+    this.hasFormError.set(false);
+
     this.formSuccess.set(message);
     this.hasFormSuccess.set(true);
 

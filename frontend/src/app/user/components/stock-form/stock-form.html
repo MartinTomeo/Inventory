@@ -149,3 +149,11 @@
   </div>
 }
 
+@if (hasFormSuccess()) {
+  <div class="toast toast-top toast-end z-50">
+    <div class="alert alert-success">
+      <span>{{ formSuccess() }}</span>
+    </div>
+  </div>
+}
+

@@ -26,6 +26,8 @@ export class StockForm {
 
   formError = signal('');
   hasFormError = signal(false);
+  formSuccess = signal('');
+  hasFormSuccess = signal(false);
 
   selectedStock = computed(() =>
     this.stockService.selectedStockResource.value()
@@ -58,40 +60,33 @@ export class StockForm {
     line_provider: ['', [Validators.required]],
   });
 
-  constructor() {
-    effect(() => {
-      const mode = this.stockService.formMode();
+constructor() {
+  effect(() => {
+    const mode = this.stockService.formMode();
 
-      if (mode === 'new') {
-        this.resetFormState();
-        this.stockForm.reset({
-          imei: '',
-          model: '',
-          brand: '',
-          ph_provider: '',
-          line: '',
-          line_provider: '',
-        });
-        return;
-      }
+    if (mode === 'new') {
+      this.resetForm();
+      return;
+    }
 
-      const stock = this.selectedStock();
+    const stock = this.selectedStock();
 
-      if (!stock) {
-        return;
-      }
+    if (!stock) {
+      return;
+    }
 
-      this.resetFormState();
-      this.stockForm.reset({
-        imei: stock.imei,
-        model: stock.model,
-        brand: stock.brand,
-        ph_provider: stock.ph_provider,
-        line: stock.line.toString(),
-        line_provider: stock.line_provider,
-      });
+    this.resetFormState();
+
+    this.stockForm.reset({
+      imei: stock.imei,
+      model: stock.model,
+      brand: stock.brand,
+      ph_provider: stock.ph_provider,
+      line: stock.line.toString(),
+      line_provider: stock.line_provider,
     });
-  }
+  });
+}
 
   onPhotoSelected(event: Event): void {
     const selection = PhotoUtils.select(event);
@@ -121,38 +116,54 @@ export class StockForm {
     this.updateStock();
   }
 
-  clearForm() {
+  private resetForm(): void {
+    this.stockForm.reset({
+      imei: '',
+      model: '',
+      brand: '',
+      ph_provider: '',
+      line: '',
+      line_provider: '',
+    });
+
     this.resetFormState();
+  }
+
+  clearForm(): void {
     this.stockService.newStock();
+    this.resetForm();
   }
 
   private createStock() {
-    const value = this.stockForm.getRawValue();
+  const value = this.stockForm.getRawValue();
 
-    this.stockService
-      .postStock(
-        {
-          imei: value.imei,
-          model: value.model,
-          brand: value.brand,
-          ph_provider: value.ph_provider,
-          line: Number(value.line),
-          line_provider: value.line_provider,
-        },
-        this.selectedPhoto()
-      )
-      .subscribe({
-        next: () => {
-          this.stockService.stockResource.reload();
-          this.resetFormState();
-          this.stockService.newStock();
-        },
-        error: (error: HttpErrorResponse) => {
-          this.showRequestError(error);
-        },
-      });
-  }
+  this.stockService
+    .postStock(
+      {
+        imei: value.imei,
+        model: value.model,
+        brand: value.brand,
+        ph_provider: value.ph_provider,
+        line: Number(value.line),
+        line_provider: value.line_provider,
+      },
+      this.selectedPhoto()
+    )
+    .subscribe({
+      next: () => {
+        this.stockService.stockResource.reload();
 
+        this.stockService.newStock();
+        this.resetForm();
+
+        this.showFormSuccess('Stock item created successfully.');
+      },
+
+      error: (error: HttpErrorResponse) => {
+        this.showRequestError(error);
+      },
+    });
+}
   private updateStock() {
     const id = this.stockService.selectedStockId();
 
@@ -177,12 +188,14 @@ export class StockForm {
 
           if (!photo) {
             this.reloadResources();
+            this.showFormSuccess('Stock item updated successfully.');
             return;
           }
 
           this.stockService.uploadStockPhoto(id, photo).subscribe({
             next: () => {
               this.reloadResources();
+              this.showFormSuccess('Stock item updated successfully.');
             },
             error: (error: HttpErrorResponse) => {
               const message = PhotoUtils.uploadError(error.error?.error?.code);
@@ -213,7 +226,20 @@ export class StockForm {
     this.hasFormError.set(false);
   }
 
-  private showFormError(message: string) {
+  private showFormSuccess(message: string): void {
+    this.hasFormError.set(false);
+
+    this.formSuccess.set(message);
+    this.hasFormSuccess.set(true);
+
+  setTimeout(() => {
+    this.hasFormSuccess.set(false);
+    }, 2000);
+  }
+
+  private showFormError(message: string): void {
+    this.hasFormSuccess.set(false);
+
     this.formError.set(message);
     this.hasFormError.set(true);
 

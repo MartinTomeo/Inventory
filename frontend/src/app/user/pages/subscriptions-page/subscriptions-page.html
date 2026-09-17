@@ -1,7 +1,7 @@
 <div class="flex flex-col gap-4">
   <section class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <search-input
-      placeholder="Buscar por nombre de usuario"
+      placeholder="Search by Username"
       (value)="search($event)"
     />
 
@@ -20,12 +20,12 @@
 @if (isCreateModalOpen()) {
   <div class="modal modal-open">
     <div class="modal-box">
-      <h3 class="text-lg font-bold">Nueva suscripción</h3>
+      <h3 class="text-lg font-bold">New Subscription</h3>
 
       @if (isLoadingOptions()) {
         <div class="flex items-center justify-center gap-2 py-8">
           <span class="loading loading-spinner loading-md"></span>
-          Cargando opciones...
+          Loading options ...
         </div>
       }
       @else {
@@ -35,9 +35,9 @@
           (ngSubmit)="createSubscription()"
         >
           <label class="form-control w-full">
-            <span class="label-text mb-1">Usuario</span>
+            <span class="label-text mb-1">Users</span>
             <select class="select select-bordered w-full" formControlName="user_id">
-              <option [ngValue]="0" disabled>Seleccionar usuario</option>
+              <option [ngValue]="0" disabled>Choose User</option>
               @for (user of users(); track user.id) {
                 <option [ngValue]="user.id">
                   {{ user.username }} — {{ user.email }}
@@ -45,14 +45,14 @@
               }
             </select>
             @if (subscriptionForm.controls.user_id.touched && subscriptionForm.controls.user_id.invalid) {
-              <span class="text-error text-sm">Seleccioná un usuario.</span>
+              <span class="text-error text-sm">Choose a User</span>
             }
           </label>
 
           <label class="form-control w-full">
-            <span class="label-text mb-1">Equipo disponible</span>
+            <span class="label-text mb-1">Available phones</span>
             <select class="select select-bordered w-full" formControlName="stock_id">
-              <option [ngValue]="0" disabled>Seleccionar equipo</option>
+              <option [ngValue]="0" disabled>Choose a phone</option>
               @for (item of availableStock(); track item.id) {
                 <option [ngValue]="item.id">
                   {{ item.line }} — {{ item.model }} — {{ item.imei }}
@@ -60,13 +60,13 @@
               }
             </select>
             @if (subscriptionForm.controls.stock_id.touched && subscriptionForm.controls.stock_id.invalid) {
-              <span class="text-error text-sm">Seleccioná un equipo.</span>
+              <span class="text-error text-sm">Choose a phone</span>
             }
           </label>
 
           @if (availableStock().length === 0 && !formError()) {
             <p class="text-warning">
-              No hay equipos sin asignar disponibles.
+              No unassigned phones
             </p>
           }
 
@@ -83,7 +83,7 @@
               [disabled]="isCreating()"
               (click)="closeCreateModal()"
             >
-              Cancelar
+              Cancel
             </button>
             <button
               type="submit"
@@ -92,10 +92,10 @@
             >
               @if (isCreating()) {
                 <span class="loading loading-spinner loading-sm"></span>
-                Creando...
+                Generating ...
               }
               @else {
-                Crear
+                Create
               }
             </button>
           </div>
@@ -109,7 +109,7 @@
       [disabled]="isCreating()"
       (click)="closeCreateModal()"
     >
-      Cerrar
+      Close
     </button>
   </div>
 }
@@ -117,11 +117,11 @@
 @if (isDeleteModalOpen()) {
   <div class="modal modal-open">
     <div class="modal-box">
-      <h3 class="text-lg font-bold">Eliminar suscripciones</h3>
+      <h3 class="text-lg font-bold">Delete Subscriptions</h3>
       <p class="py-4">
-        ¿Querés eliminar las
+        Do you want to delete
         <strong>{{ subsService.selectedIds().length }}</strong>
-        suscripciones seleccionadas? Esta acción no se puede deshacer.
+        subscription/s? This action is irreversable.
       </p>
 
       @if (deleteError()) {
@@ -135,7 +135,7 @@
           [disabled]="isDeleting()"
           (click)="closeDeleteModal()"
         >
-          Cancelar
+          Cancel
         </button>
         <button
           type="button"
@@ -145,10 +145,10 @@
         >
           @if (isDeleting()) {
             <span class="loading loading-spinner loading-sm"></span>
-            Eliminando...
+            Deleting...
           }
           @else {
-            Eliminar
+            Delete
           }
         </button>
       </div>
@@ -160,7 +160,7 @@
       [disabled]="isDeleting()"
       (click)="closeDeleteModal()"
     >
-      Cerrar
+      Close
     </button>
   </div>
 }
